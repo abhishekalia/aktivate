@@ -72,53 +72,41 @@ nav {
   font-family:'DM Mono',monospace; font-weight:500;
   letter-spacing:0.1em; text-transform:uppercase;
   color:#0a1a00;
-  border:none; cursor:pointer; text-decoration:none;
+  cursor:pointer; text-decoration:none;
   display:inline-flex; align-items:center; gap:10px;
   position:relative;
-  border-radius:2px;
-  transform:translateY(0) perspective(600px) rotateX(2deg);
-  transition:transform 80ms ease;
-  background:
-    linear-gradient(180deg,
-      rgba(255,255,255,0.35) 0%,
-      rgba(255,255,255,0.0) 6%,
-      transparent 6%),
-    linear-gradient(180deg,
-      transparent 92%,
-      rgba(0,0,0,0.08) 92%,
-      rgba(0,0,0,0.12) 100%),
-    linear-gradient(90deg,
-      rgba(255,255,255,0.18) 0%,
-      rgba(255,255,255,0.0) 4%,
-      transparent 4%,
-      transparent 96%,
-      rgba(0,0,0,0.06) 96%,
-      rgba(0,0,0,0.08) 100%),
-    linear-gradient(180deg, #50ff30 0%, #3ce818 40%, #32cc12 100%);
+  border-radius:0;
+  background:#3ce818;
+  border-style:solid;
+  border-top:4px solid #7fff5a;
+  border-left:5px solid #5af03a;
+  border-right:5px solid #28a80e;
+  border-bottom:8px solid #1a7a06;
   box-shadow:
-    0 8px 0 0 #1e7a06,
-    0 10px 0 0 #145204,
-    0 10px 12px 2px rgba(0,0,0,0.45),
-    inset 0 1px 0 rgba(255,255,255,0.25);
+    0 4px 8px rgba(0,0,0,0.4),
+    inset 0 1px 0 rgba(255,255,255,0.15);
+  transform:translateY(0);
+  transition:all 80ms ease;
 }
 .keycap:hover {
-  transform:translateY(3px) perspective(600px) rotateX(2deg);
+  background:#42f01c;
+  border-bottom-width:5px;
+  transform:translateY(3px);
   box-shadow:
-    0 5px 0 0 #1e7a06,
-    0 7px 0 0 #145204,
-    0 7px 8px 1px rgba(0,0,0,0.35),
-    inset 0 1px 0 rgba(255,255,255,0.25);
-}
-.keycap:active {
-  transform:translateY(7px) perspective(600px) rotateX(2deg);
-  box-shadow:
-    0 1px 0 0 #1e7a06,
-    0 2px 0 0 #145204,
-    0 2px 4px 0px rgba(0,0,0,0.25),
+    0 2px 4px rgba(0,0,0,0.3),
     inset 0 1px 0 rgba(255,255,255,0.15);
 }
-.keycap-sm { font-size:11px; padding:10px 24px; }
-.keycap-lg { font-size:12px; padding:18px 44px; }
+.keycap:active {
+  background:#38d814;
+  border-top-width:5px;
+  border-bottom-width:2px;
+  transform:translateY(6px);
+  box-shadow:
+    0 1px 2px rgba(0,0,0,0.2),
+    inset 0 1px 0 rgba(255,255,255,0.1);
+}
+.keycap-sm { font-size:11px; padding:8px 20px; }
+.keycap-lg { font-size:12px; padding:14px 38px; }
 .keycap-ico {
   font-size:14px; line-height:1; opacity:0.6;
 }
