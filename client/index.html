@@ -1165,7 +1165,7 @@ body:hover #cursor-glow {
       var e2 = Math.min(Math.max((p - 0.15) / 0.55, 0), 1);
       var zoomEased = e2 < 0.5 ? 2*e2*e2 : 1 - Math.pow(-2*e2+2,2)/2;
 
-      var scale = 1 + zoomEased * 8;
+      var scale = 1 + zoomEased * 4.5;
       var tx = driftX * slideEased;
       var ty = driftY * slideEased;
 
@@ -1186,6 +1186,19 @@ body:hover #cursor-glow {
         }, 300);
       }
 
+    }, { passive: true });
+
+    window.addEventListener('scroll', function() {
+      if (zoomOv.dataset.glitched && window.scrollY === 0) {
+        delete zoomOv.dataset.glitched;
+        zoomOv.classList.remove('glitch-flash');
+        zoomOv.style.opacity = '0';
+        spacer.style.display = '';
+        scene.style.transform = '';
+        heroLeft.style.opacity = '1';
+        heroLeft.style.pointerEvents = '';
+        window.scrollTo(0, 0);
+      }
     }, { passive: true });
   }
 
@@ -1242,6 +1255,22 @@ body:hover #cursor-glow {
       }
     });
   });
+
+  var logo = document.querySelector('.nav-logo');
+  if (logo) {
+    logo.addEventListener('click', function(e) {
+      e.preventDefault();
+      var ov = document.getElementById('zoom-overlay');
+      var sp = document.getElementById('hero-spacer');
+      if (ov && ov.dataset.glitched && sp) {
+        delete ov.dataset.glitched;
+        ov.classList.remove('glitch-flash');
+        ov.style.opacity = '0';
+        sp.style.display = '';
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  }
 })();
 </script>
 </body>
