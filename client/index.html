@@ -1107,15 +1107,18 @@ body:hover #cursor-glow {
 
       var imgH = scene.offsetHeight;
       var imgW = scene.offsetWidth;
-      var screenCX = imgW * 0.50;
-      var screenCY = imgH * 0.34;
-      var sceneCX  = imgW / 2;
-      var sceneCY  = imgH / 2;
 
-      var tx = (sceneCX - screenCX) * zoomEased;
+      var viewW = window.innerWidth;
+      var sceneRect = scene.getBoundingClientRect();
+      var sceneMidX = sceneRect.left + sceneRect.width / 2;
+      var viewMidX = viewW / 2;
+      var shiftX = (viewMidX - sceneMidX) * zoomEased;
+
+      var screenCY = imgH * 0.34;
+      var sceneCY  = imgH / 2;
       var ty = (sceneCY - screenCY) * zoomEased;
 
-      scene.style.transform = 'translate(' + tx + 'px, ' + ty + 'px) scale(' + scale + ')';
+      scene.style.transform = 'translate(' + shiftX + 'px, ' + ty + 'px) scale(' + scale + ')';
       scene.style.transformOrigin = '50% 34%';
 
       var textFade = Math.min(p * 5, 1);
