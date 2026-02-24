@@ -68,39 +68,48 @@ nav {
   letter-spacing:0.08em; text-transform:uppercase; transition:color .2s;
 }
 .nav-links a:hover { color:var(--neon); }
-.nav-cta {
-  font-size:11px; font-weight:500; padding:8px 20px;
-  background:var(--neon); color:var(--void);
-  border:none; border-radius:6px;
-  letter-spacing:0.06em; text-transform:uppercase;
-  display:flex; align-items:center; gap:8px;
-  cursor:pointer;
+.keycap {
+  font-family:'DM Mono',monospace; font-weight:500;
+  letter-spacing:0.1em; text-transform:uppercase;
+  background:linear-gradient(180deg, #4dff33 0%, #30d910 100%);
+  color:#0a1a00;
+  border:none; cursor:pointer; text-decoration:none;
+  display:inline-flex; align-items:center; gap:10px;
+  position:relative;
+  border-radius:10px;
   box-shadow:
-    0 4px 0 0 #1a8a00,
-    0 5px 0 0 rgba(0,0,0,0.3),
-    inset 0 1px 0 rgba(255,255,255,0.3);
+    inset 0 2px 0 rgba(255,255,255,0.4),
+    inset 0 -2px 4px rgba(0,0,0,0.08),
+    0 8px 0 0 #1a7a00,
+    0 9px 0 0 #0f5500,
+    0 12px 8px rgba(0,0,0,0.4);
   transform:translateY(0);
   transition:all 80ms ease;
 }
-.nav-cta:hover {
-  background:#4dff33;
+.keycap:hover {
+  background:linear-gradient(180deg, #5fff44 0%, #39e618 100%);
   box-shadow:
-    0 2px 0 0 #1a8a00,
-    0 3px 0 0 rgba(0,0,0,0.3),
-    inset 0 1px 0 rgba(255,255,255,0.3);
-  transform:translateY(2px);
-}
-.nav-cta:active {
-  box-shadow:
-    0 1px 0 0 #1a8a00,
-    0 2px 0 0 rgba(0,0,0,0.3),
-    inset 0 1px 0 rgba(255,255,255,0.2);
+    inset 0 2px 0 rgba(255,255,255,0.4),
+    inset 0 -2px 4px rgba(0,0,0,0.08),
+    0 5px 0 0 #1a7a00,
+    0 6px 0 0 #0f5500,
+    0 8px 6px rgba(0,0,0,0.35);
   transform:translateY(3px);
 }
-.nav-cta .nav-arrow {
-  display:inline-block; transition:transform .2s;
+.keycap:active {
+  box-shadow:
+    inset 0 2px 0 rgba(255,255,255,0.25),
+    inset 0 -1px 2px rgba(0,0,0,0.1),
+    0 2px 0 0 #1a7a00,
+    0 3px 0 0 #0f5500,
+    0 4px 4px rgba(0,0,0,0.3);
+  transform:translateY(6px);
 }
-.nav-cta:hover .nav-arrow { transform:translateX(3px); }
+.keycap-sm { font-size:11px; padding:10px 22px; }
+.keycap-lg { font-size:12px; padding:18px 40px; }
+.keycap-ico {
+  font-size:14px; line-height:1; opacity:0.7;
+}
 
 /* ── HERO ──────────────────────────── */
 #hero {
@@ -143,34 +152,6 @@ nav {
 }
 .hero-btns {
   display:flex; align-items:center; gap:24px; margin-bottom:56px;
-}
-.btn-p {
-  font-family:'DM Mono',monospace; font-size:12px; font-weight:500;
-  letter-spacing:0.1em; text-transform:uppercase;
-  padding:16px 36px; background:var(--neon); color:var(--void);
-  border:none; border-radius:8px; cursor:pointer;
-  display:inline-flex; align-items:center; gap:10px;
-  box-shadow:
-    0 6px 0 0 #1a8a00,
-    0 7px 0 0 rgba(0,0,0,0.3),
-    inset 0 1px 0 rgba(255,255,255,0.35);
-  transform:translateY(0);
-  transition:all 80ms ease;
-}
-.btn-p:hover {
-  background:#4dff33;
-  box-shadow:
-    0 4px 0 0 #1a8a00,
-    0 5px 0 0 rgba(0,0,0,0.3),
-    inset 0 1px 0 rgba(255,255,255,0.35);
-  transform:translateY(2px);
-}
-.btn-p:active {
-  box-shadow:
-    0 1px 0 0 #1a8a00,
-    0 2px 0 0 rgba(0,0,0,0.3),
-    inset 0 1px 0 rgba(255,255,255,0.2);
-  transform:translateY(5px);
 }
 .btn-s {
   font-family:'DM Mono',monospace; font-size:11px; font-weight:400;
@@ -637,34 +618,6 @@ nav {
 .cta-body {
   font-size:14px; color:var(--ink-mid); line-height:1.8; margin-bottom:44px;
 }
-.cta-btn {
-  font-family:'DM Mono',monospace; font-size:12px; font-weight:500;
-  letter-spacing:0.1em; text-transform:uppercase; padding:16px 48px;
-  background:var(--neon); color:var(--void);
-  display:inline-flex; align-items:center; gap:10px;
-  border:none; border-radius:8px; cursor:pointer;
-  box-shadow:
-    0 6px 0 0 #1a8a00,
-    0 7px 0 0 rgba(0,0,0,0.3),
-    inset 0 1px 0 rgba(255,255,255,0.35);
-  transform:translateY(0);
-  transition:all 80ms ease;
-}
-.cta-btn:hover {
-  background:#4dff33;
-  box-shadow:
-    0 4px 0 0 #1a8a00,
-    0 5px 0 0 rgba(0,0,0,0.3),
-    inset 0 1px 0 rgba(255,255,255,0.35);
-  transform:translateY(2px);
-}
-.cta-btn:active {
-  box-shadow:
-    0 1px 0 0 #1a8a00,
-    0 2px 0 0 rgba(0,0,0,0.3),
-    inset 0 1px 0 rgba(255,255,255,0.2);
-  transform:translateY(5px);
-}
 .cta-note {
   font-size:9px; color:var(--ink-dim); letter-spacing:0.1em; margin-top:18px;
 }
@@ -774,16 +727,6 @@ nav.scrolled {
   opacity:1;
 }
 
-/* ── CTA BUTTON ARROW ──────────────── */
-.btn-arrow {
-  display:inline-block;
-  transition:transform 0.2s ease;
-  margin-left:8px;
-}
-.cta-btn:hover .btn-arrow,
-.btn-p:hover .btn-arrow {
-  transform:translateX(5px);
-}
 
 /* ── CURSOR GLOW ───────────────────── */
 #cursor-glow {
@@ -834,7 +777,7 @@ body:hover #cursor-glow {
     <li><a href="#for-who">Who It's For</a></li>
     <li><a href="#about">About</a></li>
   </ul>
-  <a class="nav-cta" href="#cta" data-testid="link-book-call">Schedule a Call <span class="nav-arrow">&rsaquo;</span></a>
+  <a class="keycap keycap-sm" href="#cta" data-testid="link-book-call"><span class="keycap-ico">&#9783;</span> Schedule a Call</a>
 </nav>
 
 <div id="root"></div>
@@ -851,7 +794,7 @@ body:hover #cursor-glow {
       </h1>
       <p class="hero-desc">Automated ops. Automated presence. One studio built specifically for Insurance &amp; Logistics operators who are ready to scale.</p>
       <div class="hero-btns">
-        <a href="#cta" class="btn-p" data-testid="button-book-call">Book a Free Call <span class="btn-arrow">&rsaquo;</span></a>
+        <a href="#cta" class="keycap keycap-lg" data-testid="button-book-call"><span class="keycap-ico">&#9783;</span> Book a Free Call</a>
         <a href="#system" class="btn-s" data-testid="link-how-it-works">See how it works</a>
       </div>
       <div class="hero-stats">
@@ -1207,7 +1150,7 @@ body:hover #cursor-glow {
     <div class="cta-lbl">Ready to Start</div>
     <h2 class="cta-hl">Let's build<br>your system.</h2>
     <p class="cta-body">One call. 30 minutes. We'll map your biggest operational bottleneck and show you exactly what the build looks like. No pitch deck. No pressure.</p>
-    <a href="mailto:hello@aktivate.ai" class="cta-btn" data-testid="button-book-call-cta">Book a Free Call <span class="btn-arrow">&rsaquo;</span></a>
+    <a href="mailto:hello@aktivate.ai" class="keycap keycap-lg" data-testid="button-book-call-cta"><span class="keycap-ico">&#9783;</span> Book a Free Call</a>
     <div class="cta-note">Typically responds within 24 hours</div>
   </div>
 </section>
