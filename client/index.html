@@ -158,32 +158,29 @@ nav {
   background:var(--off-white);
   opacity:0;
   pointer-events:none;
-  z-index:9999;
+  z-index:35;
 }
 #zoom-overlay.glitch-flash {
-  pointer-events:all;
+  pointer-events:none;
   animation: crtGlitch 1.2s ease-out forwards;
 }
 @keyframes crtGlitch {
-  0%   { opacity:1; background:#1e2830; }
-  4%   { background:#fff; transform:translateX(10px) skewX(-4deg); }
-  7%   { background:#1e2830; transform:translateX(-15px) skewX(5deg); }
-  10%  { background:#39ff14; transform:translateX(8px); }
-  13%  { background:#1e2830; transform:translateX(-10px) skewX(-3deg); }
-  17%  { background:#fff; transform:translateX(20px) skewX(4deg); }
-  20%  { background:#1e2830; transform:translateX(-8px); }
-  24%  { background:#39ff14; transform:translateX(12px) skewX(-5deg); }
-  27%  { background:#fff; transform:translateX(-18px) skewX(3deg); }
-  30%  { background:#1e2830; transform:translateX(6px); }
-  35%  { background:#fff; transform:translateX(-5px) skewX(-2deg); }
-  40%  { background:#1e2830; transform:translateX(8px) skewX(2deg); }
-  45%  { background:#fff; transform:translateX(-4px); }
-  50%  { background:var(--off-white); transform:translateX(3px) skewX(-1deg); }
-  55%  { background:#fff; transform:translateX(-3px); }
-  60%  { background:var(--off-white); transform:translateX(2px); }
-  70%  { background:var(--off-white); transform:translateX(-1px); }
+  0%   { background:#1e2830; transform:none; }
+  5%   { background:#fff; transform:translateX(10px) skewX(-4deg); }
+  8%   { background:#1e2830; transform:translateX(-15px) skewX(5deg); }
+  12%  { background:#39ff14; transform:translateX(8px); }
+  15%  { background:#1e2830; transform:translateX(-10px) skewX(-3deg); }
+  20%  { background:#fff; transform:translateX(20px) skewX(4deg); }
+  24%  { background:#1e2830; transform:translateX(-8px); }
+  28%  { background:#39ff14; transform:translateX(12px) skewX(-5deg); }
+  32%  { background:#fff; transform:translateX(-18px) skewX(3deg); }
+  36%  { background:#1e2830; transform:translateX(6px); }
+  42%  { background:#fff; transform:translateX(-5px) skewX(-2deg); }
+  48%  { background:var(--off-white); transform:translateX(3px); }
+  55%  { background:#fff; transform:translateX(-2px); }
+  65%  { background:var(--off-white); transform:translateX(1px); }
   80%  { background:var(--off-white); transform:none; }
-  100% { opacity:0; transform:none; background:var(--off-white); }
+  100% { background:var(--off-white); transform:none; }
 }
 #zoom-overlay.glitch-flash::before {
   content:'';
@@ -1134,7 +1131,7 @@ body:hover #cursor-glow {
   var zoomOv    = document.getElementById('zoom-overlay');
   var isMobile  = window.innerWidth <= 960;
 
-  var transitioned = false;
+  var glitchFired = false;
 
   if (!isMobile && spacer && scene && heroLeft && sticky && zoomOv) {
     var driftX = 0;
@@ -1155,11 +1152,13 @@ body:hover #cursor-glow {
     if (imacImg.complete) { measure(); } else { imacImg.addEventListener('load', measure); }
 
     window.addEventListener('scroll', function() {
-      if (!measured || transitioned) return;
+      if (!measured) return;
       var rect    = spacer.getBoundingClientRect();
       var scrolled = -rect.top;
       var total   = rect.height - window.innerHeight;
       var p       = Math.min(Math.max(scrolled / total, 0), 1);
+
+      var pastSpacer = rect.bottom < 0;
 
       var e1 = Math.min(Math.max(p / 0.35, 0), 1);
       var slideEased = e1 < 0.5 ? 2*e1*e1 : 1 - Math.pow(-2*e1+2,2)/2;
@@ -1178,33 +1177,26 @@ body:hover #cursor-glow {
       heroLeft.style.opacity = 1 - textFade;
       heroLeft.style.pointerEvents = textFade > 0.1 ? 'none' : 'auto';
 
-      var glitchTrigger = zoomEased >= 0.95;
-      if (glitchTrigger && !transitioned) {
-        transitioned = true;
+      if (pastSpacer) {
+        zoomOv.style.opacity = '0';
+        zoomOv.style.pointerEvents = 'none';
+      } else {
+        var overlayFade = Math.min(Math.max((zoomEased - 0.85) / 0.15, 0), 1);
+        zoomOv.style.opacity = overlayFade;
+      }
+
+      if (zoomEased >= 0.92 && !glitchFired) {
+        glitchFired = true;
         zoomOv.classList.add('glitch-flash');
-        setTimeout(function() {
-          spacer.style.display = 'none';
-          window.scrollTo(0, 0);
-        }, 300);
+      }
+
+      if (zoomEased < 0.8 && glitchFired) {
+        glitchFired = false;
+        zoomOv.classList.remove('glitch-flash');
       }
 
     }, { passive: true });
   }
-
-  function restoreHero() {
-    if (!transitioned) return;
-    transitioned = false;
-    var ov = document.getElementById('zoom-overlay');
-    var sp = document.getElementById('hero-spacer');
-    var sc = document.getElementById('imac-scene');
-    var hl = document.getElementById('hero-left');
-    if (ov) { ov.classList.remove('glitch-flash'); ov.style.opacity = '0'; }
-    if (sp) { sp.style.display = ''; }
-    if (sc) { sc.style.transform = ''; }
-    if (hl) { hl.style.opacity = '1'; hl.style.pointerEvents = ''; }
-    window.scrollTo(0, 0);
-  }
-  window.restoreHero = restoreHero;
 
   var revealEls = document.querySelectorAll('.reveal, .reveal-group');
   var revealObs = new IntersectionObserver(function(entries) {
@@ -1254,8 +1246,7 @@ body:hover #cursor-glow {
     logo.addEventListener('click', function(e) {
       e.preventDefault();
       e.stopPropagation();
-      if (window.restoreHero) window.restoreHero();
-      else window.scrollTo({ top: 0, behavior: 'smooth' });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     });
   }
 
