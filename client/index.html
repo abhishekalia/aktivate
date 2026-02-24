@@ -1137,6 +1137,12 @@ body:hover #cursor-glow {
       var overlayP = Math.max(0, (zoomEased - 0.45) / 0.25);
       zoomOv.style.opacity = Math.min(overlayP, 1);
 
+      if (overlayP >= 1) {
+        sticky.style.pointerEvents = 'none';
+      } else {
+        sticky.style.pointerEvents = '';
+      }
+
     }, { passive: true });
   }
 
