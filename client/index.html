@@ -70,10 +70,16 @@ nav {
 .nav-links a:hover { color:var(--neon); }
 .nav-cta {
   font-size:11px; font-weight:500; padding:9px 22px;
-  background:var(--neon); color:var(--void);
-  letter-spacing:0.06em; text-transform:uppercase; transition:all .2s;
+  background:transparent; color:var(--ink);
+  border:1px solid var(--border-h);
+  letter-spacing:0.06em; text-transform:uppercase; transition:all .25s;
+  display:flex; align-items:center; gap:8px;
 }
-.nav-cta:hover { background:#4dff33; }
+.nav-cta:hover { border-color:var(--neon); color:var(--neon); }
+.nav-cta .nav-arrow {
+  display:inline-block; transition:transform .2s;
+}
+.nav-cta:hover .nav-arrow { transform:translateX(3px); }
 
 /* ── HERO ──────────────────────────── */
 #hero {
@@ -765,7 +771,7 @@ body:hover #cursor-glow {
     <li><a href="#for-who">Who It's For</a></li>
     <li><a href="#about">About</a></li>
   </ul>
-  <a class="nav-cta" href="#cta" data-testid="link-book-call">Book a Call</a>
+  <a class="nav-cta" href="#cta" data-testid="link-book-call">Schedule a Call <span class="nav-arrow">&rsaquo;</span></a>
 </nav>
 
 <div id="root"></div>
