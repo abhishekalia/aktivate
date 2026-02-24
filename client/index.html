@@ -146,18 +146,9 @@ nav {
   margin:0 auto;
   will-change:transform;
 }
-#imac-side, #imac-front {
+#imac-front {
   width:100%;
   display:block;
-}
-#imac-side {
-  position:relative;
-  opacity:1;
-}
-#imac-front {
-  position:absolute;
-  top:0; left:0;
-  opacity:0;
 }
 #screen-overlay {
   position:absolute;
@@ -820,8 +811,7 @@ body:hover #cursor-glow {
     </div>
 
     <div id="imac-scene" data-testid="monitor-container">
-      <img id="imac-side" src="/imac-side.png" alt="iMac G3 Side View" data-testid="imac-side">
-      <img id="imac-front" src="/imac-front.png" alt="iMac G3 Front View" data-testid="imac-front">
+      <img id="imac-front" src="/imac-front.png" alt="iMac G3" data-testid="imac-front">
       <div id="screen-overlay">
         <div class="screen-ui">
           <div class="sc-label">OPS DASHBOARD</div>
@@ -1152,32 +1142,22 @@ body:hover #cursor-glow {
 (function() {
   var spacer   = document.getElementById('hero-spacer');
   var sticky   = document.getElementById('hero-sticky');
-  var side     = document.getElementById('imac-side');
-  var front    = document.getElementById('imac-front');
   var screenOv = document.getElementById('screen-overlay');
   var scene    = document.getElementById('imac-scene');
   var heroLeft = document.getElementById('hero-left');
   var isMobile = window.innerWidth <= 960;
 
-  if (!isMobile && spacer && side && front && screenOv && scene && heroLeft && sticky) {
+  if (!isMobile && spacer && screenOv && scene && heroLeft && sticky) {
     window.addEventListener('scroll', function() {
       var rect    = spacer.getBoundingClientRect();
       var scrolled = -rect.top;
       var total   = rect.height - window.innerHeight;
       var p       = Math.min(Math.max(scrolled / total, 0), 1);
 
-      var crossfade = Math.min(Math.max((p - 0.05) / 0.3, 0), 1);
-      side.style.opacity  = 1 - crossfade;
-      front.style.opacity = crossfade;
-
-      var sideX = crossfade * -30;
-      side.style.transform  = 'translateX(' + sideX + 'px)';
-      front.style.transform = 'translateX(' + ((1 - crossfade) * 30) + 'px)';
-
-      var screenFade = Math.min(Math.max((p - 0.35) / 0.2, 0), 1);
+      var screenFade = Math.min(Math.max((p - 0.1) / 0.2, 0), 1);
       screenOv.style.opacity = screenFade;
 
-      var zoomP = Math.min(Math.max((p - 0.55) / 0.45, 0), 1);
+      var zoomP = Math.min(Math.max((p - 0.35) / 0.65, 0), 1);
       var zoomEased = zoomP < 0.5
         ? 2 * zoomP * zoomP
         : 1 - Math.pow(-2 * zoomP + 2, 2) / 2;
