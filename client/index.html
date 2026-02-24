@@ -443,40 +443,41 @@ nav {
 /* ── RESULTS ───────────────────────── */
 #results { padding:120px 0; }
 .res-grid {
-  display:grid; grid-template-columns:1fr 1fr; gap:1px; margin-top:56px;
+  display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-top:56px;
 }
 .cs {
   border:1px solid var(--border-light); background:var(--card-light);
-  padding:40px; transition:all .3s;
+  padding:40px; transition:all .3s; display:flex; flex-direction:column;
 }
 .cs:hover { background:var(--card-light-h); border-color:var(--border-light-h); }
 .cs-tag {
   font-size:9px; color:var(--purple); letter-spacing:0.15em;
   text-transform:uppercase; padding:4px 10px;
   border:1px solid rgba(139,92,246,0.15); display:inline-block;
-  margin-bottom:24px;
+  margin-bottom:28px;
 }
 .cs-flow {
-  display:grid; grid-template-columns:1fr 24px 1.4fr;
-  gap:10px; align-items:stretch; margin-bottom:22px;
+  display:grid; grid-template-columns:1fr 1.5fr;
+  gap:16px; align-items:stretch; margin-bottom:28px; flex:1;
 }
-.cs-box { padding:14px; border:1px solid; }
-.cs-box.before { border-color:rgba(255,77,77,0.15); background:rgba(255,77,77,0.04); }
-.cs-box.after { border-color:rgba(30,120,10,0.15); background:rgba(30,120,10,0.04); height:70%; align-self:center; }
-.cs-bl { font-size:8px; letter-spacing:0.15em; text-transform:uppercase; margin-bottom:6px; }
-.cs-box.before .cs-bl { color:rgba(200,50,50,0.6); }
-.cs-box.after .cs-bl { color:rgba(30,120,10,0.6); }
-.cs-bt { font-size:11px; color:var(--ink-mid); line-height:1.5; }
-.cs-ar { text-align:center; color:var(--ink-dim); font-size:14px; }
+.cs-box { padding:18px; border:1px solid; border-radius:4px; }
+.cs-box.before { border-color:rgba(255,77,77,0.18); background:rgba(255,77,77,0.04); }
+.cs-box.after { border-color:rgba(57,255,20,0.2); background:rgba(30,120,10,0.05); }
+.cs-bl { font-size:8px; letter-spacing:0.15em; text-transform:uppercase; margin-bottom:8px; font-weight:700; }
+.cs-box.before .cs-bl { color:rgba(200,50,50,0.7); }
+.cs-box.after .cs-bl { color:rgba(57,255,20,0.7); }
+.cs-bt { font-size:11px; color:var(--ink-mid); line-height:1.6; }
+.cs-box.after .cs-bt { color:var(--ink); }
 .cs-result {
-  display:flex; align-items:center; gap:16px;
-  padding-top:18px; border-top:1px solid var(--border-light);
+  display:flex; align-items:center; gap:20px;
+  padding-top:22px; border-top:1px solid var(--border-light);
 }
 .cs-big {
-  font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:40px;
-  color:var(--ink); line-height:1; letter-spacing:-0.03em;
+  font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:48px;
+  color:var(--neon); line-height:1; letter-spacing:-0.03em;
+  text-shadow:0 0 20px rgba(57,255,20,0.2);
 }
-.cs-txt { font-size:11px; color:var(--ink-mid); line-height:1.5; }
+.cs-txt { font-size:11px; color:var(--ink-mid); line-height:1.5; max-width:240px; }
 
 /* ── WHO IT'S FOR ──────────────────── */
 #for-who { padding:120px 0; }
@@ -992,7 +993,7 @@ body:hover #cursor-glow {
             <div class="cs-bl">Before</div>
             <div class="cs-bt">Team manually processing driver docs across 3 platforms. COIs chased by email. Duplicate data entry daily.</div>
           </div>
-          <div class="cs-ar">&rarr;</div>
+
           <div class="cs-box after">
             <div class="cs-bl">After</div>
             <div class="cs-bt">Automated intake, validation &amp; routing. Zero manual entry. Real-time dashboards. Team on client work.</div>
@@ -1010,7 +1011,7 @@ body:hover #cursor-glow {
             <div class="cs-bl">Before</div>
             <div class="cs-bt">Founder too busy to record. Zero social presence. Brand invisible outside referral network.</div>
           </div>
-          <div class="cs-ar">&rarr;</div>
+
           <div class="cs-box after">
             <div class="cs-bl">After</div>
             <div class="cs-bt">AI avatar pipeline producing 3&ndash;5 pieces/week. Automated scheduling. Inbound leads in 60 days.</div>
