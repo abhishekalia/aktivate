@@ -166,7 +166,6 @@ nav {
   overflow:hidden;
   border-radius:8px;
 }
-.screen-content,
 .crt-scanlines,
 .crt-vignette,
 .crt-roll,
@@ -174,11 +173,6 @@ nav {
 .crt-glass {
   position:absolute;
   inset:0;
-}
-.screen-content {
-  z-index:1;
-  background:#f0ece4;
-  overflow:hidden;
 }
 .crt-scanlines {
   z-index:5;
@@ -861,7 +855,6 @@ body:hover #cursor-glow {
       <div id="imac-inner">
         <img id="imac-front" src="/imac-front.png" alt="iMac G3" data-testid="imac-front">
         <div id="screen-overlay">
-          <div class="screen-content"></div>
           <div class="crt-scanlines"></div>
           <div class="crt-vignette"></div>
           <div class="crt-roll"></div>
