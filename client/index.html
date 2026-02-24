@@ -150,57 +150,13 @@ nav {
   width:100%;
   display:block;
 }
-#screen-overlay {
+#zoom-overlay {
   position:absolute;
-  top:7%; left:11%; width:78%; height:58%;
+  inset:0;
+  background:var(--off-white);
   opacity:0;
-  overflow:hidden;
-  border-radius:8px;
-  background:#0a1a0f;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-.screen-ui {
-  width:100%; height:100%;
-  padding:12% 8%;
-  display:flex; flex-direction:column;
-  justify-content:space-between;
-  background:#0a1a0f;
-}
-.sc-label, .sc-status {
-  font-family:'DM Mono',monospace;
-  color:rgba(80,200,100,0.5);
-  letter-spacing:0.2em;
-  text-transform:uppercase;
-}
-.sc-label { font-size:clamp(6px, 1.2vw, 11px); }
-.sc-status {
-  font-size:clamp(5px, 1vw, 9px);
-  color:rgba(80,200,100,0.35);
-  letter-spacing:0.25em;
-}
-.sc-bars {
-  display:flex; align-items:flex-end;
-  gap:4%; height:55%;
-}
-.sc-bars .bar {
-  flex:1;
-  background:#3a9a50;
-  border-radius:2px 2px 0 0;
-  box-shadow:0 0 8px rgba(60,180,80,0.4);
-  animation:bar-pulse 3s ease-in-out infinite;
-}
-.sc-bars .bar:nth-child(1){animation-delay:0s;}
-.sc-bars .bar:nth-child(2){animation-delay:0.3s;}
-.sc-bars .bar:nth-child(3){animation-delay:0.6s;}
-.sc-bars .bar:nth-child(4){animation-delay:0.9s;}
-.sc-bars .bar:nth-child(5){animation-delay:1.2s;}
-.sc-bars .bar:nth-child(6){animation-delay:1.5s;}
-.sc-bars .bar:nth-child(7){animation-delay:1.8s;}
-@keyframes bar-pulse {
-  0%,100%{opacity:0.7;transform:scaleY(1);}
-  50%{opacity:1;transform:scaleY(0.5);}
+  pointer-events:none;
+  z-index:15;
 }
 #main-content {
   position:relative;
@@ -812,22 +768,8 @@ body:hover #cursor-glow {
 
     <div id="imac-scene" data-testid="monitor-container">
       <img id="imac-front" src="/imac-front.png" alt="iMac G3" data-testid="imac-front">
-      <div id="screen-overlay">
-        <div class="screen-ui">
-          <div class="sc-label">OPS DASHBOARD</div>
-          <div class="sc-bars">
-            <div class="bar" style="height:40%"></div>
-            <div class="bar" style="height:65%"></div>
-            <div class="bar" style="height:50%"></div>
-            <div class="bar" style="height:80%"></div>
-            <div class="bar" style="height:60%"></div>
-            <div class="bar" style="height:90%"></div>
-            <div class="bar" style="height:70%"></div>
-          </div>
-          <div class="sc-status">PIPELINE &middot; ACTIVE</div>
-        </div>
-      </div>
     </div>
+    <div id="zoom-overlay"></div>
   </div>
 </div>
 
@@ -1140,24 +1082,21 @@ body:hover #cursor-glow {
 
 <script>
 (function() {
-  var spacer   = document.getElementById('hero-spacer');
-  var sticky   = document.getElementById('hero-sticky');
-  var screenOv = document.getElementById('screen-overlay');
-  var scene    = document.getElementById('imac-scene');
-  var heroLeft = document.getElementById('hero-left');
-  var isMobile = window.innerWidth <= 960;
+  var spacer    = document.getElementById('hero-spacer');
+  var sticky    = document.getElementById('hero-sticky');
+  var scene     = document.getElementById('imac-scene');
+  var heroLeft  = document.getElementById('hero-left');
+  var zoomOv    = document.getElementById('zoom-overlay');
+  var isMobile  = window.innerWidth <= 960;
 
-  if (!isMobile && spacer && screenOv && scene && heroLeft && sticky) {
+  if (!isMobile && spacer && scene && heroLeft && sticky && zoomOv) {
     window.addEventListener('scroll', function() {
       var rect    = spacer.getBoundingClientRect();
       var scrolled = -rect.top;
       var total   = rect.height - window.innerHeight;
       var p       = Math.min(Math.max(scrolled / total, 0), 1);
 
-      var screenFade = Math.min(Math.max((p - 0.1) / 0.2, 0), 1);
-      screenOv.style.opacity = screenFade;
-
-      var zoomP = Math.min(Math.max((p - 0.35) / 0.65, 0), 1);
+      var zoomP = Math.min(Math.max((p - 0.15) / 0.85, 0), 1);
       var zoomEased = zoomP < 0.5
         ? 2 * zoomP * zoomP
         : 1 - Math.pow(-2 * zoomP + 2, 2) / 2;
@@ -1177,14 +1116,11 @@ body:hover #cursor-glow {
       scene.style.transform = 'translate(' + tx + 'px, ' + ty + 'px) scale(' + scale + ')';
       scene.style.transformOrigin = '50% 36%';
 
-      heroLeft.style.opacity = 1 - Math.min(zoomEased * 2, 1);
-      heroLeft.style.pointerEvents = zoomEased > 0.1 ? 'none' : 'auto';
+      heroLeft.style.opacity = 1 - Math.min(zoomEased * 3, 1);
+      heroLeft.style.pointerEvents = zoomEased > 0.05 ? 'none' : 'auto';
 
-      var overlayP = Math.max(0, (zoomEased - 0.6) / 0.4);
-      sticky.style.setProperty('--zoom-bg', 'rgba(240,236,228,' + overlayP + ')');
-      sticky.style.background = overlayP > 0
-        ? 'rgba(240,236,228,' + overlayP + ')'
-        : 'linear-gradient(150deg, #9ec0d4 0%, #8eb5cc 50%, #7aa4bc 100%)';
+      var overlayP = Math.max(0, (zoomEased - 0.55) / 0.45);
+      zoomOv.style.opacity = overlayP;
 
     }, { passive: true });
   }
