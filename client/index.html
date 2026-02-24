@@ -1188,40 +1188,58 @@ body:hover #cursor-glow {
 
 <script>
 (function() {
-  var spacer    = document.getElementById('hero-spacer');
-  var sticky    = document.getElementById('hero-sticky');
-  var scene     = document.getElementById('imac-scene');
-  var inner     = document.getElementById('imac-inner');
-  var heroLeft  = document.getElementById('hero-left');
-  var zoomOv    = document.getElementById('zoom-overlay');
-  var isMobile  = window.innerWidth <= 960;
+  var spacer   = document.getElementById('hero-spacer');
+  var sticky   = document.getElementById('hero-sticky');
+  var scene    = document.getElementById('imac-scene');
+  var heroLeft = document.getElementById('hero-left');
+  var zoomOv   = document.getElementById('zoom-overlay');
+  var overlay  = document.getElementById('screen-overlay');
+  var img      = document.getElementById('imac-front');
+  var isMobile = window.innerWidth <= 960;
 
-  if (!isMobile && spacer && scene && heroLeft && sticky && zoomOv && inner) {
-    var driftX = 0;
-    var driftY = 0;
-    var measured = false;
+  var SCREEN_TOP    = 0.075;
+  var SCREEN_LEFT   = 0.125;
+  var SCREEN_WIDTH  = 0.75;
+  var SCREEN_HEIGHT = 0.525;
 
-    function measure() {
-      scene.style.transform = 'none';
-      var r = inner.getBoundingClientRect();
-      var cx = r.left + r.width * 0.5;
-      var cy = r.top + r.height * 0.34;
-      driftX = window.innerWidth / 2 - cx;
-      driftY = window.innerHeight / 2 - cy;
-      measured = true;
-    }
+  function positionOverlay() {
+    var r = img.getBoundingClientRect();
+    var sceneR = scene.getBoundingClientRect();
+    var imgOffsetLeft = r.left - sceneR.left;
+    var imgOffsetTop  = r.top  - sceneR.top;
+    overlay.style.position = 'absolute';
+    overlay.style.left     = (imgOffsetLeft + r.width  * SCREEN_LEFT)   + 'px';
+    overlay.style.top      = (imgOffsetTop  + r.height * SCREEN_TOP)    + 'px';
+    overlay.style.width    = (r.width  * SCREEN_WIDTH)  + 'px';
+    overlay.style.height   = (r.height * SCREEN_HEIGHT) + 'px';
+  }
 
-    var imacImg = document.getElementById('imac-front');
-    if (imacImg.complete) { measure(); } else { imacImg.addEventListener('load', measure); }
+  var driftX = 0, driftY = 0, measured = false;
 
+  function measure() {
+    scene.style.transform = 'none';
+    positionOverlay();
+    var r  = img.getBoundingClientRect();
+    var cx = r.left + r.width  * 0.5;
+    var cy = r.top  + r.height * 0.34;
+    driftX = window.innerWidth  / 2 - cx;
+    driftY = window.innerHeight / 2 - cy;
+    measured = true;
+  }
+
+  if (img.complete) { measure(); }
+  else { img.addEventListener('load', measure); }
+
+  window.addEventListener('resize', measure);
+
+  if (!isMobile && spacer && scene && heroLeft && sticky && zoomOv) {
     window.addEventListener('scroll', function() {
       if (!measured) return;
-      var rect    = spacer.getBoundingClientRect();
-      var scrolled = -rect.top;
-      var total   = rect.height - window.innerHeight;
-      var p       = Math.min(Math.max(scrolled / total, 0), 1);
 
-      var pastSpacer = rect.bottom < 0;
+      var rect     = spacer.getBoundingClientRect();
+      var scrolled = -rect.top;
+      var total    = rect.height - window.innerHeight;
+      var p        = Math.min(Math.max(scrolled / total, 0), 1);
 
       var e1 = Math.min(Math.max(p / 0.35, 0), 1);
       var slideEased = e1 < 0.5 ? 2*e1*e1 : 1 - Math.pow(-2*e1+2,2)/2;
@@ -1230,14 +1248,14 @@ body:hover #cursor-glow {
       var zoomEased = e2 < 0.5 ? 2*e2*e2 : 1 - Math.pow(-2*e2+2,2)/2;
 
       var scale = 1 + zoomEased * 3;
-      var tx = driftX * slideEased;
-      var ty = driftY * slideEased;
+      var tx    = driftX * slideEased;
+      var ty    = driftY * slideEased;
 
-      scene.style.transform = 'translate(' + tx + 'px, ' + ty + 'px) scale(' + scale + ')';
+      scene.style.transform       = 'translate(' + tx + 'px, ' + ty + 'px) scale(' + scale + ')';
       scene.style.transformOrigin = '50% 34%';
 
       var textFade = Math.min(p * 4, 1);
-      heroLeft.style.opacity = 1 - textFade;
+      heroLeft.style.opacity       = 1 - textFade;
       heroLeft.style.pointerEvents = textFade > 0.1 ? 'none' : 'auto';
 
       var overlayFade = Math.min(Math.max((zoomEased - 0.8) / 0.2, 0), 1);

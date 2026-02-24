@@ -1,0 +1,85 @@
+(function() {
+  var spacer   = document.getElementById('hero-spacer');
+  var sticky   = document.getElementById('hero-sticky');
+  var scene    = document.getElementById('imac-scene');
+  var heroLeft = document.getElementById('hero-left');
+  var zoomOv   = document.getElementById('zoom-overlay');
+  var overlay  = document.getElementById('screen-overlay');
+  var img      = document.getElementById('imac-front');
+  var isMobile = window.innerWidth <= 960;
+
+  // Screen area as % of the actual iMac front image
+  // These are calibrated to your specific imac-front.png
+  var SCREEN_TOP    = 0.075;  // 7.5% from top of image
+  var SCREEN_LEFT   = 0.125;  // 12.5% from left
+  var SCREEN_WIDTH  = 0.75;   // 75% of image width
+  var SCREEN_HEIGHT = 0.525;  // 52.5% of image height
+
+  function positionOverlay() {
+    // Get the image's actual rendered position and size
+    var r = img.getBoundingClientRect();
+    var sceneR = scene.getBoundingClientRect();
+
+    // Calculate pixel offsets relative to #imac-scene
+    var imgOffsetLeft = r.left - sceneR.left;
+    var imgOffsetTop  = r.top  - sceneR.top;
+
+    overlay.style.position = 'absolute';
+    overlay.style.left     = (imgOffsetLeft + r.width  * SCREEN_LEFT)   + 'px';
+    overlay.style.top      = (imgOffsetTop  + r.height * SCREEN_TOP)    + 'px';
+    overlay.style.width    = (r.width  * SCREEN_WIDTH)  + 'px';
+    overlay.style.height   = (r.height * SCREEN_HEIGHT) + 'px';
+  }
+
+  var driftX = 0, driftY = 0, measured = false;
+
+  function measure() {
+    scene.style.transform = 'none';
+    positionOverlay();
+    var r  = img.getBoundingClientRect();
+    var cx = r.left + r.width  * 0.5;
+    var cy = r.top  + r.height * 0.34;
+    driftX = window.innerWidth  / 2 - cx;
+    driftY = window.innerHeight / 2 - cy;
+    measured = true;
+  }
+
+  if (img.complete) { measure(); } 
+  else { img.addEventListener('load', measure); }
+  
+  window.addEventListener('resize', measure);
+
+  if (!isMobile && spacer && scene && heroLeft && sticky && zoomOv) {
+    window.addEventListener('scroll', function() {
+      if (!measured) return;
+
+      var rect     = spacer.getBoundingClientRect();
+      var scrolled = -rect.top;
+      var total    = rect.height - window.innerHeight;
+      var p        = Math.min(Math.max(scrolled / total, 0), 1);
+
+      var e1 = Math.min(Math.max(p / 0.35, 0), 1);
+      var slideEased = e1 < 0.5 ? 2*e1*e1 : 1 - Math.pow(-2*e1+2,2)/2;
+
+      var e2 = Math.min(Math.max((p - 0.15) / 0.55, 0), 1);
+      var zoomEased = e2 < 0.5 ? 2*e2*e2 : 1 - Math.pow(-2*e2+2,2)/2;
+
+      var scale = 1 + zoomEased * 3;
+      var tx    = driftX * slideEased;
+      var ty    = driftY * slideEased;
+
+      scene.style.transform       = 'translate(' + tx + 'px, ' + ty + 'px) scale(' + scale + ')';
+      scene.style.transformOrigin = '50% 34%';
+
+      var textFade = Math.min(p * 4, 1);
+      heroLeft.style.opacity       = 1 - textFade;
+      heroLeft.style.pointerEvents = textFade > 0.1 ? 'none' : 'auto';
+
+      var overlayFade = Math.min(Math.max((zoomEased - 0.8) / 0.2, 0), 1);
+      zoomOv.style.opacity = overlayFade;
+
+    }, { passive: true });
+  }
+
+  // ... rest of your existing JS (reveal, nav, accordion etc) stays the same
+})();
