@@ -144,53 +144,68 @@ nav {
 #imac-scene {
   position:relative;
   width:100%;
-  max-width:580px;
+  max-width:560px;
   margin:0 auto;
   will-change:transform;
-  overflow:visible;
 }
 #imac-front {
   width:100%;
+  height:auto;
   display:block;
+  position:relative;
+  z-index:1;
 }
 #screen-overlay {
   position:absolute;
-  top:8%;
-  left:13%;
-  width:74%;
-  height:54%;
-  overflow:hidden;
-  border-radius:6px;
   z-index:2;
+  overflow:hidden;
+  border-radius:10px;
+  top:7%;
+  left:12%;
+  width:76%;
+  height:52%;
+  outline:3px solid red;
+  background:rgba(255,0,0,0.15);
+}
+.screen-content,
+.crt-scanlines,
+.crt-vignette,
+.crt-roll,
+.crt-flicker,
+.crt-glass {
+  position:absolute;
+  inset:0;
+}
+.screen-content {
+  z-index:1;
   background:#f0ece4;
+  overflow:hidden;
 }
 .crt-scanlines {
-  position:absolute;
-  inset:0;
+  z-index:5;
+  pointer-events:none;
   background:repeating-linear-gradient(
     0deg,
-    rgba(0,0,0,0.018) 0px,
-    rgba(0,0,0,0.018) 1px,
+    rgba(0,0,0,0.055) 0px,
+    rgba(0,0,0,0.055) 1px,
     transparent 1px,
-    transparent 4px
+    transparent 3px
   );
-  pointer-events:none;
-  z-index:10;
 }
 .crt-vignette {
-  position:absolute;
-  inset:0;
+  z-index:6;
+  pointer-events:none;
   background:radial-gradient(ellipse at 50% 50%,
     transparent 60%,
     rgba(0,0,0,0.15) 100%
   );
-  pointer-events:none;
-  z-index:11;
 }
 .crt-roll {
-  position:absolute;
+  z-index:7;
+  pointer-events:none;
   left:0; right:0;
   height:18%;
+  inset:auto 0 auto 0;
   background:linear-gradient(
     180deg,
     transparent 0%,
@@ -199,8 +214,6 @@ nav {
     rgba(255,255,255,0.018) 60%,
     transparent 100%
   );
-  pointer-events:none;
-  z-index:13;
   animation:crt-roll 8s linear infinite;
 }
 @keyframes crt-roll {
@@ -208,10 +221,8 @@ nav {
   to   { top:-20%; }
 }
 .crt-flicker {
-  position:absolute;
-  inset:0;
+  z-index:8;
   pointer-events:none;
-  z-index:14;
   animation:crt-flicker 5s infinite;
 }
 @keyframes crt-flicker {
@@ -220,8 +231,8 @@ nav {
   92%  { opacity:0.97; }
 }
 .crt-glass {
-  position:absolute;
-  inset:0;
+  z-index:9;
+  pointer-events:none;
   background:linear-gradient(
     135deg,
     rgba(255,255,255,0.04) 0%,
@@ -229,8 +240,6 @@ nav {
     transparent 60%,
     rgba(255,255,255,0.02) 100%
   );
-  pointer-events:none;
-  z-index:15;
   border-radius:inherit;
 }
 #zoom-overlay {
@@ -852,6 +861,7 @@ body:hover #cursor-glow {
     <div id="imac-scene" data-testid="monitor-container">
       <img id="imac-front" src="/imac-front.png" alt="iMac G3" data-testid="imac-front">
       <div id="screen-overlay">
+        <div class="screen-content"></div>
         <div class="crt-scanlines"></div>
         <div class="crt-vignette"></div>
         <div class="crt-roll"></div>
