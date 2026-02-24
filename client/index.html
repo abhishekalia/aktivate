@@ -119,19 +119,63 @@ nav {
   font-size:14px; line-height:1; opacity:0.6;
 }
 
-/* ── HERO ──────────────────────────── */
-#hero {
-  min-height:100vh;
-  display:flex; align-items:center;
-  padding:100px 48px 80px;
-  position:relative; overflow:hidden;
+/* ── ZOOM PORTAL EFFECT ───────────── */
+#zoom-scene-spacer {
+  position:relative;
+  height:300vh;
   background:linear-gradient(150deg, #9ec0d4 0%, #8eb5cc 50%, #7aa4bc 100%);
 }
-.hero-inner {
-  display:grid; grid-template-columns:1fr 1fr;
-  gap:60px; align-items:center;
-  max-width:1200px; margin:0 auto; width:100%;
+#zoom-scene {
+  position:sticky;
+  top:0;
+  height:100vh;
+  overflow:hidden;
+  display:flex;
+  align-items:center;
+  justify-content:center;
 }
+#hero-text-overlay {
+  position:absolute;
+  z-index:10;
+  left:48px;
+  top:50%;
+  transform:translateY(-50%);
+  max-width:520px;
+  transition:opacity 0.1s linear;
+}
+#computer-wrap {
+  position:absolute;
+  top:50%;
+  left:60%;
+  transform:translate(-50%, -50%) scale(1);
+  transform-origin:center center;
+  will-change:transform;
+  z-index:5;
+}
+#computer-wrap .monitor-wrap {
+  position:relative;
+  width:420px;
+}
+#computer-wrap .monitor-img {
+  width:100%;
+  height:auto;
+  display:block;
+  filter:drop-shadow(0 24px 48px rgba(0,0,0,0.25));
+}
+#zoom-overlay {
+  position:absolute;
+  inset:0;
+  background:var(--off-white);
+  opacity:0;
+  pointer-events:none;
+  z-index:8;
+}
+#main-content {
+  position:relative;
+  z-index:20;
+}
+
+/* ── HERO TEXT ─────────────────────── */
 .hero-label {
   font-size:11px; font-weight:400; color:var(--ink);
   letter-spacing:0.2em; text-transform:uppercase;
@@ -184,22 +228,17 @@ nav {
   letter-spacing:0.14em; text-transform:uppercase; margin-top:6px;
 }
 
-/* ── HERO RIGHT: MONITOR ── */
-.hero-visual {
-  display:flex; justify-content:center; align-items:center;
-  position:relative;
-}
+/* ── MONITOR SCREEN ── */
 .monitor-wrap {
-  position:relative; width:100%; max-width:520px;
+  position:relative;
 }
 .monitor-img {
   width:100%; height:auto; display:block;
-  filter:drop-shadow(0 24px 48px rgba(0,0,0,0.5));
 }
 .screen-overlay {
   position:absolute;
-  top:20%; left:17%; width:52%; height:28%;
-  overflow:hidden; border-radius:6px;
+  top:11.5%; left:27%; width:42%; height:27%;
+  overflow:hidden; border-radius:4px;
   background:#080e06;
 }
 .screen-content {
@@ -298,8 +337,8 @@ nav {
   color:rgba(57,255,20,0.35); letter-spacing:0.15em; text-transform:uppercase;
 }
 .screen-scanlines {
-  position:absolute; top:20%; left:17%; width:52%; height:28%;
-  border-radius:6px; pointer-events:none;
+  position:absolute; top:11.5%; left:27%; width:42%; height:27%;
+  border-radius:4px; pointer-events:none;
   background:repeating-linear-gradient(
     0deg, transparent, transparent 1px,
     rgba(0,0,0,0.08) 1px, rgba(0,0,0,0.08) 2px
@@ -787,12 +826,29 @@ body:hover #cursor-glow {
 @media(max-width:960px) {
   nav { padding:0 20px; }
   .nav-links { display:none; }
-  #hero { padding:80px 20px 60px; }
-  .hero-inner { grid-template-columns:1fr; gap:40px; }
+  #hero-text-overlay {
+    position:relative;
+    left:auto; top:auto; transform:none;
+    padding:100px 20px 40px;
+    text-align:center;
+    max-width:100%;
+  }
+  #computer-wrap {
+    position:relative;
+    left:auto; top:auto;
+    transform:scale(1);
+    display:flex; justify-content:center;
+    padding:0 20px 40px;
+  }
+  #computer-wrap .monitor-wrap { width:300px; }
+  #zoom-scene {
+    flex-direction:column;
+    justify-content:flex-start;
+  }
+  #zoom-scene-spacer { height:100vh; }
   .hero-label, .hero-btns, .hero-stats { justify-content:center; }
   .hero-desc { margin:0 auto 40px; text-align:center; }
   .hero-headline { text-align:center; }
-  .monitor-wrap { max-width:360px; }
   .s-wrap, .sc-hdr { padding:0 20px; }
   .sc-rail { padding-left:20px; }
   .prob-grid, .pillars, .proc-steps, .res-grid,
@@ -823,9 +879,9 @@ body:hover #cursor-glow {
 
 <div id="cursor-glow"></div>
 
-<section id="hero">
-  <div class="hero-inner">
-    <div class="reveal-group" data-testid="hero-text">
+<div id="zoom-scene-spacer">
+  <div id="zoom-scene">
+    <div id="hero-text-overlay" data-testid="hero-text">
       <div class="hero-label">AI-Powered Growth Studio &middot; Insurance &amp; Logistics</div>
       <h1 class="hero-headline">
         Build the<br>Engine.<br>Build the <em>Face.</em>
@@ -851,9 +907,9 @@ body:hover #cursor-glow {
       </div>
     </div>
 
-    <div class="hero-visual">
+    <div id="computer-wrap">
       <div class="monitor-wrap" data-testid="monitor-container">
-        <img src="/retro-monitor.png" alt="Retro CRT Monitor" class="monitor-img" data-testid="monitor-img">
+        <img src="/retro-computer.png" alt="Retro Computer" class="monitor-img" data-testid="monitor-img">
         <div class="screen-overlay">
           <div class="screen-content">
             <div class="screen-reel">
@@ -899,8 +955,12 @@ body:hover #cursor-glow {
         <div class="screen-scanlines"></div>
       </div>
     </div>
+
+    <div id="zoom-overlay"></div>
   </div>
-</section>
+</div>
+
+<div id="main-content">
 
 <div class="ticker">
   <div class="ticker-inner">
@@ -1205,8 +1265,51 @@ body:hover #cursor-glow {
   <div class="f-copy">&copy; 2026 Aktivate.ai</div>
 </footer>
 
+</div>
+
 <script>
 (function() {
+  var spacer = document.getElementById('zoom-scene-spacer');
+  var wrap = document.getElementById('computer-wrap');
+  var overlay = document.getElementById('zoom-overlay');
+  var heroText = document.getElementById('hero-text-overlay');
+  var mainContent = document.getElementById('main-content');
+  var isMobile = window.innerWidth <= 960;
+
+  var SCREEN_OFFSET_Y = -120;
+  var SCREEN_OFFSET_X = 10;
+  var MAX_SCALE = 14;
+
+  if (!isMobile && spacer && wrap && overlay && heroText && mainContent) {
+    window.addEventListener('scroll', function() {
+      var rect = spacer.getBoundingClientRect();
+      var scrolled = -rect.top;
+      var total = rect.height - window.innerHeight;
+
+      var progress = Math.min(Math.max(scrolled / total, 0), 1);
+
+      var eased = progress < 0.5
+        ? 2 * progress * progress
+        : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+
+      var scale = 1 + (MAX_SCALE - 1) * eased;
+
+      var tx = SCREEN_OFFSET_X * eased * -1;
+      var ty = SCREEN_OFFSET_Y * eased * -1;
+
+      wrap.style.transform =
+        'translate(calc(-50% + ' + tx + 'px), calc(-50% + ' + ty + 'px)) scale(' + scale + ')';
+
+      var textOpacity = Math.max(0, 1 - progress * 4);
+      heroText.style.opacity = textOpacity;
+      heroText.style.pointerEvents = textOpacity < 0.1 ? 'none' : 'auto';
+
+      var overlayProgress = Math.max(0, (eased - 0.65) / 0.35);
+      overlay.style.opacity = overlayProgress;
+
+    }, { passive: true });
+  }
+
   var revealEls = document.querySelectorAll('.reveal, .reveal-group');
   var revealObs = new IntersectionObserver(function(entries) {
     entries.forEach(function(e) {
@@ -1218,9 +1321,6 @@ body:hover #cursor-glow {
   }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
   revealEls.forEach(function(el) { revealObs.observe(el); });
 
-  var heroGroup = document.querySelector('#hero .reveal-group');
-  if (heroGroup) heroGroup.classList.add('visible');
-
   var nav = document.querySelector('nav');
   window.addEventListener('scroll', function() {
     if (window.scrollY > 60) {
@@ -1230,12 +1330,6 @@ body:hover #cursor-glow {
     }
   }, { passive: true });
 
-  var hero = document.getElementById('hero');
-  window.addEventListener('scroll', function() {
-    var y = window.scrollY * 0.3;
-    hero.style.backgroundPositionY = 'calc(50% + ' + y + 'px)';
-  }, { passive: true });
-
   var pains = document.querySelectorAll('.pain');
   var counter = document.querySelector('.pain-counter');
   pains.forEach(function(p) {
@@ -1243,12 +1337,10 @@ body:hover #cursor-glow {
       var wasOpen = p.classList.contains('open');
       pains.forEach(function(pp) { pp.classList.remove('open'); });
       if (!wasOpen) p.classList.add('open');
-      var openCount = document.querySelectorAll('.pain.open').length;
-      var total = pains.length;
       if (counter) {
         var expanded = 0;
         pains.forEach(function(pp) { if (pp.classList.contains('open')) expanded++; });
-        counter.textContent = expanded + ' / ' + total;
+        counter.textContent = expanded + ' / ' + pains.length;
       }
     });
   });
