@@ -1249,25 +1249,31 @@ body:hover #cursor-glow {
     }, { passive: true });
   }
 
-  var links = document.querySelectorAll('a[href^="#"]');
-  links.forEach(function(link) {
-    link.addEventListener('click', function(e) {
-      var target = document.querySelector(link.getAttribute('href'));
-      if (target) {
-        e.preventDefault();
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    });
-  });
-
   var logo = document.querySelector('.nav-logo');
   if (logo) {
     logo.addEventListener('click', function(e) {
       e.preventDefault();
+      e.stopPropagation();
       if (window.restoreHero) window.restoreHero();
       else window.scrollTo({ top: 0, behavior: 'smooth' });
     });
   }
+
+  var links = document.querySelectorAll('a[href^="#"]');
+  links.forEach(function(link) {
+    if (link.classList.contains('nav-logo')) return;
+    link.addEventListener('click', function(e) {
+      var href = link.getAttribute('href');
+      if (!href || href === '#') return;
+      try {
+        var target = document.querySelector(href);
+        if (target) {
+          e.preventDefault();
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      } catch(err) {}
+    });
+  });
 })();
 </script>
 </body>
