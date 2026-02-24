@@ -152,6 +152,96 @@ nav {
   width:100%;
   display:block;
 }
+#screen-overlay {
+  position:absolute;
+  top:11.5%;
+  left:27%;
+  width:42%;
+  height:27%;
+  pointer-events:none;
+  z-index:5;
+  overflow:hidden;
+  border-radius:2px;
+}
+.crt-scanlines {
+  position:absolute;
+  inset:0;
+  background:repeating-linear-gradient(
+    0deg,
+    rgba(0,0,0,0.055) 0px,
+    rgba(0,0,0,0.055) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  pointer-events:none;
+  z-index:10;
+}
+.crt-vignette {
+  position:absolute;
+  inset:0;
+  background:radial-gradient(ellipse at 50% 50%,
+    transparent 50%,
+    rgba(0,0,0,0.28) 100%
+  );
+  pointer-events:none;
+  z-index:11;
+}
+.crt-glow {
+  position:absolute;
+  inset:0;
+  background:radial-gradient(ellipse at 50% 40%,
+    rgba(255,248,220,0.06) 0%,
+    transparent 65%
+  );
+  pointer-events:none;
+  z-index:12;
+}
+.crt-roll {
+  position:absolute;
+  left:0; right:0;
+  height:18%;
+  background:linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(255,255,255,0.018) 40%,
+    rgba(255,255,255,0.032) 50%,
+    rgba(255,255,255,0.018) 60%,
+    transparent 100%
+  );
+  pointer-events:none;
+  z-index:13;
+  animation:crt-roll 8s linear infinite;
+}
+@keyframes crt-roll {
+  from { top:110%; }
+  to   { top:-20%; }
+}
+.crt-flicker {
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  z-index:14;
+  animation:crt-flicker 5s infinite;
+}
+@keyframes crt-flicker {
+  0%,89%,91%,93%,100% { opacity:1; }
+  90%  { opacity:0.93; }
+  92%  { opacity:0.97; }
+}
+.crt-glass {
+  position:absolute;
+  inset:0;
+  background:linear-gradient(
+    135deg,
+    rgba(255,255,255,0.04) 0%,
+    transparent 40%,
+    transparent 60%,
+    rgba(255,255,255,0.02) 100%
+  );
+  pointer-events:none;
+  z-index:15;
+  border-radius:inherit;
+}
 #zoom-overlay {
   position:fixed;
   inset:0;
@@ -770,6 +860,14 @@ body:hover #cursor-glow {
 
     <div id="imac-scene" data-testid="monitor-container">
       <img id="imac-front" src="/imac-front.png" alt="iMac G3" data-testid="imac-front">
+      <div id="screen-overlay">
+        <div class="crt-scanlines"></div>
+        <div class="crt-vignette"></div>
+        <div class="crt-glow"></div>
+        <div class="crt-roll"></div>
+        <div class="crt-flicker"></div>
+        <div class="crt-glass"></div>
+      </div>
     </div>
   </div>
 </div>
