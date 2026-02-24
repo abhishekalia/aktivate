@@ -17,7 +17,8 @@ Preferred communication style: Simple, everyday language.
 - **UI Components**: shadcn/ui component library (new-york style) built on Radix UI primitives
 - **Styling**: Tailwind CSS with CSS variables for theming, class-variance-authority for component variants
 - **Forms**: React Hook Form with Zod resolvers for validation
-- **Design Theme**: Y2K retro-futuristic aesthetic with custom color tokens (void, indigo, neon, chrome palettes) defined in `client/index.html`
+- **Design Theme**: Clean dark professional aesthetic inspired by zergai.com — minimal effects, bracketed section labels, generous spacing. Neon green (#39ff14) accent, deep void (#0a0a12) background, purple (#8b5cf6) secondary. Fonts: Unbounded (headings), DM Mono (body), Instrument Serif (accents). All styling defined inline in `client/index.html`
+- **Landing Page**: Single-page static site in `client/index.html` with retro CRT monitor hero image (animated screen content), ticker, problem/system/showcase/process/results/for-who/about/CTA sections
 - **Path Aliases**: `@/` maps to `client/src/`, `@shared/` maps to `shared/`
 
 ### Backend

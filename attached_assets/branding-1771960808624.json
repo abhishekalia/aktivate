@@ -1,0 +1,133 @@
+{
+  "colorScheme": "dark",
+  "fonts": [
+    {
+      "family": "Space Grotesk",
+      "role": "heading"
+    },
+    {
+      "family": "Space Mono",
+      "role": "monospace"
+    },
+    {
+      "family": "Switzer",
+      "role": "body"
+    }
+  ],
+  "colors": {
+    "primary": "#DAEEF8",
+    "accent": "#F3C901",
+    "background": "#131A1F",
+    "textPrimary": "#131A1F",
+    "link": "#C5DCE8"
+  },
+  "typography": {
+    "fontFamilies": {
+      "primary": "Switzer",
+      "heading": "Space Grotesk"
+    },
+    "fontStacks": {
+      "heading": [
+        "ui-sans-serif",
+        "system-ui",
+        "sans-serif",
+        "Apple Color Emoji",
+        "Segoe UI Emoji",
+        "Segoe UI Symbol",
+        "Noto Color Emoji"
+      ],
+      "body": [
+        "ui-sans-serif",
+        "system-ui",
+        "sans-serif",
+        "Apple Color Emoji",
+        "Segoe UI Emoji",
+        "Segoe UI Symbol",
+        "Noto Color Emoji"
+      ],
+      "paragraph": [
+        "Space Mono",
+        "sans-serif"
+      ]
+    },
+    "fontSizes": {
+      "h1": "16px",
+      "h2": "52px",
+      "body": "18px"
+    }
+  },
+  "spacing": {
+    "baseUnit": 4,
+    "borderRadius": "4px"
+  },
+  "components": {
+    "buttonPrimary": {
+      "background": "#F3C901",
+      "textColor": "#25252D",
+      "borderRadius": "2px",
+      "borderRadiusCorners": {
+        "topLeft": "2px",
+        "topRight": "2px",
+        "bottomRight": "2px",
+        "bottomLeft": "2px"
+      },
+      "shadow": "none"
+    }
+  },
+  "images": {
+    "logo": "File saved at: attached_assets/logo.bin",
+    "favicon": "https://zergai.com/favicon-light.png",
+    "ogImage": "https://zergai.com/open_graph_image.png",
+    "logoHref": "File saved at: attached_assets/logoHref.html",
+    "logoAlt": "Zerg AI"
+  },
+  "__llm_logo_reasoning": {
+    "selectedIndex": 0,
+    "reasoning": "Selected #0 because it is visible, has a medium size, and links to the homepage. The alt text 'Zerg AI' matches the brand name inferred from the page title and URL.",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  "__llm_button_reasoning": {
+    "primary": {
+      "index": 0,
+      "text": "Book a Demo",
+      "reasoning": "The button 'Book a Demo' has a vibrant background color (#F3C901) which is typically used for primary CTAs. The text is action-oriented, making it a strong candidate for the primary button."
+    },
+    "secondary": {
+      "index": -1,
+      "text": "N/A",
+      "reasoning": "There is only one button detected, so no secondary button can be selected."
+    },
+    "confidence": 0.9
+  },
+  "personality": {
+    "tone": "modern",
+    "energy": "medium",
+    "targetAudience": "software developers and tech companies"
+  },
+  "designSystem": {
+    "framework": "tailwind",
+    "componentLibrary": ""
+  },
+  "confidence": {
+    "buttons": 0.9,
+    "colors": 0.9,
+    "overall": 0.9
+  },
+  "__llm_metadata": {
+    "logoSelection": {
+      "llmCalled": true,
+      "llmSucceeded": true,
+      "finalSource": "llm",
+      "rawLogoSelection": {
+        "selectedLogoIndex": 0,
+        "selectedLogoReasoning": "Selected #0 because it is visible, has a medium size, and links to the homepage. The alt text 'Zerg AI' matches the brand name inferred from the page title and URL.",
+        "confidence": 0.95
+      }
+    },
+    "buttonClassification": {
+      "llmCalled": true,
+      "llmSucceeded": true
+    }
+  }
+}
