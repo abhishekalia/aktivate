@@ -621,6 +621,118 @@ footer {
 .f-links a:hover { color:var(--neon); }
 .f-copy { font-size:9px; color:rgba(255,255,255,0.15); letter-spacing:0.1em; }
 
+/* ── SCROLL REVEAL ─────────────────── */
+.reveal {
+  opacity:0;
+  transform:translateY(24px);
+  transition:opacity 0.7s ease, transform 0.7s ease;
+}
+.reveal.visible {
+  opacity:1;
+  transform:translateY(0);
+}
+.reveal-group > * {
+  opacity:0;
+  transform:translateY(20px);
+  transition:opacity 0.6s ease, transform 0.6s ease;
+}
+.reveal-group.visible > * {
+  opacity:1;
+  transform:translateY(0);
+}
+.reveal-group.visible > *:nth-child(1) { transition-delay:0ms; }
+.reveal-group.visible > *:nth-child(2) { transition-delay:100ms; }
+.reveal-group.visible > *:nth-child(3) { transition-delay:200ms; }
+.reveal-group.visible > *:nth-child(4) { transition-delay:300ms; }
+.reveal-group.visible > *:nth-child(5) { transition-delay:400ms; }
+.reveal-group.visible > *:nth-child(6) { transition-delay:500ms; }
+
+/* ── NAV SCROLL STATE ──────────────── */
+nav {
+  transition:background 0.3s ease, border-color 0.3s ease;
+}
+nav.scrolled {
+  background:rgba(10,10,18,0.92);
+  border-bottom-color:rgba(255,255,255,0.08);
+}
+
+/* ── ACCORDION (PROBLEM SECTION) ──── */
+.pain {
+  cursor:pointer;
+}
+.pain .pain-txt {
+  max-height:0;
+  overflow:hidden;
+  transition:max-height 0.4s ease, opacity 0.3s ease;
+  opacity:0;
+}
+.pain.open .pain-txt {
+  max-height:200px;
+  opacity:1;
+}
+.pain-title {
+  transition:color 0.2s;
+}
+.pain:hover .pain-title {
+  color:var(--ink);
+}
+.pain:hover {
+  border-color:var(--border-h);
+}
+.pain-counter {
+  font-family:'DM Mono',monospace;
+  font-size:10px;
+  color:var(--ink-dim);
+  letter-spacing:0.1em;
+  margin-top:16px;
+}
+
+/* ── CARD HOVER GLOW ───────────────── */
+.pillar, .fw-card, .sc-card, .cs {
+  position:relative;
+}
+.pillar::after, .fw-card::after {
+  content:'';
+  position:absolute;
+  inset:0;
+  border-radius:inherit;
+  background:radial-gradient(ellipse at 50% 0%, rgba(57,255,20,0.04) 0%, transparent 70%);
+  opacity:0;
+  transition:opacity 0.3s ease;
+  pointer-events:none;
+}
+.pillar:hover::after, .fw-card:hover::after {
+  opacity:1;
+}
+
+/* ── CTA BUTTON ARROW ──────────────── */
+.btn-arrow {
+  display:inline-block;
+  transition:transform 0.2s ease;
+  margin-left:8px;
+}
+.cta-btn:hover .btn-arrow,
+.btn-p:hover .btn-arrow {
+  transform:translateX(5px);
+}
+
+/* ── CURSOR GLOW ───────────────────── */
+#cursor-glow {
+  position:fixed;
+  pointer-events:none;
+  z-index:9998;
+  width:500px;
+  height:500px;
+  border-radius:50%;
+  background:radial-gradient(circle, rgba(57,255,20,0.04) 0%, transparent 70%);
+  transform:translate(-50%, -50%);
+  opacity:0;
+  transition:opacity 0.4s ease;
+}
+body:hover #cursor-glow {
+  opacity:1;
+}
+
 /* ── RESPONSIVE ────────────────────── */
 @media(max-width:960px) {
   nav { padding:0 20px; }
@@ -656,16 +768,18 @@ footer {
   <a class="nav-cta" href="#cta" data-testid="link-book-call">Book a Call</a>
 </nav>
 
+<div id="cursor-glow"></div>
+
 <section id="hero">
   <div class="hero-inner">
-    <div data-testid="hero-text">
+    <div class="reveal-group" data-testid="hero-text">
       <div class="hero-label">AI-Powered Growth Studio &middot; Insurance &amp; Logistics</div>
       <h1 class="hero-headline">
         Build the<br>Engine.<br>Build the <em>Face.</em>
       </h1>
       <p class="hero-desc">Automated ops. Automated presence. One studio built specifically for Insurance &amp; Logistics operators who are ready to scale.</p>
       <div class="hero-btns">
-        <a href="#cta" class="btn-p" data-testid="button-book-call">Book a Free Call</a>
+        <a href="#cta" class="btn-p" data-testid="button-book-call">Book a Free Call <span class="btn-arrow">&rsaquo;</span></a>
         <a href="#system" class="btn-s" data-testid="link-how-it-works">See how it works</a>
       </div>
       <div class="hero-stats">
@@ -759,12 +873,12 @@ footer {
 <section id="problem">
   <div class="s-wrap">
     <div class="prob-grid">
-      <div>
+      <div class="reveal">
         <div class="s-lbl"><span>The Problem</span></div>
         <h2 class="s-hl">Your competitors are moving faster. You're still doing it manually.</h2>
         <p class="s-body">Insurance brokers and logistics operators are sitting on massive growth potential &mdash; held back by the same two problems wearing different masks.</p>
       </div>
-      <div class="pain-stack">
+      <div class="pain-stack reveal">
         <div class="pain" data-testid="card-pain-1">
           <div class="pain-code">ERR_01 //</div>
           <div class="pain-title">Operations eating your time</div>
@@ -780,6 +894,7 @@ footer {
           <div class="pain-title">Leads falling through the cracks</div>
           <p class="pain-txt">No automated follow-up, no intelligent intake, no pipeline that works while you sleep. Every missed touchpoint is revenue left behind.</p>
         </div>
+        <div class="pain-counter" data-testid="text-pain-counter">0 / 3</div>
       </div>
     </div>
   </div>
@@ -787,12 +902,12 @@ footer {
 
 <section id="system">
   <div class="s-wrap">
-    <div class="sys-hdr">
+    <div class="sys-hdr reveal">
       <div class="s-lbl"><span>The Aktivate Method</span></div>
       <h2 class="s-hl">One connected system.<br>Three interlocking layers.</h2>
       <p class="s-body">We don't sell tools. We build a complete operating system &mdash; where automation and brand presence compound on each other continuously.</p>
     </div>
-    <div class="pillars">
+    <div class="pillars reveal-group">
       <div class="pillar" data-testid="card-pillar-1">
         <div class="p-n">01</div>
         <div class="p-tag">// Layer 01</div>
@@ -853,7 +968,7 @@ footer {
 </section>
 
 <section id="showcase">
-  <div class="sc-hdr">
+  <div class="sc-hdr reveal">
     <div class="s-lbl"><span>What We Build</span></div>
     <h2 class="s-hl" style="margin-bottom:0;">Real deliverables. Real systems.</h2>
   </div>
@@ -893,9 +1008,9 @@ footer {
 
 <section id="process">
   <div class="s-wrap">
-    <div class="s-lbl"><span>How It Works</span></div>
-    <h2 class="s-hl" style="max-width:480px;">From first call to live system in weeks, not months.</h2>
-    <div class="proc-steps">
+    <div class="s-lbl reveal"><span>How It Works</span></div>
+    <h2 class="s-hl reveal" style="max-width:480px;">From first call to live system in weeks, not months.</h2>
+    <div class="proc-steps reveal-group">
       <div class="step" data-testid="card-step-1">
         <div class="step-dot-row"><div class="step-dot"></div><span class="step-n">STEP 01</span></div>
         <h3 class="step-ttl">Discovery &amp; Mapping</h3>
@@ -917,9 +1032,9 @@ footer {
 
 <section id="results">
   <div class="s-wrap">
-    <div class="s-lbl"><span>Results</span></div>
-    <h2 class="s-hl">Built for operators who measure everything.</h2>
-    <div class="res-grid">
+    <div class="s-lbl reveal"><span>Results</span></div>
+    <h2 class="s-hl reveal">Built for operators who measure everything.</h2>
+    <div class="res-grid reveal-group">
       <div class="cs" data-testid="card-result-1">
         <div class="cs-tag">Insurance Brokerage &middot; Commercial Trucking</div>
         <div class="cs-flow">
@@ -962,9 +1077,9 @@ footer {
 
 <section id="for-who">
   <div class="s-wrap">
-    <div class="s-lbl"><span>Who This Is For</span></div>
-    <h2 class="s-hl">If you see yourself here,<br>we built this for you.</h2>
-    <div class="fw-grid">
+    <div class="s-lbl reveal"><span>Who This Is For</span></div>
+    <h2 class="s-hl reveal">If you see yourself here,<br>we built this for you.</h2>
+    <div class="fw-grid reveal-group">
       <div class="fw-card" data-testid="card-audience-1">
         <div class="fw-ind">Insurance Brokers &amp; MGAs</div>
         <div class="fw-role">Commercial &middot; Trucking &middot; Specialty Lines</div>
@@ -991,7 +1106,7 @@ footer {
 
 <section id="about">
   <div class="s-wrap">
-    <div class="about-grid">
+    <div class="about-grid reveal-group">
       <div class="about-frame">
         <div class="about-ph">AK</div>
         <div class="about-ph-lbl">// Founder &middot; Builder</div>
@@ -1016,11 +1131,11 @@ footer {
 
 <section id="cta">
   <div class="cta-bg-word">AKTIVATE</div>
-  <div class="cta-inner">
+  <div class="cta-inner reveal">
     <div class="cta-lbl">Ready to Start</div>
     <h2 class="cta-hl">Let's build<br>your system.</h2>
     <p class="cta-body">One call. 30 minutes. We'll map your biggest operational bottleneck and show you exactly what the build looks like. No pitch deck. No pressure.</p>
-    <a href="mailto:hello@aktivate.ai" class="cta-btn" data-testid="button-book-call-cta">Book a Free Call</a>
+    <a href="mailto:hello@aktivate.ai" class="cta-btn" data-testid="button-book-call-cta">Book a Free Call <span class="btn-arrow">&rsaquo;</span></a>
     <div class="cta-note">Typically responds within 24 hours</div>
   </div>
 </section>
@@ -1037,5 +1152,73 @@ footer {
   <div class="f-copy">&copy; 2026 Aktivate.ai</div>
 </footer>
 
+<script>
+(function() {
+  var revealEls = document.querySelectorAll('.reveal, .reveal-group');
+  var revealObs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        revealObs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+  revealEls.forEach(function(el) { revealObs.observe(el); });
+
+  var heroGroup = document.querySelector('#hero .reveal-group');
+  if (heroGroup) heroGroup.classList.add('visible');
+
+  var nav = document.querySelector('nav');
+  window.addEventListener('scroll', function() {
+    if (window.scrollY > 60) {
+      nav.classList.add('scrolled');
+    } else {
+      nav.classList.remove('scrolled');
+    }
+  }, { passive: true });
+
+  var hero = document.getElementById('hero');
+  window.addEventListener('scroll', function() {
+    var y = window.scrollY * 0.3;
+    hero.style.backgroundPositionY = 'calc(50% + ' + y + 'px)';
+  }, { passive: true });
+
+  var pains = document.querySelectorAll('.pain');
+  var counter = document.querySelector('.pain-counter');
+  pains.forEach(function(p) {
+    p.addEventListener('click', function() {
+      var wasOpen = p.classList.contains('open');
+      pains.forEach(function(pp) { pp.classList.remove('open'); });
+      if (!wasOpen) p.classList.add('open');
+      var openCount = document.querySelectorAll('.pain.open').length;
+      var total = pains.length;
+      if (counter) {
+        var expanded = 0;
+        pains.forEach(function(pp) { if (pp.classList.contains('open')) expanded++; });
+        counter.textContent = expanded + ' / ' + total;
+      }
+    });
+  });
+
+  var glow = document.getElementById('cursor-glow');
+  if (glow && window.matchMedia('(pointer: fine)').matches) {
+    document.addEventListener('mousemove', function(e) {
+      glow.style.left = e.clientX + 'px';
+      glow.style.top = e.clientY + 'px';
+    }, { passive: true });
+  }
+
+  var links = document.querySelectorAll('a[href^="#"]');
+  links.forEach(function(link) {
+    link.addEventListener('click', function(e) {
+      var target = document.querySelector(link.getAttribute('href'));
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+})();
+</script>
 </body>
 </html>

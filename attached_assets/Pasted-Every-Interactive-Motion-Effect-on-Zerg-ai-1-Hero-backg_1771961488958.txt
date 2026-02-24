@@ -1,0 +1,79 @@
+Every Interactive/Motion Effect on Zerg.ai
+1. Hero background — parallax particle field
+The dark background image (bg-hero.webp) moves slowly as you scroll — it shifts upward at maybe 30–40% the scroll speed. It looks like a dark 3D render of floating geometric particles/nodes in space. The parallax makes it feel like you're flying through it.
+2. Scroll-triggered text reveals
+Every section's headline, label, and body copy fades up from ~20px below its final position when it enters the viewport. Classic IntersectionObserver pattern. Staggered — label animates first, then headline 100ms later, then body 200ms later.
+3. The Challenge accordion
+The four challenge items sit collapsed. On hover, the item highlights (border brightens slightly, text goes full white from dim). On click, the body text slides open with a smooth max-height transition. The counter fraction like 0.1/0.4 ticks up as you expand items.
+4. "How It Works" sticky scroll
+This is the most impressive effect. As you scroll through the section, the left column text (step descriptions) stays sticky while the right column image swaps. Each image (approach-1.webp through approach-4.webp) cross-fades as its corresponding text block enters the scroll zone. Built with either GSAP ScrollTrigger or IntersectionObserver.
+5. Benefits grid — hover glow
+Each of the 6 benefit cards: on hover, the cyan icon brightens (opacity goes from ~40% to 100%), and a very subtle background glow appears behind the card — like rgba(125,216,232,0.04) radial gradient that fades in.
+6. Comparison table — column highlight
+The Zerg column has a permanent subtle highlight. On hover over any row, the whole row highlights across all three columns simultaneously.
+7. The "Get Started" CTA section
+Has that serrated SVG top edge that looks like a film strip or data bars. It's actually a decorative SVG that creates a visual transition from the content above — makes the section feel like it's on a different layer.
+8. Nav scroll behaviour
+Nav starts transparent with no background. After scrolling ~80px, it transitions to a semi-transparent dark background with backdrop-blur. Very smooth CSS transition.
+9. CTA button hover
+The SCHEDULE A DEMO button: on hover the > arrow shifts right a few pixels (translateX animation), and the border brightens slightly.
+
+How to Implement All of This in Replit
+Here's exactly how to tell Replit to build each one:
+
+Tell Replit this:
+
+Add the following interactive animations to the site using vanilla JavaScript (no external libraries except GSAP loaded from CDN if needed):
+
+1. Scroll reveal on all sections
+Use IntersectionObserver. When any element with class .reveal enters the 
+viewport, add class .visible which triggers:
+  opacity: 0 → 1
+  transform: translateY(20px) → translateY(0)
+  transition: 600ms ease
+  
+Stagger children inside .reveal-group with 100ms delays using 
+animation-delay on each child.
+2. Sticky scroll image swap (How It Works section)
+Make the left text column position:sticky, top:50vh.
+As user scrolls through each step, use IntersectionObserver on each 
+.step-block. When a step is 50% in viewport, swap the right-side image 
+by cross-fading (opacity transition 400ms) to the corresponding image.
+Give each step a data-image="url" attribute.
+3. Accordion (Challenge section)
+Each .accordion-item: clicking toggles class .open
+.open causes the .accordion-body to animate from max-height:0 to 
+max-height:200px with overflow:hidden and transition 350ms ease.
+On hover (not click), border-color transitions from rgba(255,255,255,0.1) 
+to rgba(255,255,255,0.3) and the title goes full opacity white.
+4. Hero parallax
+On scroll, update the hero background-position-y:
+  document.addEventListener('scroll', () => {
+    const y = window.scrollY * 0.35
+    hero.style.backgroundPositionY = `calc(50% + ${y}px)`
+  })
+5. Nav background on scroll
+On scroll past 80px, add class .scrolled to nav:
+  .scrolled { background: rgba(15,17,23,0.88); backdrop-filter: blur(20px); }
+  transition: background 300ms ease
+6. Benefits hover glow
+Each .benefit-card on mouseenter:
+  The .benefit-icon SVG strokes animate to full opacity (CSS transition)
+  A radial-gradient background fades in behind the card using 
+  pseudo-element ::after with opacity 0 → 1
+7. CTA button arrow nudge
+.btn-primary:hover .btn-arrow { transform: translateX(5px); }
+transition: transform 200ms ease
+The arrow glyph (→) should be in its own span with class .btn-arrow
+8. Cursor glow (optional — very Zerg)
+Create a div#cursor-glow that follows the mouse:
+  position: fixed, pointer-events: none, z-index: 9999
+  width/height: 400px, border-radius: 50%
+  background: radial-gradient(circle, rgba(125,216,232,0.06) 0%, transparent 70%)
+  transform: translate(-50%, -50%)
+  
+  document.addEventListener('mousemove', e => {
+    cursorGlow.style.left = e.clientX + 'px'
+    cursorGlow.style.top = e.clientY + 'px'
+  })
+This last one — the cursor glow — is subtle but it's what makes premium dark sites feel alive. The cyan radial follows your mouse across the whole page like a soft light source. Very achievable in pure vanilla JS, no libraries.
