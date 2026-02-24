@@ -121,7 +121,7 @@ nav {
 
 /* ── HERO / ZOOM PORTAL ───────────── */
 #hero-spacer {
-  height:200vh;
+  height:180vh;
   position:relative;
   z-index:30;
 }
@@ -163,7 +163,7 @@ nav {
 #main-content {
   position:relative;
   z-index:20;
-  margin-top:-100vh;
+  margin-top:-80vh;
 }
 
 /* ── HERO TEXT ─────────────────────── */
@@ -1123,7 +1123,7 @@ body:hover #cursor-glow {
       var e2 = Math.min(Math.max((p - 0.3) / 0.7, 0), 1);
       var zoomEased = e2 < 0.5 ? 2*e2*e2 : 1 - Math.pow(-2*e2+2,2)/2;
 
-      var scale = 1 + zoomEased * 22;
+      var scale = 1 + zoomEased * 14;
       var tx = driftX * slideEased;
       var ty = driftY * slideEased;
 
@@ -1134,8 +1134,8 @@ body:hover #cursor-glow {
       heroLeft.style.opacity = 1 - textFade;
       heroLeft.style.pointerEvents = textFade > 0.1 ? 'none' : 'auto';
 
-      var overlayP = Math.max(0, (zoomEased - 0.7) / 0.3);
-      zoomOv.style.opacity = overlayP;
+      var overlayP = Math.max(0, (zoomEased - 0.45) / 0.25);
+      zoomOv.style.opacity = Math.min(overlayP, 1);
 
     }, { passive: true });
   }
