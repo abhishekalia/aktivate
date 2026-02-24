@@ -121,7 +121,7 @@ nav {
 
 /* ── HERO / ZOOM PORTAL ───────────── */
 #hero-spacer {
-  height:180vh;
+  height:300vh;
   position:relative;
   z-index:30;
 }
@@ -161,40 +161,44 @@ nav {
   z-index:20;
 }
 #zoom-overlay.glitch-flash {
-  animation: crtGlitch 0.6s ease-out forwards;
+  animation: crtGlitch 1s ease-out forwards;
 }
 @keyframes crtGlitch {
-  0%   { opacity:0.7; background:var(--off-white); }
-  8%   { opacity:1;   background:#fff; transform:translateX(3px); }
-  12%  { opacity:0.6; background:var(--off-white); transform:translateX(-5px) skewX(-2deg); }
-  18%  { opacity:1;   background:#e0ffe0; transform:translateX(2px); }
-  22%  { opacity:0.5; transform:translateX(0) skewX(1deg); }
-  30%  { opacity:1;   background:#fff; transform:translateX(-3px); }
-  35%  { opacity:0.8; background:var(--off-white); transform:translateX(4px) skewX(-1deg); }
-  42%  { opacity:1;   transform:translateX(0); }
-  50%  { opacity:0.9; background:#f5f5f0; transform:translateX(-2px); }
-  58%  { opacity:1;   background:var(--off-white); transform:translateX(1px) skewX(0.5deg); }
-  70%  { opacity:1;   transform:none; }
-  100% { opacity:1;   transform:none; background:var(--off-white); }
+  0%   { opacity:0; }
+  5%   { opacity:1; background:#fff; transform:translateX(8px) skewX(-3deg); }
+  8%   { opacity:0; transform:translateX(-12px) skewX(4deg); }
+  12%  { opacity:1; background:#0f0; transform:translateX(5px); }
+  15%  { opacity:0; transform:translateX(-8px) skewX(-2deg); }
+  20%  { opacity:1; background:#fff; transform:translateX(15px) skewX(3deg); }
+  23%  { opacity:0.3; transform:translateX(-6px); }
+  28%  { opacity:1; background:var(--off-white); transform:translateX(10px) skewX(-4deg); }
+  32%  { opacity:0; transform:translateX(-15px) skewX(5deg); }
+  38%  { opacity:1; background:#fff; transform:translateX(4px); }
+  42%  { opacity:0.5; background:#0f0; transform:translateX(-10px) skewX(-3deg); }
+  48%  { opacity:1; background:#fff; transform:translateX(6px) skewX(2deg); }
+  52%  { opacity:0.2; transform:translateX(-4px); }
+  58%  { opacity:1; background:var(--off-white); transform:translateX(3px) skewX(-1deg); }
+  65%  { opacity:0.8; transform:translateX(-2px); }
+  75%  { opacity:1; background:var(--off-white); transform:translateX(1px); }
+  85%  { opacity:1; transform:none; }
+  100% { opacity:1; transform:none; background:var(--off-white); }
 }
-#zoom-overlay.glitch-flash::before,
-#zoom-overlay.glitch-flash::after {
+#zoom-overlay.glitch-flash::before {
   content:'';
   position:absolute;
   inset:0;
   pointer-events:none;
-}
-#zoom-overlay.glitch-flash::before {
-  animation: scanFlicker 0.6s linear forwards;
+  animation: scanBars 1s linear forwards;
   background:repeating-linear-gradient(
-    0deg, transparent, transparent 2px,
-    rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px
+    0deg, transparent, transparent 3px,
+    rgba(0,0,0,0.08) 3px, rgba(0,0,0,0.08) 6px
   );
 }
-@keyframes scanFlicker {
-  0%   { opacity:1; }
-  50%  { opacity:0.5; }
-  100% { opacity:0; }
+@keyframes scanBars {
+  0%   { opacity:1; transform:translateY(0); }
+  30%  { opacity:0.8; transform:translateY(-20px); }
+  60%  { opacity:0.4; transform:translateY(-10px); }
+  100% { opacity:0; transform:translateY(0); }
 }
 #main-content {
   position:relative;
@@ -1153,40 +1157,37 @@ body:hover #cursor-glow {
       var total   = rect.height - window.innerHeight;
       var p       = Math.min(Math.max(scrolled / total, 0), 1);
 
-      var e1 = Math.min(Math.max(p / 0.4, 0), 1);
+      var e1 = Math.min(Math.max(p / 0.35, 0), 1);
       var slideEased = e1 < 0.5 ? 2*e1*e1 : 1 - Math.pow(-2*e1+2,2)/2;
 
-      var e2 = Math.min(Math.max((p - 0.3) / 0.7, 0), 1);
+      var e2 = Math.min(Math.max((p - 0.15) / 0.55, 0), 1);
       var zoomEased = e2 < 0.5 ? 2*e2*e2 : 1 - Math.pow(-2*e2+2,2)/2;
 
-      var scale = 1 + zoomEased * 14;
+      var scale = 1 + zoomEased * 8;
       var tx = driftX * slideEased;
       var ty = driftY * slideEased;
 
       scene.style.transform = 'translate(' + tx + 'px, ' + ty + 'px) scale(' + scale + ')';
       scene.style.transformOrigin = '50% 34%';
 
-      var textFade = Math.min(p * 5, 1);
+      var textFade = Math.min(p * 4, 1);
       heroLeft.style.opacity = 1 - textFade;
       heroLeft.style.pointerEvents = textFade > 0.1 ? 'none' : 'auto';
 
-      var overlayP = Math.max(0, (zoomEased - 0.45) / 0.25);
-      zoomOv.style.opacity = Math.min(overlayP, 1);
-
-      if (overlayP >= 0.9 && !zoomOv.classList.contains('glitch-flash') && !zoomOv.dataset.glitched) {
+      var glitchTrigger = zoomEased >= 0.95;
+      if (glitchTrigger && !zoomOv.dataset.glitched) {
         zoomOv.dataset.glitched = '1';
         zoomOv.classList.add('glitch-flash');
+        setTimeout(function() {
+          spacer.style.pointerEvents = 'none';
+          spacer.style.zIndex = '1';
+        }, 1000);
       }
 
-      if (overlayP < 0.5 && zoomOv.dataset.glitched) {
+      if (zoomEased < 0.5 && zoomOv.dataset.glitched) {
         delete zoomOv.dataset.glitched;
         zoomOv.classList.remove('glitch-flash');
-      }
-
-      if (overlayP >= 1) {
-        spacer.style.pointerEvents = 'none';
-        spacer.style.zIndex = '1';
-      } else {
+        zoomOv.style.opacity = '0';
         spacer.style.pointerEvents = '';
         spacer.style.zIndex = '30';
       }
