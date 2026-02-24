@@ -160,6 +160,42 @@ nav {
   pointer-events:none;
   z-index:20;
 }
+#zoom-overlay.glitch-flash {
+  animation: crtGlitch 0.6s ease-out forwards;
+}
+@keyframes crtGlitch {
+  0%   { opacity:0.7; background:var(--off-white); }
+  8%   { opacity:1;   background:#fff; transform:translateX(3px); }
+  12%  { opacity:0.6; background:var(--off-white); transform:translateX(-5px) skewX(-2deg); }
+  18%  { opacity:1;   background:#e0ffe0; transform:translateX(2px); }
+  22%  { opacity:0.5; transform:translateX(0) skewX(1deg); }
+  30%  { opacity:1;   background:#fff; transform:translateX(-3px); }
+  35%  { opacity:0.8; background:var(--off-white); transform:translateX(4px) skewX(-1deg); }
+  42%  { opacity:1;   transform:translateX(0); }
+  50%  { opacity:0.9; background:#f5f5f0; transform:translateX(-2px); }
+  58%  { opacity:1;   background:var(--off-white); transform:translateX(1px) skewX(0.5deg); }
+  70%  { opacity:1;   transform:none; }
+  100% { opacity:1;   transform:none; background:var(--off-white); }
+}
+#zoom-overlay.glitch-flash::before,
+#zoom-overlay.glitch-flash::after {
+  content:'';
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+}
+#zoom-overlay.glitch-flash::before {
+  animation: scanFlicker 0.6s linear forwards;
+  background:repeating-linear-gradient(
+    0deg, transparent, transparent 2px,
+    rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px
+  );
+}
+@keyframes scanFlicker {
+  0%   { opacity:1; }
+  50%  { opacity:0.5; }
+  100% { opacity:0; }
+}
 #main-content {
   position:relative;
   z-index:20;
@@ -1136,6 +1172,16 @@ body:hover #cursor-glow {
 
       var overlayP = Math.max(0, (zoomEased - 0.45) / 0.25);
       zoomOv.style.opacity = Math.min(overlayP, 1);
+
+      if (overlayP >= 0.9 && !zoomOv.classList.contains('glitch-flash') && !zoomOv.dataset.glitched) {
+        zoomOv.dataset.glitched = '1';
+        zoomOv.classList.add('glitch-flash');
+      }
+
+      if (overlayP < 0.5 && zoomOv.dataset.glitched) {
+        delete zoomOv.dataset.glitched;
+        zoomOv.classList.remove('glitch-flash');
+      }
 
       if (overlayP >= 1) {
         spacer.style.pointerEvents = 'none';
