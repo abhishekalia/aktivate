@@ -119,56 +119,97 @@ nav {
   font-size:14px; line-height:1; opacity:0.6;
 }
 
-/* ── ZOOM PORTAL EFFECT ───────────── */
-#zoom-scene-spacer {
+/* ── HERO / ZOOM PORTAL ───────────── */
+#hero-spacer {
+  height:400vh;
   position:relative;
-  height:300vh;
-  background:linear-gradient(150deg, #9ec0d4 0%, #8eb5cc 50%, #7aa4bc 100%);
 }
-#zoom-scene {
+#hero-sticky {
   position:sticky;
   top:0;
   height:100vh;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  align-items:center;
+  padding:0 52px;
+  background:linear-gradient(150deg, #9ec0d4 0%, #8eb5cc 50%, #7aa4bc 100%);
   overflow:hidden;
+}
+#hero-left {
+  z-index:10;
+  max-width:520px;
+}
+#imac-scene {
+  position:relative;
+  width:100%;
+  max-width:580px;
+  margin:0 auto;
+  will-change:transform;
+}
+#imac-side, #imac-front {
+  width:100%;
+  display:block;
+}
+#imac-side {
+  position:relative;
+  opacity:1;
+}
+#imac-front {
+  position:absolute;
+  top:0; left:0;
+  opacity:0;
+}
+#screen-overlay {
+  position:absolute;
+  top:7%; left:11%; width:78%; height:58%;
+  opacity:0;
+  overflow:hidden;
+  border-radius:8px;
+  background:#0a1a0f;
   display:flex;
   align-items:center;
   justify-content:center;
 }
-#hero-text-overlay {
-  position:absolute;
-  z-index:10;
-  left:48px;
-  top:50%;
-  transform:translateY(-50%);
-  max-width:520px;
-  transition:opacity 0.1s linear;
+.screen-ui {
+  width:100%; height:100%;
+  padding:12% 8%;
+  display:flex; flex-direction:column;
+  justify-content:space-between;
+  background:#0a1a0f;
 }
-#computer-wrap {
-  position:absolute;
-  top:50%;
-  left:60%;
-  transform:translate(-50%, -50%) scale(1);
-  transform-origin:center center;
-  will-change:transform;
-  z-index:5;
+.sc-label, .sc-status {
+  font-family:'DM Mono',monospace;
+  color:rgba(80,200,100,0.5);
+  letter-spacing:0.2em;
+  text-transform:uppercase;
 }
-#computer-wrap .monitor-wrap {
-  position:relative;
-  width:420px;
+.sc-label { font-size:clamp(6px, 1.2vw, 11px); }
+.sc-status {
+  font-size:clamp(5px, 1vw, 9px);
+  color:rgba(80,200,100,0.35);
+  letter-spacing:0.25em;
 }
-#computer-wrap .monitor-img {
-  width:100%;
-  height:auto;
-  display:block;
-  filter:drop-shadow(0 24px 48px rgba(0,0,0,0.25));
+.sc-bars {
+  display:flex; align-items:flex-end;
+  gap:4%; height:55%;
 }
-#zoom-overlay {
-  position:absolute;
-  inset:0;
-  background:var(--off-white);
-  opacity:0;
-  pointer-events:none;
-  z-index:8;
+.sc-bars .bar {
+  flex:1;
+  background:#3a9a50;
+  border-radius:2px 2px 0 0;
+  box-shadow:0 0 8px rgba(60,180,80,0.4);
+  animation:bar-pulse 3s ease-in-out infinite;
+}
+.sc-bars .bar:nth-child(1){animation-delay:0s;}
+.sc-bars .bar:nth-child(2){animation-delay:0.3s;}
+.sc-bars .bar:nth-child(3){animation-delay:0.6s;}
+.sc-bars .bar:nth-child(4){animation-delay:0.9s;}
+.sc-bars .bar:nth-child(5){animation-delay:1.2s;}
+.sc-bars .bar:nth-child(6){animation-delay:1.5s;}
+.sc-bars .bar:nth-child(7){animation-delay:1.8s;}
+@keyframes bar-pulse {
+  0%,100%{opacity:0.7;transform:scaleY(1);}
+  50%{opacity:1;transform:scaleY(0.5);}
 }
 #main-content {
   position:relative;
@@ -226,123 +267,6 @@ nav {
 .hs-l {
   font-size:9px; font-weight:400; color:var(--ink-dim);
   letter-spacing:0.14em; text-transform:uppercase; margin-top:6px;
-}
-
-/* ── MONITOR SCREEN ── */
-.monitor-wrap {
-  position:relative;
-}
-.monitor-img {
-  width:100%; height:auto; display:block;
-}
-.screen-overlay {
-  position:absolute;
-  top:17%; left:32%; width:38%; height:25%;
-  overflow:hidden; border-radius:4px;
-  background:#080e06;
-}
-.screen-content {
-  width:100%; height:100%; position:relative;
-  overflow:hidden; display:flex; flex-direction:column;
-}
-.screen-reel {
-  display:flex; flex-direction:column;
-  animation:screen-scroll 12s linear infinite;
-}
-@keyframes screen-scroll {
-  0%   { transform:translateY(0); }
-  20%  { transform:translateY(0); }
-  25%  { transform:translateY(-25%); }
-  45%  { transform:translateY(-25%); }
-  50%  { transform:translateY(-50%); }
-  70%  { transform:translateY(-50%); }
-  75%  { transform:translateY(-75%); }
-  95%  { transform:translateY(-75%); }
-  100% { transform:translateY(0); }
-}
-.screen-slide {
-  width:100%; min-height:100%; flex-shrink:0;
-  display:flex; flex-direction:column;
-  align-items:center; justify-content:center;
-  padding:8px; gap:4px;
-}
-.ss-dashboard { background:linear-gradient(180deg, #0a1a08, #0f1e0a); }
-.ss-hud-label {
-  font-family:'DM Mono',monospace; font-size:5px;
-  color:rgba(57,255,20,0.5); letter-spacing:0.3em; text-transform:uppercase;
-}
-.ss-bars {
-  display:flex; gap:3px; align-items:flex-end; height:30px; width:80%;
-}
-.ss-bar {
-  flex:1; background:var(--neon); border-radius:1px 1px 0 0;
-  opacity:0.6; animation:bar-grow 3s ease-in-out infinite;
-}
-.ss-bar:nth-child(1){height:40%;animation-delay:0s;}
-.ss-bar:nth-child(2){height:70%;animation-delay:0.2s;}
-.ss-bar:nth-child(3){height:55%;animation-delay:0.4s;}
-.ss-bar:nth-child(4){height:85%;animation-delay:0.6s;}
-.ss-bar:nth-child(5){height:60%;animation-delay:0.8s;}
-.ss-bar:nth-child(6){height:90%;animation-delay:1s;}
-.ss-bar:nth-child(7){height:45%;animation-delay:1.2s;}
-.ss-bar:nth-child(8){height:75%;animation-delay:1.4s;}
-@keyframes bar-grow {
-  0%,100%{transform:scaleY(1);} 50%{transform:scaleY(0.4);}
-}
-.ss-social { background:linear-gradient(180deg, #0e0a20, #12102a); }
-.ss-feed-item {
-  width:85%; padding:3px 4px;
-  border:1px solid rgba(139,92,246,0.15);
-  background:rgba(139,92,246,0.05);
-  border-radius:2px; display:flex; gap:4px; align-items:center;
-}
-.ss-avatar {
-  width:10px; height:10px; border-radius:50%;
-  background:var(--purple); flex-shrink:0; opacity:0.6;
-}
-.ss-feed-lines { display:flex; flex-direction:column; gap:2px; flex:1; }
-.ss-feed-line { height:2px; border-radius:1px; background:rgba(139,92,246,0.2); }
-.ss-feed-line:first-child { width:70%; }
-.ss-feed-line:last-child { width:45%; }
-.ss-brand { background:linear-gradient(180deg, #0a0a18, #0e0820); }
-.ss-brand-logo {
-  font-family:'Unbounded',sans-serif; font-weight:900; font-size:8px;
-  color:var(--neon); letter-spacing:0.1em; opacity:0.8;
-}
-.ss-brand-tagline {
-  font-family:'DM Mono',monospace; font-size:4px;
-  color:rgba(57,255,20,0.3); letter-spacing:0.2em; text-transform:uppercase;
-}
-.ss-brand-blocks { display:flex; gap:3px; margin-top:2px; }
-.ss-brand-block {
-  width:18px; height:12px;
-  border:1px solid rgba(57,255,20,0.1);
-  background:rgba(57,255,20,0.03); border-radius:1px;
-}
-.ss-video { background:linear-gradient(180deg, #0a1208, #081008); }
-.ss-play-btn {
-  width:16px; height:16px;
-  border:1px solid rgba(57,255,20,0.3); border-radius:50%;
-  display:flex; align-items:center; justify-content:center;
-}
-.ss-play-btn::after {
-  content:''; width:0; height:0;
-  border-left:5px solid var(--neon);
-  border-top:3px solid transparent;
-  border-bottom:3px solid transparent;
-  margin-left:2px; opacity:0.7;
-}
-.ss-video-label {
-  font-family:'DM Mono',monospace; font-size:4px;
-  color:rgba(57,255,20,0.35); letter-spacing:0.15em; text-transform:uppercase;
-}
-.screen-scanlines {
-  position:absolute; top:17%; left:32%; width:38%; height:25%;
-  border-radius:4px; pointer-events:none;
-  background:repeating-linear-gradient(
-    0deg, transparent, transparent 1px,
-    rgba(0,0,0,0.08) 1px, rgba(0,0,0,0.08) 2px
-  );
 }
 
 /* ── TICKER ────────────────────────── */
@@ -826,26 +750,14 @@ body:hover #cursor-glow {
 @media(max-width:960px) {
   nav { padding:0 20px; }
   .nav-links { display:none; }
-  #hero-text-overlay {
-    position:relative;
-    left:auto; top:auto; transform:none;
-    padding:100px 20px 40px;
-    text-align:center;
-    max-width:100%;
+  #hero-sticky {
+    grid-template-columns:1fr;
+    padding:80px 20px 40px;
+    gap:30px;
   }
-  #computer-wrap {
-    position:relative;
-    left:auto; top:auto;
-    transform:scale(1);
-    display:flex; justify-content:center;
-    padding:0 20px 40px;
-  }
-  #computer-wrap .monitor-wrap { width:300px; }
-  #zoom-scene {
-    flex-direction:column;
-    justify-content:flex-start;
-  }
-  #zoom-scene-spacer { height:100vh; }
+  #hero-spacer { height:100vh; }
+  #hero-left { text-align:center; max-width:100%; }
+  #imac-scene { max-width:300px; }
   .hero-label, .hero-btns, .hero-stats { justify-content:center; }
   .hero-desc { margin:0 auto 40px; text-align:center; }
   .hero-headline { text-align:center; }
@@ -879,9 +791,9 @@ body:hover #cursor-glow {
 
 <div id="cursor-glow"></div>
 
-<div id="zoom-scene-spacer">
-  <div id="zoom-scene">
-    <div id="hero-text-overlay" data-testid="hero-text">
+<div id="hero-spacer">
+  <div id="hero-sticky">
+    <div id="hero-left" data-testid="hero-text">
       <div class="hero-label">AI-Powered Growth Studio &middot; Insurance &amp; Logistics</div>
       <h1 class="hero-headline">
         Build the<br>Engine.<br>Build the <em>Face.</em>
@@ -907,56 +819,25 @@ body:hover #cursor-glow {
       </div>
     </div>
 
-    <div id="computer-wrap">
-      <div class="monitor-wrap" data-testid="monitor-container">
-        <img src="/retro-computer.png" alt="Retro Computer" class="monitor-img" data-testid="monitor-img">
-        <div class="screen-overlay">
-          <div class="screen-content">
-            <div class="screen-reel">
-              <div class="screen-slide ss-dashboard">
-                <div class="ss-hud-label">OPS DASHBOARD</div>
-                <div class="ss-bars">
-                  <div class="ss-bar"></div><div class="ss-bar"></div>
-                  <div class="ss-bar"></div><div class="ss-bar"></div>
-                  <div class="ss-bar"></div><div class="ss-bar"></div>
-                  <div class="ss-bar"></div><div class="ss-bar"></div>
-                </div>
-                <div class="ss-hud-label" style="margin-top:4px;">PIPELINE &middot; ACTIVE</div>
-              </div>
-              <div class="screen-slide ss-social">
-                <div class="ss-hud-label">CONTENT FEED</div>
-                <div class="ss-feed-item">
-                  <div class="ss-avatar"></div>
-                  <div class="ss-feed-lines"><div class="ss-feed-line"></div><div class="ss-feed-line"></div></div>
-                </div>
-                <div class="ss-feed-item" style="margin-top:3px;">
-                  <div class="ss-avatar" style="background:var(--neon);"></div>
-                  <div class="ss-feed-lines"><div class="ss-feed-line"></div><div class="ss-feed-line"></div></div>
-                </div>
-                <div class="ss-hud-label" style="margin-top:3px;">AI GENERATED</div>
-              </div>
-              <div class="screen-slide ss-brand">
-                <div class="ss-brand-logo">AKTIVATE</div>
-                <div class="ss-brand-tagline">BUILD THE ENGINE</div>
-                <div class="ss-brand-blocks">
-                  <div class="ss-brand-block"></div>
-                  <div class="ss-brand-block"></div>
-                  <div class="ss-brand-block"></div>
-                </div>
-              </div>
-              <div class="screen-slide ss-video">
-                <div class="ss-play-btn"></div>
-                <div class="ss-video-label" style="margin-top:4px;">AI VIDEO RENDER</div>
-                <div class="ss-hud-label">00:42 &middot; PROCESSING</div>
-              </div>
-            </div>
+    <div id="imac-scene" data-testid="monitor-container">
+      <img id="imac-side" src="/imac-side.png" alt="iMac G3 Side View" data-testid="imac-side">
+      <img id="imac-front" src="/imac-front.png" alt="iMac G3 Front View" data-testid="imac-front">
+      <div id="screen-overlay">
+        <div class="screen-ui">
+          <div class="sc-label">OPS DASHBOARD</div>
+          <div class="sc-bars">
+            <div class="bar" style="height:40%"></div>
+            <div class="bar" style="height:65%"></div>
+            <div class="bar" style="height:50%"></div>
+            <div class="bar" style="height:80%"></div>
+            <div class="bar" style="height:60%"></div>
+            <div class="bar" style="height:90%"></div>
+            <div class="bar" style="height:70%"></div>
           </div>
+          <div class="sc-status">PIPELINE &middot; ACTIVE</div>
         </div>
-        <div class="screen-scanlines"></div>
       </div>
     </div>
-
-    <div id="zoom-overlay"></div>
   </div>
 </div>
 
@@ -1269,43 +1150,61 @@ body:hover #cursor-glow {
 
 <script>
 (function() {
-  var spacer = document.getElementById('zoom-scene-spacer');
-  var wrap = document.getElementById('computer-wrap');
-  var overlay = document.getElementById('zoom-overlay');
-  var heroText = document.getElementById('hero-text-overlay');
-  var mainContent = document.getElementById('main-content');
+  var spacer   = document.getElementById('hero-spacer');
+  var sticky   = document.getElementById('hero-sticky');
+  var side     = document.getElementById('imac-side');
+  var front    = document.getElementById('imac-front');
+  var screenOv = document.getElementById('screen-overlay');
+  var scene    = document.getElementById('imac-scene');
+  var heroLeft = document.getElementById('hero-left');
   var isMobile = window.innerWidth <= 960;
 
-  var SCREEN_OFFSET_Y = -100;
-  var SCREEN_OFFSET_X = 15;
-  var MAX_SCALE = 16;
-
-  if (!isMobile && spacer && wrap && overlay && heroText && mainContent) {
+  if (!isMobile && spacer && side && front && screenOv && scene && heroLeft && sticky) {
     window.addEventListener('scroll', function() {
-      var rect = spacer.getBoundingClientRect();
+      var rect    = spacer.getBoundingClientRect();
       var scrolled = -rect.top;
-      var total = rect.height - window.innerHeight;
+      var total   = rect.height - window.innerHeight;
+      var p       = Math.min(Math.max(scrolled / total, 0), 1);
 
-      var progress = Math.min(Math.max(scrolled / total, 0), 1);
+      var crossfade = Math.min(Math.max((p - 0.05) / 0.3, 0), 1);
+      side.style.opacity  = 1 - crossfade;
+      front.style.opacity = crossfade;
 
-      var eased = progress < 0.5
-        ? 2 * progress * progress
-        : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+      var sideX = crossfade * -30;
+      side.style.transform  = 'translateX(' + sideX + 'px)';
+      front.style.transform = 'translateX(' + ((1 - crossfade) * 30) + 'px)';
 
-      var scale = 1 + (MAX_SCALE - 1) * eased;
+      var screenFade = Math.min(Math.max((p - 0.35) / 0.2, 0), 1);
+      screenOv.style.opacity = screenFade;
 
-      var tx = SCREEN_OFFSET_X * eased * -1;
-      var ty = SCREEN_OFFSET_Y * eased * -1;
+      var zoomP = Math.min(Math.max((p - 0.55) / 0.45, 0), 1);
+      var zoomEased = zoomP < 0.5
+        ? 2 * zoomP * zoomP
+        : 1 - Math.pow(-2 * zoomP + 2, 2) / 2;
 
-      wrap.style.transform =
-        'translate(calc(-50% + ' + tx + 'px), calc(-50% + ' + ty + 'px)) scale(' + scale + ')';
+      var scale = 1 + zoomEased * 16;
 
-      var textOpacity = Math.max(0, 1 - progress * 4);
-      heroText.style.opacity = textOpacity;
-      heroText.style.pointerEvents = textOpacity < 0.1 ? 'none' : 'auto';
+      var imgH = scene.offsetHeight;
+      var imgW = scene.offsetWidth;
+      var screenCX = imgW * 0.50;
+      var screenCY = imgH * 0.36;
+      var sceneCX  = imgW / 2;
+      var sceneCY  = imgH / 2;
 
-      var overlayProgress = Math.max(0, (eased - 0.65) / 0.35);
-      overlay.style.opacity = overlayProgress;
+      var tx = (sceneCX - screenCX) * zoomEased;
+      var ty = (sceneCY - screenCY) * zoomEased;
+
+      scene.style.transform = 'translate(' + tx + 'px, ' + ty + 'px) scale(' + scale + ')';
+      scene.style.transformOrigin = '50% 36%';
+
+      heroLeft.style.opacity = 1 - Math.min(zoomEased * 2, 1);
+      heroLeft.style.pointerEvents = zoomEased > 0.1 ? 'none' : 'auto';
+
+      var overlayP = Math.max(0, (zoomEased - 0.6) / 0.4);
+      sticky.style.setProperty('--zoom-bg', 'rgba(240,236,228,' + overlayP + ')');
+      sticky.style.background = overlayP > 0
+        ? 'rgba(240,236,228,' + overlayP + ')'
+        : 'linear-gradient(150deg, #9ec0d4 0%, #8eb5cc 50%, #7aa4bc 100%)';
 
     }, { passive: true });
   }

@@ -1,0 +1,202 @@
+I have two images of an iMac G3:
+- imac-side.png  (side/back view, 3/4 angle)  
+- imac-front.png (this front-facing image, blank blue screen)
+
+Both images have white backgrounds.
+
+Build a scroll-driven animation sequence in the hero section:
+
+─────────────────────────────────────────
+HTML STRUCTURE
+─────────────────────────────────────────
+
+<div id="hero-spacer">        <!-- height: 400vh, triggers scroll -->
+  <div id="hero-sticky">      <!-- position:sticky, top:0, height:100vh -->
+    
+    <div id="hero-left">      <!-- text column, left side -->
+      <!-- kicker, headline, desc, buttons, stats — existing content -->
+    </div>
+
+    <div id="imac-scene">     <!-- right column -->
+      <img id="imac-side"  src="imac-side.png">
+      <img id="imac-front" src="imac-front.png">
+      <div id="screen-overlay">
+        <!-- mini UI shown on the screen -->
+        <div class="screen-ui">
+          <div class="sc-label">OPS DASHBOARD</div>
+          <div class="sc-bars">
+            <!-- 7 green bars of varying heights -->
+            <div class="bar" style="height:40%"></div>
+            <div class="bar" style="height:65%"></div>
+            <div class="bar" style="height:50%"></div>
+            <div class="bar" style="height:80%"></div>
+            <div class="bar" style="height:60%"></div>
+            <div class="bar" style="height:90%"></div>
+            <div class="bar" style="height:70%"></div>
+          </div>
+          <div class="sc-status">PIPELINE · ACTIVE</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- REST OF SITE CONTENT (problem, system, etc) -->
+<div id="main-content">...</div>
+
+─────────────────────────────────────────
+CSS
+─────────────────────────────────────────
+
+#hero-spacer {
+  height: 400vh;
+  position: relative;
+}
+
+#hero-sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  padding: 0 52px;
+  background: linear-gradient(150deg, #9ec0d4, #8eb5cc, #7aa4bc);
+  overflow: hidden;
+}
+
+#imac-scene {
+  position: relative;
+  width: 100%;
+  max-width: 580px;
+  margin: 0 auto;
+}
+
+#imac-side, #imac-front {
+  width: 100%;
+  display: block;
+  position: absolute;
+  top: 0; left: 0;
+}
+#imac-side  { opacity: 1; position: relative; }
+#imac-front { opacity: 0; }
+
+/* Screen overlay — positioned over the blank screen area */
+#screen-overlay {
+  position: absolute;
+  top: 7%;
+  left: 11%;
+  width: 78%;
+  height: 58%;
+  opacity: 0;
+  overflow: hidden;
+  border-radius: 8px;
+  background: #0a1a0f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Mini dashboard UI inside screen */
+.screen-ui {
+  width: 100%;
+  height: 100%;
+  padding: 12% 8%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: #0a1a0f;
+}
+.sc-label {
+  font-family: 'DM Mono', monospace;
+  font-size: clamp(6px, 1.2vw, 11px);
+  color: rgba(80,200,100,0.5);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+.sc-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 4%;
+  height: 55%;
+}
+.bar {
+  flex: 1;
+  background: #3a9a50;
+  border-radius: 2px 2px 0 0;
+  box-shadow: 0 0 8px rgba(60,180,80,0.4);
+}
+.sc-status {
+  font-family: 'DM Mono', monospace;
+  font-size: clamp(5px, 1vw, 9px);
+  color: rgba(80,200,100,0.35);
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+}
+
+─────────────────────────────────────────
+JAVASCRIPT — scroll sequence
+─────────────────────────────────────────
+
+const spacer    = document.getElementById('hero-spacer');
+const side      = document.getElementById('imac-side');
+const front     = document.getElementById('imac-front');
+const screenOv  = document.getElementById('screen-overlay');
+const scene     = document.getElementById('imac-scene');
+const heroLeft  = document.getElementById('hero-left');
+
+window.addEventListener('scroll', () => {
+  const rect     = spacer.getBoundingClientRect();
+  const scrolled = -rect.top;
+  const total    = rect.height - window.innerHeight;
+  const p        = Math.min(Math.max(scrolled / total, 0), 1);
+
+  // ── PHASE 1: 0–0.35 — side image slides/fades, front fades in
+  const crossfade = Math.min(Math.max((p - 0.05) / 0.3, 0), 1);
+  side.style.opacity  = 1 - crossfade;
+  front.style.opacity = crossfade;
+
+  // Subtle translateX as if rotating toward viewer
+  const sideX = crossfade * -30;
+  side.style.transform  = `translateX(${sideX}px)`;
+  front.style.transform = `translateX(${(1 - crossfade) * 30}px)`;
+
+  // ── PHASE 2: 0.35–0.55 — screen content fades in
+  const screenFade = Math.min(Math.max((p - 0.35) / 0.2, 0), 1);
+  screenOv.style.opacity = screenFade;
+
+  // ── PHASE 3: 0.55–1.0 — zoom into screen
+  const zoomP = Math.min(Math.max((p - 0.55) / 0.45, 0), 1);
+  // Ease in-out
+  const zoomEased = zoomP < 0.5
+    ? 2 * zoomP * zoomP
+    : 1 - Math.pow(-2 * zoomP + 2, 2) / 2;
+
+  const scale = 1 + zoomEased * 16;
+  
+  // Zoom target: center of screen in the image
+  // Screen center is at ~50% x, ~36% y of the image
+  // We translate toward that point as we scale
+  const imgH = scene.offsetHeight;
+  const imgW = scene.offsetWidth;
+  const screenCX = imgW * 0.50;  // 50% across
+  const screenCY = imgH * 0.36;  // 36% down
+  const sceneCX  = imgW / 2;
+  const sceneCY  = imgH / 2;
+  
+  const tx = (sceneCX - screenCX) * zoomEased;
+  const ty = (sceneCY - screenCY) * zoomEased;
+
+  scene.style.transform =
+    `translate(${tx}px, ${ty}px) scale(${scale})`;
+  scene.style.transformOrigin = '50% 36%';
+
+  // Fade out left text column as zoom begins
+  heroLeft.style.opacity = 1 - Math.min(zoomEased * 2, 1);
+
+  // Fade in dark overlay to mask the chassis going off-screen
+  const overlayP = Math.max(0, (zoomEased - 0.6) / 0.4);
+  document.getElementById('hero-sticky').style.backgroundColor =
+    `rgba(10,26,15, ${overlayP})`;
+});
