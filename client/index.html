@@ -1134,6 +1134,8 @@ body:hover #cursor-glow {
   var zoomOv    = document.getElementById('zoom-overlay');
   var isMobile  = window.innerWidth <= 960;
 
+  var transitioned = false;
+
   if (!isMobile && spacer && scene && heroLeft && sticky && zoomOv) {
     var driftX = 0;
     var driftY = 0;
@@ -1153,7 +1155,7 @@ body:hover #cursor-glow {
     if (imacImg.complete) { measure(); } else { imacImg.addEventListener('load', measure); }
 
     window.addEventListener('scroll', function() {
-      if (!measured) return;
+      if (!measured || transitioned) return;
       var rect    = spacer.getBoundingClientRect();
       var scrolled = -rect.top;
       var total   = rect.height - window.innerHeight;
@@ -1165,7 +1167,7 @@ body:hover #cursor-glow {
       var e2 = Math.min(Math.max((p - 0.15) / 0.55, 0), 1);
       var zoomEased = e2 < 0.5 ? 2*e2*e2 : 1 - Math.pow(-2*e2+2,2)/2;
 
-      var scale = 1 + zoomEased * 4.5;
+      var scale = 1 + zoomEased * 3;
       var tx = driftX * slideEased;
       var ty = driftY * slideEased;
 
@@ -1177,8 +1179,8 @@ body:hover #cursor-glow {
       heroLeft.style.pointerEvents = textFade > 0.1 ? 'none' : 'auto';
 
       var glitchTrigger = zoomEased >= 0.95;
-      if (glitchTrigger && !zoomOv.dataset.glitched) {
-        zoomOv.dataset.glitched = '1';
+      if (glitchTrigger && !transitioned) {
+        transitioned = true;
         zoomOv.classList.add('glitch-flash');
         setTimeout(function() {
           spacer.style.display = 'none';
@@ -1187,20 +1189,22 @@ body:hover #cursor-glow {
       }
 
     }, { passive: true });
-
-    window.addEventListener('scroll', function() {
-      if (zoomOv.dataset.glitched && window.scrollY === 0) {
-        delete zoomOv.dataset.glitched;
-        zoomOv.classList.remove('glitch-flash');
-        zoomOv.style.opacity = '0';
-        spacer.style.display = '';
-        scene.style.transform = '';
-        heroLeft.style.opacity = '1';
-        heroLeft.style.pointerEvents = '';
-        window.scrollTo(0, 0);
-      }
-    }, { passive: true });
   }
+
+  function restoreHero() {
+    if (!transitioned) return;
+    transitioned = false;
+    var ov = document.getElementById('zoom-overlay');
+    var sp = document.getElementById('hero-spacer');
+    var sc = document.getElementById('imac-scene');
+    var hl = document.getElementById('hero-left');
+    if (ov) { ov.classList.remove('glitch-flash'); ov.style.opacity = '0'; }
+    if (sp) { sp.style.display = ''; }
+    if (sc) { sc.style.transform = ''; }
+    if (hl) { hl.style.opacity = '1'; hl.style.pointerEvents = ''; }
+    window.scrollTo(0, 0);
+  }
+  window.restoreHero = restoreHero;
 
   var revealEls = document.querySelectorAll('.reveal, .reveal-group');
   var revealObs = new IntersectionObserver(function(entries) {
@@ -1260,15 +1264,8 @@ body:hover #cursor-glow {
   if (logo) {
     logo.addEventListener('click', function(e) {
       e.preventDefault();
-      var ov = document.getElementById('zoom-overlay');
-      var sp = document.getElementById('hero-spacer');
-      if (ov && ov.dataset.glitched && sp) {
-        delete ov.dataset.glitched;
-        ov.classList.remove('glitch-flash');
-        ov.style.opacity = '0';
-        sp.style.display = '';
-      }
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      if (window.restoreHero) window.restoreHero();
+      else window.scrollTo({ top: 0, behavior: 'smooth' });
     });
   }
 })();
