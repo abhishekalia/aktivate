@@ -148,6 +148,11 @@ nav {
   margin:0 auto;
   will-change:transform;
 }
+#imac-inner {
+  position:relative;
+  width:100%;
+  line-height:0;
+}
 #imac-front {
   width:100%;
   height:auto;
@@ -857,14 +862,16 @@ body:hover #cursor-glow {
     </div>
 
     <div id="imac-scene" data-testid="monitor-container">
-      <img id="imac-front" src="/imac-front.png" alt="iMac G3" data-testid="imac-front">
-      <div id="screen-overlay">
-        <div class="screen-content"></div>
-        <div class="crt-scanlines"></div>
-        <div class="crt-vignette"></div>
-        <div class="crt-roll"></div>
-        <div class="crt-flicker"></div>
-        <div class="crt-glass"></div>
+      <div id="imac-inner">
+        <img id="imac-front" src="/imac-front.png" alt="iMac G3" data-testid="imac-front">
+        <div id="screen-overlay">
+          <div class="screen-content"></div>
+          <div class="crt-scanlines"></div>
+          <div class="crt-vignette"></div>
+          <div class="crt-roll"></div>
+          <div class="crt-flicker"></div>
+          <div class="crt-glass"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -1184,18 +1191,19 @@ body:hover #cursor-glow {
   var spacer    = document.getElementById('hero-spacer');
   var sticky    = document.getElementById('hero-sticky');
   var scene     = document.getElementById('imac-scene');
+  var inner     = document.getElementById('imac-inner');
   var heroLeft  = document.getElementById('hero-left');
   var zoomOv    = document.getElementById('zoom-overlay');
   var isMobile  = window.innerWidth <= 960;
 
-  if (!isMobile && spacer && scene && heroLeft && sticky && zoomOv) {
+  if (!isMobile && spacer && scene && heroLeft && sticky && zoomOv && inner) {
     var driftX = 0;
     var driftY = 0;
     var measured = false;
 
     function measure() {
       scene.style.transform = 'none';
-      var r = scene.getBoundingClientRect();
+      var r = inner.getBoundingClientRect();
       var cx = r.left + r.width * 0.5;
       var cy = r.top + r.height * 0.34;
       driftX = window.innerWidth / 2 - cx;
