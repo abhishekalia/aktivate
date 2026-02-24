@@ -160,48 +160,9 @@ nav {
   pointer-events:none;
   z-index:35;
 }
-#zoom-overlay.glitch-flash {
-  pointer-events:none;
-  animation: crtGlitch 1.2s ease-out forwards;
-}
-@keyframes crtGlitch {
-  0%   { background:#1e2830; transform:none; }
-  5%   { background:#fff; transform:translateX(10px) skewX(-4deg); }
-  8%   { background:#1e2830; transform:translateX(-15px) skewX(5deg); }
-  12%  { background:#39ff14; transform:translateX(8px); }
-  15%  { background:#1e2830; transform:translateX(-10px) skewX(-3deg); }
-  20%  { background:#fff; transform:translateX(20px) skewX(4deg); }
-  24%  { background:#1e2830; transform:translateX(-8px); }
-  28%  { background:#39ff14; transform:translateX(12px) skewX(-5deg); }
-  32%  { background:#fff; transform:translateX(-18px) skewX(3deg); }
-  36%  { background:#1e2830; transform:translateX(6px); }
-  42%  { background:#fff; transform:translateX(-5px) skewX(-2deg); }
-  48%  { background:var(--off-white); transform:translateX(3px); }
-  55%  { background:#fff; transform:translateX(-2px); }
-  65%  { background:var(--off-white); transform:translateX(1px); }
-  80%  { background:var(--off-white); transform:none; }
-  100% { background:var(--off-white); transform:none; }
-}
-#zoom-overlay.glitch-flash::before {
-  content:'';
-  position:absolute;
-  inset:0;
-  pointer-events:none;
-  animation: scanBars 0.8s linear forwards;
-  background:repeating-linear-gradient(
-    0deg, transparent, transparent 2px,
-    rgba(255,255,255,0.15) 2px, rgba(255,255,255,0.15) 4px
-  );
-}
-@keyframes scanBars {
-  0%   { opacity:1; transform:translateY(0); }
-  40%  { opacity:0.6; transform:translateY(-30px); }
-  70%  { opacity:0.3; transform:translateY(-15px); }
-  100% { opacity:0; transform:translateY(0); }
-}
 #main-content {
   position:relative;
-  z-index:20;
+  z-index:40;
 }
 
 /* ── HERO TEXT ─────────────────────── */
@@ -1131,8 +1092,6 @@ body:hover #cursor-glow {
   var zoomOv    = document.getElementById('zoom-overlay');
   var isMobile  = window.innerWidth <= 960;
 
-  var glitchFired = false;
-
   if (!isMobile && spacer && scene && heroLeft && sticky && zoomOv) {
     var driftX = 0;
     var driftY = 0;
@@ -1177,23 +1136,8 @@ body:hover #cursor-glow {
       heroLeft.style.opacity = 1 - textFade;
       heroLeft.style.pointerEvents = textFade > 0.1 ? 'none' : 'auto';
 
-      if (pastSpacer) {
-        zoomOv.style.opacity = '0';
-        zoomOv.style.pointerEvents = 'none';
-      } else {
-        var overlayFade = Math.min(Math.max((zoomEased - 0.85) / 0.15, 0), 1);
-        zoomOv.style.opacity = overlayFade;
-      }
-
-      if (zoomEased >= 0.92 && !glitchFired) {
-        glitchFired = true;
-        zoomOv.classList.add('glitch-flash');
-      }
-
-      if (zoomEased < 0.8 && glitchFired) {
-        glitchFired = false;
-        zoomOv.classList.remove('glitch-flash');
-      }
+      var overlayFade = Math.min(Math.max((zoomEased - 0.8) / 0.2, 0), 1);
+      zoomOv.style.opacity = overlayFade;
 
     }, { passive: true });
   }
