@@ -1093,6 +1093,14 @@ body:hover #cursor-glow {
   var isMobile  = window.innerWidth <= 960;
 
   if (!isMobile && spacer && scene && heroLeft && sticky && zoomOv) {
+    var initRect = scene.getBoundingClientRect();
+    var initCX = initRect.left + initRect.width * 0.5;
+    var initCY = initRect.top + initRect.height * 0.34;
+    var vpCX = window.innerWidth / 2;
+    var vpCY = window.innerHeight / 2;
+    var driftX = vpCX - initCX;
+    var driftY = vpCY - initCY;
+
     window.addEventListener('scroll', function() {
       var rect    = spacer.getBoundingClientRect();
       var scrolled = -rect.top;
@@ -1105,20 +1113,10 @@ body:hover #cursor-glow {
 
       var scale = 1 + zoomEased * 20;
 
-      var imgH = scene.offsetHeight;
-      var imgW = scene.offsetWidth;
+      var tx = driftX * zoomEased;
+      var ty = driftY * zoomEased;
 
-      var viewW = window.innerWidth;
-      var sceneRect = scene.getBoundingClientRect();
-      var sceneMidX = sceneRect.left + sceneRect.width / 2;
-      var viewMidX = viewW / 2;
-      var shiftX = (viewMidX - sceneMidX) * zoomEased;
-
-      var screenCY = imgH * 0.34;
-      var sceneCY  = imgH / 2;
-      var ty = (sceneCY - screenCY) * zoomEased;
-
-      scene.style.transform = 'translate(' + shiftX + 'px, ' + ty + 'px) scale(' + scale + ')';
+      scene.style.transform = 'translate(' + tx + 'px, ' + ty + 'px) scale(' + scale + ')';
       scene.style.transformOrigin = '50% 34%';
 
       var textFade = Math.min(p * 5, 1);
