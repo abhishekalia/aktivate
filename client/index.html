@@ -1093,28 +1093,39 @@ body:hover #cursor-glow {
   var isMobile  = window.innerWidth <= 960;
 
   if (!isMobile && spacer && scene && heroLeft && sticky && zoomOv) {
-    var initRect = scene.getBoundingClientRect();
-    var initCX = initRect.left + initRect.width * 0.5;
-    var initCY = initRect.top + initRect.height * 0.34;
-    var vpCX = window.innerWidth / 2;
-    var vpCY = window.innerHeight / 2;
-    var driftX = vpCX - initCX;
-    var driftY = vpCY - initCY;
+    var driftX = 0;
+    var driftY = 0;
+    var measured = false;
+
+    function measure() {
+      scene.style.transform = 'none';
+      var r = scene.getBoundingClientRect();
+      var cx = r.left + r.width * 0.5;
+      var cy = r.top + r.height * 0.34;
+      driftX = window.innerWidth / 2 - cx;
+      driftY = window.innerHeight / 2 - cy;
+      measured = true;
+    }
+
+    var imacImg = document.getElementById('imac-front');
+    if (imacImg.complete) { measure(); } else { imacImg.addEventListener('load', measure); }
 
     window.addEventListener('scroll', function() {
+      if (!measured) return;
       var rect    = spacer.getBoundingClientRect();
       var scrolled = -rect.top;
       var total   = rect.height - window.innerHeight;
       var p       = Math.min(Math.max(scrolled / total, 0), 1);
 
-      var zoomEased = p < 0.5
-        ? 2 * p * p
-        : 1 - Math.pow(-2 * p + 2, 2) / 2;
+      var e1 = Math.min(Math.max(p / 0.4, 0), 1);
+      var slideEased = e1 < 0.5 ? 2*e1*e1 : 1 - Math.pow(-2*e1+2,2)/2;
 
-      var scale = 1 + zoomEased * 20;
+      var e2 = Math.min(Math.max((p - 0.3) / 0.7, 0), 1);
+      var zoomEased = e2 < 0.5 ? 2*e2*e2 : 1 - Math.pow(-2*e2+2,2)/2;
 
-      var tx = driftX * zoomEased;
-      var ty = driftY * zoomEased;
+      var scale = 1 + zoomEased * 22;
+      var tx = driftX * slideEased;
+      var ty = driftY * slideEased;
 
       scene.style.transform = 'translate(' + tx + 'px, ' + ty + 'px) scale(' + scale + ')';
       scene.style.transformOrigin = '50% 34%';
@@ -1123,7 +1134,7 @@ body:hover #cursor-glow {
       heroLeft.style.opacity = 1 - textFade;
       heroLeft.style.pointerEvents = textFade > 0.1 ? 'none' : 'auto';
 
-      var overlayP = Math.max(0, (zoomEased - 0.65) / 0.35);
+      var overlayP = Math.max(0, (zoomEased - 0.7) / 0.3);
       zoomOv.style.opacity = overlayP;
 
     }, { passive: true });
