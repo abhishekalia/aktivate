@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aktivate.ai — Build the Engine. Build the Face.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+
+<style>
+/* ════════════════════════════════════════
+   TOKENS
+════════════════════════════════════════ */
+:root {
+  --sky:         #8eb5cc;
+  --sky-mid:     #7aa8c0;
+  --sky-deep:    #6090ac;
+  --cream:       #e2dace;
+  --cream-hi:    #ede8de;
+  --cream-lo:    #cdc5b4;
+  --cream-shad:  #b8b09e;
+  --screen-col:  #2e3820;
+  --screen-glow: #3a4a28;
+  --shadow-col:  rgba(80,105,125,0.32);
+  --ink:         #1e2830;
+  --ink-mid:     #3a4a58;
+  --ink-light:   #6a7e8e;
+  --white:       #f8f5f0;
+  --red:         #d94030;
+  --yellow:      #e8aa20;
+  --green:       #4aaa40;
+  --off-white:   #f0ece4;
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--sky);
+  color: var(--ink);
+  font-family: 'DM Mono', monospace;
+  font-weight: 300;
+  overflow-x: hidden;
+  cursor: default;
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed; top:0; left:0; right:0; z-index:1000;
+  height:54px; padding:0 52px;
+  display: flex; align-items:center; justify-content:space-between;
+  background: rgba(142,181,204,0.72);
+  backdrop-filter: blur(24px) saturate(1.2);
+  border-bottom: 1px solid rgba(255,255,255,0.22);
+}
+.nav-logo {
+  font-family:'Unbounded',sans-serif; font-weight:900; font-size:14px;
+  color:var(--ink); text-decoration:none; letter-spacing:-0.01em;
+  display:flex; align-items:center; gap:6px;
+}
+.logo-dot {
+  width:8px; height:8px; border-radius:50%;
+  background:var(--red);
+  box-shadow:0 0 0 2px rgba(217,64,48,0.2);
+}
+.nav-links { display:flex; gap:40px; list-style:none; }
+.nav-links a {
+  font-family:'DM Mono',monospace; font-size:10px; font-weight:400;
+  color:var(--ink-mid); text-decoration:none;
+  letter-spacing:0.1em; text-transform:uppercase; transition:color .2s;
+}
+.nav-links a:hover { color:var(--ink); }
+.nav-cta {
+  font-family:'DM Mono',monospace; font-size:10px; font-weight:400;
+  padding:9px 22px; background:var(--ink); color:var(--white);
+  text-decoration:none; letter-spacing:0.1em; text-transform:uppercase;
+  transition:all .22s;
+}
+.nav-cta:hover { background:var(--ink-mid); }
+
+/* ════════════════════════════════════════
+   HERO
+════════════════════════════════════════ */
+#hero {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  padding: 80px 52px 60px;
+  position: relative;
+  gap: 0;
+  background: linear-gradient(150deg, #9ec0d4 0%, #8eb5cc 50%, #7aa4bc 100%);
+  overflow: hidden;
+}
+
+/* Large faint circle in bg */
+#hero::before {
+  content:'';
+  position:absolute; top:10%; left:52%; transform:translateX(-50%);
+  width:65vw; height:65vw; border-radius:50%;
+  background: radial-gradient(ellipse, rgba(255,255,255,0.1) 0%, transparent 65%);
+  pointer-events:none;
+}
+
+/* ── LEFT: TEXT ── */
+.hero-text {
+  position:relative; z-index:2; padding-right:48px;
+}
+.hero-kicker {
+  font-family:'DM Mono',monospace; font-size:10px; font-weight:400;
+  color:rgba(30,40,48,0.55); letter-spacing:0.22em; text-transform:uppercase;
+  margin-bottom:28px; display:flex; align-items:center; gap:12px;
+}
+.hero-kicker::before {
+  content:''; display:block; width:22px; height:1px;
+  background:rgba(30,40,48,0.35);
+}
+.hero-headline {
+  font-family:'Unbounded',sans-serif; font-weight:900;
+  font-size:clamp(36px,4.2vw,62px);
+  line-height:1.0; letter-spacing:-0.03em;
+  color:var(--ink); margin-bottom:28px;
+}
+.hero-headline em {
+  font-style:normal;
+  /* Chrome metallic gradient on "Face." */
+  background: linear-gradient(125deg,
+    #3a4a58 0%, #7a8a98 22%,
+    #b8c8d4 40%, #e8eeF4 52%,
+    #9ab0c0 68%, #4a5e6c 85%, #3a4a58 100%);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.hero-desc {
+  font-family:'DM Mono',monospace; font-weight:300; font-size:14px;
+  color:var(--ink-mid); line-height:1.75; max-width:360px; margin-bottom:40px;
+  letter-spacing:0.01em;
+}
+.hero-btns {
+  display:flex; align-items:center; gap:20px; margin-bottom:52px;
+}
+.btn-p {
+  font-family:'DM Mono',monospace; font-size:11px; font-weight:400;
+  letter-spacing:0.1em; text-transform:uppercase;
+  padding:15px 34px; background:var(--ink); color:var(--white);
+  text-decoration:none; transition:all .22s;
+  box-shadow:0 6px 24px rgba(30,40,48,0.25);
+}
+.btn-p:hover { background:var(--ink-mid); transform:translateY(-2px); }
+.btn-s {
+  font-family:'DM Mono',monospace; font-size:11px; font-weight:400;
+  color:rgba(30,40,48,0.5); text-decoration:none;
+  letter-spacing:0.08em; text-transform:uppercase; transition:color .2s;
+  display:flex; align-items:center; gap:6px;
+}
+.btn-s:hover { color:var(--ink); }
+.btn-s::after { content:'→'; transition:transform .2s; }
+.btn-s:hover::after { transform:translateX(4px); }
+
+/* Stat row */
+.hero-stats {
+  display:flex; gap:36px;
+  padding-top:28px; border-top:1px solid rgba(30,40,48,0.1);
+}
+.hs { }
+.hs-n {
+  font-family:'Unbounded',sans-serif; font-weight:900;
+  font-size:26px; color:var(--ink); letter-spacing:-0.03em; line-height:1;
+}
+.hs-l {
+  font-family:'DM Mono',monospace; font-size:9px; font-weight:400;
+  color:rgba(30,40,48,0.45); letter-spacing:0.15em; text-transform:uppercase;
+  margin-top:4px;
+}
+
+/* ── RIGHT: 3D COMPUTER ── */
+.computer-stage {
+  position:relative; z-index:2;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  padding-left:24px;
+}
+
+/* Perspective wrapper for 3D illusion */
+.comp-wrap {
+  position:relative;
+  animation: gentle-float 7s ease-in-out infinite;
+  transform-style: preserve-3d;
+}
+@keyframes gentle-float {
+  0%,100%{transform:translateY(0);}
+  50%{transform:translateY(-14px);}
+}
+
+/* ─ MONITOR UNIT ─
+   The key: angled 3/4 view is simulated using
+   asymmetric box-shadow + skewed side face panels
+*/
+.monitor-unit {
+  position:relative; width:310px;
+}
+
+/* Main front face */
+.mon-front {
+  width:260px; margin:0 auto;
+  background:linear-gradient(155deg,
+    var(--cream-hi) 0%,
+    var(--cream) 40%,
+    var(--cream-lo) 100%);
+  border-radius:22px 22px 14px 14px;
+  padding:28px 22px 18px;
+  position:relative;
+  box-shadow:
+    inset 0 2px 0 rgba(255,255,255,0.55),
+    inset 0 -2px 0 rgba(0,0,0,0.06),
+    inset -2px 0 0 rgba(0,0,0,0.04),
+    /* main drop shadow - angled hard */
+    8px 18px 0 0 var(--cream-shad),
+    8px 18px 30px 0 rgba(60,80,100,0.3),
+    0 40px 80px rgba(60,80,100,0.2);
+}
+
+/* Right side face - creates 3D illusion */
+.mon-side {
+  position:absolute; top:8px; right:-22px; bottom:0;
+  width:26px;
+  background:linear-gradient(180deg,
+    var(--cream-shad) 0%, #a8a098 100%);
+  border-radius:0 14px 10px 0;
+  transform:skewY(0deg);
+  box-shadow:inset -2px 0 4px rgba(0,0,0,0.1);
+  clip-path:polygon(0 0, 100% 8%, 100% 100%, 0 100%);
+}
+
+/* Vent slots on top */
+.mon-vents {
+  position:absolute; top:10px; left:50%; transform:translateX(-50%);
+  display:flex; gap:4px; align-items:center;
+}
+.mon-vent {
+  width:3px; height:12px; border-radius:2px;
+  background:rgba(0,0,0,0.1);
+  box-shadow:inset 0 1px 2px rgba(0,0,0,0.1);
+}
+
+/* Left stepped edge */
+.mon-step {
+  position:absolute; top:0; left:-14px; bottom:0;
+  width:16px;
+  background:linear-gradient(90deg,
+    rgba(0,0,0,0.04) 0%, transparent 100%);
+  border-radius:22px 0 0 14px;
+  clip-path:polygon(0 12%, 100% 0, 100% 100%, 0 100%);
+  background:var(--cream-lo);
+}
+
+/* Screen bezel */
+.mon-bezel {
+  background:linear-gradient(145deg, #181c14 0%, #0e1008 100%);
+  border-radius:10px; padding:10px;
+  box-shadow:
+    inset 0 0 0 1px rgba(0,0,0,0.5),
+    inset 0 2px 8px rgba(0,0,0,0.6),
+    0 0 0 1px rgba(255,255,255,0.04);
+}
+
+/* The screen itself - recessed and curved */
+.mon-screen {
+  width:100%; aspect-ratio:1.38;
+  border-radius:6px; overflow:hidden;
+  background: radial-gradient(ellipse at 38% 35%,
+    #384828 0%, #28341c 35%,
+    #1e2814 65%, #141c0c 100%);
+  position:relative;
+  box-shadow:inset 0 0 30px rgba(0,0,0,0.6);
+}
+
+/* Curved glass reflection */
+.mon-screen::before {
+  content:''; position:absolute; inset:0; border-radius:6px;
+  background: radial-gradient(ellipse at 35% 30%,
+    rgba(255,255,255,0.07) 0%,
+    rgba(255,255,255,0.02) 30%,
+    transparent 60%);
+  z-index:2;
+}
+
+/* Screen curvature vignette */
+.mon-screen::after {
+  content:''; position:absolute; inset:0; border-radius:6px;
+  background: radial-gradient(ellipse at 50% 50%,
+    transparent 40%, rgba(0,0,0,0.5) 100%);
+  z-index:3;
+}
+
+/* Text inside screen */
+.screen-inner {
+  position:absolute; inset:0; z-index:4;
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  gap:5px; padding:14px;
+}
+.si-logo {
+  font-family:'DM Mono',monospace; font-size:9px;
+  color:rgba(110,160,70,0.55); letter-spacing:0.25em;
+  text-transform:uppercase;
+}
+.si-cursor {
+  display:flex; align-items:center; gap:4px;
+}
+.si-line {
+  width:1px; height:12px; background:rgba(110,160,70,0.6);
+  animation:blink 1.1s step-end infinite;
+}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
+.si-txt {
+  font-family:'DM Mono',monospace; font-size:7px;
+  color:rgba(90,140,55,0.4); letter-spacing:0.12em;
+}
+
+/* Lower panel */
+.mon-panel {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:12px 4px 0;
+}
+.mon-badge {
+  display:flex; gap:3px; align-items:center;
+}
+.badge-bar {
+  width:5px; height:11px; border-radius:1.5px;
+}
+.bb-r{background:var(--red);}
+.bb-y{background:var(--yellow);}
+.bb-g{background:var(--green);}
+
+.mon-slot {
+  width:54px; height:5px; border-radius:1px;
+  background:rgba(0,0,0,0.1);
+  box-shadow:inset 0 1px 2px rgba(0,0,0,0.15);
+}
+.mon-btn {
+  width:9px; height:9px; border-radius:50%;
+  background:var(--cream-lo);
+  border:1px solid rgba(0,0,0,0.1);
+}
+
+/* Monitor base */
+.mon-base {
+  width:70px; height:12px; margin:0 auto;
+  background:linear-gradient(180deg,var(--cream-lo) 0%,var(--cream-shad) 100%);
+  border-radius:0 0 6px 6px;
+  box-shadow:0 6px 20px var(--shadow-col);
+}
+
+/* ─ KEYBOARD ─ */
+.kb-wrap {
+  width:360px; margin-top:20px; position:relative;
+}
+.keyboard {
+  background:linear-gradient(155deg,
+    var(--cream-hi) 0%,
+    var(--cream) 30%,
+    var(--cream-lo) 100%);
+  border-radius:8px 8px 5px 5px;
+  padding:9px 14px 13px;
+  position:relative;
+  box-shadow:
+    inset 0 2px 0 rgba(255,255,255,0.5),
+    /* angled hard shadow matching monitor */
+    5px 10px 0 0 var(--cream-shad),
+    5px 10px 24px 0 rgba(60,80,100,0.25),
+    0 20px 50px rgba(60,80,100,0.18);
+}
+.kb-side {
+  position:absolute; top:4px; right:-14px; bottom:0;
+  width:16px;
+  background:linear-gradient(180deg,var(--cream-shad) 0%,#a8a098 100%);
+  border-radius:0 5px 4px 0;
+  clip-path:polygon(0 0, 100% 15%, 100% 100%, 0 100%);
+}
+
+.key-rows { display:flex; flex-direction:column; gap:3.5px; }
+.key-row { display:flex; gap:2.5px; }
+.key {
+  height:13px; flex:1; border-radius:2.5px;
+  background:linear-gradient(180deg,
+    rgba(255,255,255,0.5) 0%,
+    var(--cream) 40%,
+    var(--cream-lo) 100%);
+  box-shadow:
+    0 2px 0 rgba(0,0,0,0.14),
+    inset 0 1px 0 rgba(255,255,255,0.6);
+}
+.key.w2{flex:2;} .key.w3{flex:3;} .key.w6{flex:6;}
+
+/* Combined ground shadow for whole computer */
+.comp-shadow {
+  width:500px; height:28px; margin-top:-4px;
+  background:radial-gradient(ellipse,
+    rgba(60,80,100,0.3) 0%,
+    rgba(60,80,100,0.15) 40%,
+    transparent 70%);
+  border-radius:50%; transform:scaleY(0.35) translateX(-20px);
+}
+
+/* Floating UI chips */
+.chip {
+  position:absolute; z-index:10;
+  background:rgba(248,245,240,0.82);
+  backdrop-filter:blur(12px) saturate(1.1);
+  border:1px solid rgba(255,255,255,0.65);
+  border-radius:100px; padding:8px 16px;
+  font-family:'DM Mono',monospace; font-size:9px; font-weight:400;
+  color:var(--ink); letter-spacing:0.1em; text-transform:uppercase;
+  white-space:nowrap;
+  box-shadow:0 4px 20px rgba(60,80,100,0.12), 0 1px 0 rgba(255,255,255,0.8) inset;
+  display:flex; align-items:center; gap:7px;
+}
+.chip-d { width:6px;height:6px;border-radius:50%;flex-shrink:0; }
+
+/* Position chips */
+.ch1{top:-30px;left:-90px;animation:cf1 5.5s ease-in-out infinite;}
+.ch2{top:20px;right:-110px;animation:cf2 4.8s ease-in-out infinite 0.8s;}
+.ch3{top:140px;left:-120px;animation:cf1 6.2s ease-in-out infinite 1.4s;}
+.ch4{bottom:200px;right:-90px;animation:cf2 5.1s ease-in-out infinite 0.3s;}
+.ch5{bottom:130px;left:-50px;animation:cf1 5.8s ease-in-out infinite 2s;}
+@keyframes cf1{0%,100%{transform:translateY(0) rotate(-1deg);}50%{transform:translateY(-9px) rotate(0.5deg);}}
+@keyframes cf2{0%,100%{transform:translateY(0) rotate(1deg);}50%{transform:translateY(-7px) rotate(-0.5deg);}}
+
+/* ════════════════════════════════════════
+   TICKER
+════════════════════════════════════════ */
+.ticker {
+  background:var(--ink); padding:13px 0; overflow:hidden;
+}
+.ticker-inner {
+  display:flex; gap:56px; white-space:nowrap;
+  animation:tick 22s linear infinite;
+}
+@keyframes tick{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+.ti {
+  font-family:'DM Mono',monospace; font-size:10px; font-weight:400;
+  color:rgba(240,236,228,0.4); letter-spacing:0.2em; text-transform:uppercase;
+  display:flex; align-items:center; gap:10px; flex-shrink:0;
+}
+.ti::before{content:'·';color:rgba(240,236,228,0.2);}
+
+/* ════════════════════════════════════════
+   SHARED SECTION BASE
+════════════════════════════════════════ */
+.s-wrap{ max-width:1100px; margin:0 auto; padding:0 52px; }
+.s-lbl {
+  font-family:'DM Mono',monospace; font-size:9px; font-weight:400;
+  color:rgba(30,40,48,0.35); letter-spacing:0.25em; text-transform:uppercase;
+  margin-bottom:18px; display:flex; align-items:center; gap:10px;
+}
+.s-lbl::before{content:'';display:block;width:14px;height:1px;background:currentColor;}
+.s-hl {
+  font-family:'Unbounded',sans-serif; font-weight:700;
+  font-size:clamp(24px,2.6vw,40px); color:var(--ink);
+  line-height:1.1; letter-spacing:-0.025em; margin-bottom:16px;
+}
+.s-body{font-size:13px;color:var(--ink-light);line-height:1.8;font-weight:300;}
+
+/* ════════════════════════════════════════
+   PROBLEM
+════════════════════════════════════════ */
+#problem{
+  padding:110px 0;
+  background:var(--off-white);
+}
+.prob-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start;}
+.pain-stack{display:flex;flex-direction:column;gap:1px;}
+.pain{
+  padding:22px 26px; border:1px solid rgba(30,40,48,0.07);
+  background:rgba(255,255,255,0.5); position:relative; overflow:hidden;
+  transition:background .3s;
+}
+.pain:hover{background:rgba(255,255,255,0.9);}
+.pain::before{
+  content:''; position:absolute; left:0; top:0; bottom:0; width:2px;
+  background:var(--ink);
+}
+.pain-code{font-size:8px;color:rgba(30,40,48,0.3);letter-spacing:0.2em;margin-bottom:6px;}
+.pain-title{font-family:'Unbounded',sans-serif;font-weight:700;font-size:13px;color:var(--ink);margin-bottom:7px;letter-spacing:-0.01em;}
+.pain-txt{font-size:12px;color:var(--ink-light);line-height:1.65;}
+
+/* ════════════════════════════════════════
+   SYSTEM — dark
+════════════════════════════════════════ */
+#system{padding:110px 0;background:var(--ink);color:var(--white);}
+.sys-hdr{text-align:center;margin-bottom:68px;}
+.sys-hdr .s-lbl{justify-content:center;color:rgba(240,236,228,0.25);}
+.sys-hdr .s-lbl::before{background:rgba(240,236,228,0.25);}
+.sys-hdr .s-hl{color:var(--white);max-width:500px;margin:0 auto 14px;}
+.sys-hdr .s-body{text-align:center;max-width:500px;margin:0 auto;color:rgba(240,236,228,0.45);}
+
+.pillars{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;}
+.pillar{
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.07);
+  padding:42px 34px; position:relative; overflow:hidden; transition:all .3s;
+}
+.pillar:hover{background:rgba(255,255,255,0.08);}
+.p-n{
+  font-family:'Unbounded',sans-serif;font-weight:900;font-size:60px;
+  color:rgba(255,255,255,0.03);position:absolute;top:8px;right:16px;
+  line-height:1;letter-spacing:-0.03em;
+}
+.p-tag{font-size:8px;color:rgba(240,236,228,0.2);letter-spacing:0.28em;text-transform:uppercase;margin-bottom:16px;}
+.p-ico{font-size:24px;display:block;margin-bottom:14px;}
+.p-ttl{font-family:'Unbounded',sans-serif;font-weight:700;font-size:16px;color:var(--white);margin-bottom:4px;letter-spacing:-0.015em;}
+.p-role{font-size:8px;color:rgba(240,236,228,0.25);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:15px;}
+.p-div{width:22px;height:1px;background:rgba(255,255,255,0.12);margin-bottom:14px;}
+.p-body{font-size:12px;color:rgba(240,236,228,0.45);line-height:1.65;margin-bottom:18px;}
+.p-list{list-style:none;display:flex;flex-direction:column;gap:6px;}
+.p-list li{font-size:10px;color:rgba(240,236,228,0.3);letter-spacing:0.04em;display:flex;align-items:center;gap:7px;}
+.p-list li::before{content:'—';color:rgba(240,236,228,0.15);}
+
+.loop-bar{
+  border:1px solid rgba(255,255,255,0.07);
+  background:rgba(255,255,255,0.03);
+  padding:26px 42px;display:flex;align-items:center;gap:22px;margin-top:1px;
+}
+.loop-ico{font-size:34px;min-width:44px;line-height:1;color:rgba(255,255,255,0.2);}
+.loop-ttl{font-family:'Unbounded',sans-serif;font-weight:700;font-size:13px;color:var(--white);margin-bottom:5px;letter-spacing:-0.01em;}
+.loop-body{font-size:12px;color:rgba(240,236,228,0.4);line-height:1.6;}
+
+/* ════════════════════════════════════════
+   SHOWCASE
+════════════════════════════════════════ */
+#showcase{padding:110px 0;background:var(--off-white);}
+.sc-hdr{padding:0 52px;margin-bottom:44px;}
+.sc-rail{
+  display:flex;gap:1px;overflow-x:auto;padding:0 52px 1px;
+  scrollbar-width:none;scroll-snap-type:x mandatory;
+}
+.sc-rail::-webkit-scrollbar{display:none;}
+.sc-card{
+  flex-shrink:0;width:300px;height:210px;
+  border:1px solid rgba(30,40,48,0.07);
+  background:rgba(255,255,255,0.65);
+  scroll-snap-align:start;position:relative;overflow:hidden;
+  transition:all .3s;display:flex;flex-direction:column;
+  justify-content:flex-end;padding:22px;
+}
+.sc-card:hover{background:rgba(255,255,255,0.98);}
+.sc-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+.sc-c1::before{background:linear-gradient(90deg,var(--red),var(--yellow));}
+.sc-c2::before{background:linear-gradient(90deg,var(--sky-deep),var(--sky));}
+.sc-c3::before{background:linear-gradient(90deg,var(--green),var(--sky-deep));}
+.sc-c4::before{background:linear-gradient(90deg,var(--yellow),var(--red));}
+.sc-c5::before{background:var(--ink);}
+.sc-bg-n{
+  position:absolute;top:10px;right:14px;
+  font-family:'Unbounded',sans-serif;font-weight:900;font-size:72px;
+  color:rgba(30,40,48,0.04);line-height:1;pointer-events:none;
+}
+.sc-tag{font-size:8px;color:var(--ink-light);letter-spacing:0.2em;text-transform:uppercase;margin-bottom:7px;}
+.sc-ttl{font-family:'Unbounded',sans-serif;font-weight:700;font-size:14px;color:var(--ink);margin-bottom:6px;letter-spacing:-0.015em;}
+.sc-body{font-size:11px;color:var(--ink-light);line-height:1.5;}
+
+/* ════════════════════════════════════════
+   PROCESS
+════════════════════════════════════════ */
+#process{padding:110px 0;background:var(--sky);}
+.proc-steps{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:0;
+  margin-top:60px;position:relative;
+}
+.proc-steps::before{
+  content:'';position:absolute;top:20px;left:7%;right:7%;height:1px;
+  background:rgba(30,40,48,0.12);
+}
+.step{padding-right:44px;}
+.step-dot-row{display:flex;align-items:center;gap:10px;margin-bottom:24px;}
+.step-dot{
+  width:13px;height:13px;border-radius:50%;background:var(--ink);flex-shrink:0;z-index:1;
+  box-shadow:0 0 0 4px var(--sky),0 0 0 5px rgba(30,40,48,0.12);
+}
+.step-n{font-size:9px;color:rgba(30,40,48,0.35);letter-spacing:0.2em;}
+.step-ttl{font-family:'Unbounded',sans-serif;font-weight:700;font-size:15px;color:var(--ink);margin-bottom:9px;letter-spacing:-0.015em;}
+.step-body{font-size:12px;color:var(--ink-mid);line-height:1.7;}
+
+/* ════════════════════════════════════════
+   RESULTS
+════════════════════════════════════════ */
+#results{padding:110px 0;background:var(--off-white);}
+.res-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;margin-top:52px;}
+.cs{
+  border:1px solid rgba(30,40,48,0.07);
+  background:rgba(255,255,255,0.65);
+  padding:38px;transition:background .3s;
+}
+.cs:hover{background:rgba(255,255,255,0.95);}
+.cs-tag{font-size:8px;color:var(--ink-light);letter-spacing:0.18em;text-transform:uppercase;padding:4px 10px;border:1px solid rgba(30,40,48,0.08);display:inline-block;margin-bottom:22px;}
+.cs-flow{display:grid;grid-template-columns:1fr 24px 1fr;gap:9px;align-items:center;margin-bottom:20px;}
+.cs-box{padding:12px;border:1px solid;}
+.cs-box.before{border-color:rgba(30,40,48,0.1);background:rgba(30,40,48,0.02);}
+.cs-box.after{border-color:rgba(74,170,64,0.25);background:rgba(74,170,64,0.05);}
+.cs-bl{font-size:7px;color:rgba(30,40,48,0.3);letter-spacing:0.2em;text-transform:uppercase;margin-bottom:4px;}
+.cs-box.after .cs-bl{color:rgba(40,120,30,0.6);}
+.cs-bt{font-size:11px;color:var(--ink-mid);line-height:1.5;}
+.cs-ar{text-align:center;color:rgba(30,40,48,0.2);font-size:13px;}
+.cs-result{display:flex;align-items:center;gap:13px;padding-top:16px;border-top:1px solid rgba(30,40,48,0.07);}
+.cs-big{font-family:'Unbounded',sans-serif;font-weight:900;font-size:38px;color:var(--ink);line-height:1;letter-spacing:-0.03em;}
+.cs-txt{font-size:11px;color:var(--ink-light);line-height:1.5;}
+
+/* ════════════════════════════════════════
+   WHO IT'S FOR
+════════════════════════════════════════ */
+#for-who{padding:110px 0;background:var(--sky);}
+.fw-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;margin-top:52px;}
+.fw-card{
+  border:1px solid rgba(255,255,255,0.35);
+  background:rgba(255,255,255,0.38);
+  backdrop-filter:blur(12px);
+  padding:32px;transition:background .3s;
+}
+.fw-card:hover{background:rgba(255,255,255,0.7);}
+.fw-ind{font-family:'Unbounded',sans-serif;font-weight:700;font-size:14px;color:var(--ink);margin-bottom:5px;letter-spacing:-0.015em;}
+.fw-role{font-size:8px;color:var(--ink-light);letter-spacing:0.18em;text-transform:uppercase;margin-bottom:13px;}
+.fw-body{font-size:12px;color:var(--ink-mid);line-height:1.65;}
+
+/* ════════════════════════════════════════
+   ABOUT
+════════════════════════════════════════ */
+#about{padding:110px 0;background:var(--off-white);}
+.about-grid{display:grid;grid-template-columns:280px 1fr;gap:72px;align-items:center;}
+.about-frame{
+  width:280px;height:350px;
+  border:1px solid rgba(30,40,48,0.1);
+  background:rgba(255,255,255,0.45);
+  position:relative;overflow:hidden;
+}
+.about-ph{
+  width:100%;height:100%;display:flex;align-items:center;justify-content:center;
+  font-family:'Unbounded',sans-serif;font-weight:900;font-size:80px;
+  color:rgba(30,40,48,0.08);letter-spacing:-0.04em;
+}
+.about-ph-lbl{
+  position:absolute;bottom:0;left:0;right:0;padding:11px;
+  background:rgba(255,255,255,0.75);
+  font-size:9px;color:var(--ink-light);letter-spacing:0.15em;
+  text-transform:uppercase;text-align:center;
+  border-top:1px solid rgba(30,40,48,0.06);
+}
+.about-hl{font-family:'Unbounded',sans-serif;font-weight:700;font-size:clamp(19px,2.2vw,30px);color:var(--ink);line-height:1.15;margin-bottom:18px;letter-spacing:-0.02em;}
+.about-body{font-size:13px;color:var(--ink-light);line-height:1.75;margin-bottom:11px;}
+.about-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:20px;}
+.about-tag{font-size:8px;padding:5px 11px;border:1px solid rgba(30,40,48,0.1);background:rgba(255,255,255,0.5);color:var(--ink-light);letter-spacing:0.1em;text-transform:uppercase;}
+
+/* ════════════════════════════════════════
+   CTA
+════════════════════════════════════════ */
+#cta{
+  padding:130px 0;text-align:center;background:var(--ink);
+  position:relative;overflow:hidden;
+}
+.cta-bg-word{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  font-family:'Unbounded',sans-serif;font-weight:900;font-size:180px;
+  color:rgba(255,255,255,0.025);white-space:nowrap;pointer-events:none;letter-spacing:-0.02em;
+}
+.cta-inner{position:relative;z-index:1;max-width:580px;margin:0 auto;padding:0 52px;}
+.cta-lbl{font-size:9px;color:rgba(240,236,228,0.25);letter-spacing:0.25em;text-transform:uppercase;margin-bottom:22px;display:flex;align-items:center;justify-content:center;gap:10px;}
+.cta-lbl::before,.cta-lbl::after{content:'';display:block;width:20px;height:1px;background:rgba(240,236,228,0.25);}
+.cta-hl{font-family:'Unbounded',sans-serif;font-weight:900;font-size:clamp(28px,4.5vw,56px);color:var(--white);line-height:1.0;letter-spacing:-0.03em;margin-bottom:18px;}
+.cta-body{font-size:13px;color:rgba(240,236,228,0.45);line-height:1.75;margin-bottom:44px;}
+.cta-btn{
+  font-family:'DM Mono',monospace;font-size:11px;font-weight:400;
+  letter-spacing:0.1em;text-transform:uppercase;padding:16px 46px;
+  background:var(--white);color:var(--ink);
+  text-decoration:none;display:inline-block;transition:all .22s;
+  box-shadow:0 4px 28px rgba(0,0,0,0.3);
+}
+.cta-btn:hover{transform:translateY(-2px);box-shadow:0 8px 36px rgba(0,0,0,0.35);}
+.cta-note{font-size:9px;color:rgba(240,236,228,0.2);letter-spacing:0.12em;margin-top:18px;}
+
+/* ════════════════════════════════════════
+   FOOTER
+════════════════════════════════════════ */
+footer{
+  padding:34px 52px;background:var(--ink);
+  border-top:1px solid rgba(255,255,255,0.05);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.f-logo{font-family:'Unbounded',sans-serif;font-weight:900;font-size:13px;color:var(--white);letter-spacing:-0.01em;display:flex;align-items:center;gap:5px;}
+.f-logo-dot{width:7px;height:7px;border-radius:50%;background:var(--red);}
+.f-links{display:flex;gap:28px;list-style:none;}
+.f-links a{font-size:9px;color:rgba(240,236,228,0.25);text-decoration:none;letter-spacing:0.14em;text-transform:uppercase;transition:color .2s;}
+.f-links a:hover{color:rgba(240,236,228,0.7);}
+.f-copy{font-size:9px;color:rgba(240,236,228,0.18);letter-spacing:0.1em;}
+
+/* ════════════════════════════════════════
+   RESPONSIVE
+════════════════════════════════════════ */
+@media(max-width:960px){
+  nav{padding:0 20px;} .nav-links{display:none;}
+  #hero{grid-template-columns:1fr;padding:80px 20px 60px;gap:52px;}
+  .hero-text{padding-right:0;text-align:center;}
+  .hero-kicker,.hero-btns,.hero-stats{justify-content:center;}
+  .hero-desc{margin:0 auto 40px;}
+  .computer-stage{align-items:center;}
+  .chip{display:none;}
+  .comp-wrap{width:280px;}
+  .monitor-unit{width:260px;}
+  .mon-front{width:220px;}
+  .kb-wrap{width:300px;}
+  .s-wrap{padding:0 20px;}
+  .sc-rail,.sc-hdr{padding-left:20px;}
+  .pillars,.proc-steps,.res-grid,.fw-grid,.about-grid,.prob-grid{grid-template-columns:1fr;}
+  .proc-steps::before{display:none;}
+  footer{flex-direction:column;gap:16px;text-align:center;padding:24px 20px;}
+  .cta-inner{padding:0 20px;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#"><div class="logo-dot"></div>aktivate.ai</a>
+  <ul class="nav-links">
+    <li><a href="#system">The System</a></li>
+    <li><a href="#results">Results</a></li>
+    <li><a href="#for-who">Who It's For</a></li>
+    <li><a href="#about">About</a></li>
+  </ul>
+  <a class="nav-cta" href="#cta">Book a Call</a>
+</nav>
+
+<!-- ════ HERO ════ -->
+<section id="hero">
+
+  <!-- LEFT: TEXT -->
+  <div class="hero-text">
+    <div class="hero-kicker">AI-Powered Growth Studio · Insurance & Logistics</div>
+    <h1 class="hero-headline">
+      Build the<br>Engine.<br>
+      Build the <em>Face.</em>
+    </h1>
+    <p class="hero-desc">Automated ops. Automated presence. One studio built specifically for Insurance & Logistics operators who are ready to scale.</p>
+    <div class="hero-btns">
+      <a href="#cta" class="btn-p">Book a Free Call</a>
+      <a href="#system" class="btn-s">See how it works</a>
+    </div>
+    <div class="hero-stats">
+      <div class="hs">
+        <div class="hs-n">70%</div>
+        <div class="hs-l">Ops Time Saved</div>
+      </div>
+      <div class="hs">
+        <div class="hs-n">2–4wk</div>
+        <div class="hs-l">Build Time</div>
+      </div>
+      <div class="hs">
+        <div class="hs-n">5×</div>
+        <div class="hs-l">Content Output</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT: CSS 3D COMPUTER -->
+  <div class="computer-stage">
+    <div class="comp-wrap">
+
+      <!-- Floating chips -->
+      <div class="chip ch1">
+        <div class="chip-d" style="background:var(--red);"></div>
+        Workflow Automation
+      </div>
+      <div class="chip ch2">
+        <div class="chip-d" style="background:var(--green);"></div>
+        AI Agents
+      </div>
+      <div class="chip ch3">
+        <div class="chip-d" style="background:var(--sky-deep);"></div>
+        AI Video
+      </div>
+      <div class="chip ch4">
+        <div class="chip-d" style="background:var(--yellow);"></div>
+        Custom Avatars
+      </div>
+      <div class="chip ch5">
+        <div class="chip-d" style="background:var(--ink);"></div>
+        Done For You
+      </div>
+
+      <!-- MONITOR -->
+      <div class="monitor-unit">
+        <!-- side face for 3D -->
+        <div class="mon-step"></div>
+        <div class="mon-front">
+          <div class="mon-vents">
+            <div class="mon-vent"></div><div class="mon-vent"></div>
+            <div class="mon-vent"></div><div class="mon-vent"></div>
+            <div class="mon-vent"></div><div class="mon-vent"></div>
+            <div class="mon-vent"></div>
+          </div>
+          <div class="mon-bezel">
+            <div class="mon-screen">
+              <div class="screen-inner">
+                <div class="si-logo">AKTIVATE</div>
+                <div class="si-cursor"><div class="si-line"></div></div>
+                <div class="si-txt">SYSTEM READY_</div>
+              </div>
+            </div>
+          </div>
+          <div class="mon-panel">
+            <div class="mon-badge">
+              <div class="badge-bar bb-r"></div>
+              <div class="badge-bar bb-y"></div>
+              <div class="badge-bar bb-g"></div>
+            </div>
+            <div class="mon-slot"></div>
+            <div class="mon-btn"></div>
+          </div>
+        </div>
+        <div class="mon-side"></div>
+        <div class="mon-base"></div>
+      </div>
+
+      <!-- KEYBOARD -->
+      <div class="kb-wrap">
+        <div class="keyboard">
+          <div class="key-rows">
+            <div class="key-row">
+              <div class="key"></div><div class="key"></div><div class="key"></div>
+              <div class="key"></div><div class="key"></div><div class="key"></div>
+              <div class="key"></div><div class="key"></div><div class="key"></div>
+              <div class="key"></div><div class="key"></div><div class="key"></div>
+              <div class="key w2"></div>
+            </div>
+            <div class="key-row">
+              <div class="key w2"></div><div class="key"></div><div class="key"></div>
+              <div class="key"></div><div class="key"></div><div class="key"></div>
+              <div class="key"></div><div class="key"></div><div class="key"></div>
+              <div class="key"></div><div class="key"></div><div class="key w3"></div>
+            </div>
+            <div class="key-row">
+              <div class="key w3"></div><div class="key"></div><div class="key"></div>
+              <div class="key"></div><div class="key"></div><div class="key"></div>
+              <div class="key"></div><div class="key"></div><div class="key"></div>
+              <div class="key w3"></div>
+            </div>
+            <div class="key-row">
+              <div class="key w2"></div>
+              <div class="key w6"></div>
+              <div class="key w2"></div><div class="key w2"></div>
+            </div>
+          </div>
+        </div>
+        <div class="kb-side"></div>
+      </div>
+
+      <div class="comp-shadow"></div>
+    </div>
+  </div>
+
+</section>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-inner">
+    <span class="ti">Commercial Trucking</span>
+    <span class="ti">Insurance Brokerage</span>
+    <span class="ti">Workflow Automation</span>
+    <span class="ti">AI Agents</span>
+    <span class="ti">AI Video Marketing</span>
+    <span class="ti">Custom Avatars</span>
+    <span class="ti">Internal Dashboards</span>
+    <span class="ti">Done For You</span>
+    <span class="ti">Commercial Trucking</span>
+    <span class="ti">Insurance Brokerage</span>
+    <span class="ti">Workflow Automation</span>
+    <span class="ti">AI Agents</span>
+    <span class="ti">AI Video Marketing</span>
+    <span class="ti">Custom Avatars</span>
+    <span class="ti">Internal Dashboards</span>
+    <span class="ti">Done For You</span>
+  </div>
+</div>
+
+<!-- PROBLEM -->
+<section id="problem">
+  <div class="s-wrap">
+    <div class="prob-grid">
+      <div>
+        <div class="s-lbl">The Problem</div>
+        <h2 class="s-hl">Your competitors are moving faster. You're still doing it manually.</h2>
+        <p class="s-body">Insurance brokers and logistics operators are sitting on massive growth potential — held back by the same two problems wearing different masks.</p>
+      </div>
+      <div class="pain-stack">
+        <div class="pain">
+          <div class="pain-code">ERR_01 //</div>
+          <div class="pain-title">Operations eating your time</div>
+          <p class="pain-txt">Manually chasing COIs, updating driver logs, copy-pasting between platforms. Your team is doing the work that software should be doing.</p>
+        </div>
+        <div class="pain">
+          <div class="pain-code">ERR_02 //</div>
+          <div class="pain-title">Invisible in your market</div>
+          <p class="pain-txt">Real expertise, real results — but no consistent brand presence. No content. No digital footprint that builds trust before a prospect calls.</p>
+        </div>
+        <div class="pain">
+          <div class="pain-code">ERR_03 //</div>
+          <div class="pain-title">Leads falling through the cracks</div>
+          <p class="pain-txt">No automated follow-up, no intelligent intake, no pipeline that works while you sleep. Every missed touchpoint is revenue left behind.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- THE SYSTEM -->
+<section id="system">
+  <div class="s-wrap">
+    <div class="sys-hdr">
+      <div class="s-lbl">The Aktivate Method</div>
+      <h2 class="s-hl">One connected system.<br>Three interlocking layers.</h2>
+      <p class="s-body">We don't sell tools. We build a complete operating system — where automation and brand presence compound on each other continuously.</p>
+    </div>
+    <div class="pillars">
+      <div class="pillar">
+        <div class="p-n">01</div>
+        <div class="p-tag">// Layer 01</div>
+        <span class="p-ico">⚙</span>
+        <h3 class="p-ttl">The Engine</h3>
+        <div class="p-role">Ops Automation & Infrastructure</div>
+        <div class="p-div"></div>
+        <p class="p-body">The invisible machine under your business. Automated pipelines, internal dashboards, and AI agents trained on your specific workflows.</p>
+        <ul class="p-list">
+          <li>Workflow automation & custom scripts</li>
+          <li>Internal dashboards & live reporting</li>
+          <li>AI agents trained on your data</li>
+          <li>API integrations & data sync</li>
+          <li>Document automation (COIs, contracts)</li>
+        </ul>
+      </div>
+      <div class="pillar">
+        <div class="p-n">02</div>
+        <div class="p-tag">// Layer 02</div>
+        <span class="p-ico">◈</span>
+        <h3 class="p-ttl">The Interface</h3>
+        <div class="p-role">AI Agents & Client-Facing Systems</div>
+        <div class="p-div"></div>
+        <p class="p-body">The smart front door of your business. AI agents that qualify leads, answer queries, and handle intake — 24/7, trained on your brand voice.</p>
+        <ul class="p-list">
+          <li>Custom AI chatbots (web + WhatsApp)</li>
+          <li>Lead qualification agents</li>
+          <li>Client onboarding automation</li>
+          <li>Automated follow-up sequences</li>
+          <li>CRM integration & pipeline management</li>
+        </ul>
+      </div>
+      <div class="pillar">
+        <div class="p-n">03</div>
+        <div class="p-tag">// Layer 03</div>
+        <span class="p-ico">▶</span>
+        <h3 class="p-ttl">The Presence</h3>
+        <div class="p-role">AI Video, Ads & Brand Automation</div>
+        <div class="p-div"></div>
+        <p class="p-body">The brand that never sleeps. AI video, custom digital avatars, ad creatives, and automated content pipelines — no camera needed.</p>
+        <ul class="p-list">
+          <li>Custom AI avatars (your face or faceless)</li>
+          <li>AI video marketing & ad creatives</li>
+          <li>Automated content pipeline</li>
+          <li>Social scheduling & distribution</li>
+          <li>Brand identity & visual system</li>
+        </ul>
+      </div>
+    </div>
+    <div class="loop-bar">
+      <div class="loop-ico">↻</div>
+      <div>
+        <div class="loop-ttl">The Compound Loop</div>
+        <div class="loop-body">Engine frees your team's time → Interface captures and qualifies leads 24/7 → Presence builds market trust that brings more leads in → back into the Engine. Each layer makes the others more effective. It compounds continuously.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SHOWCASE -->
+<section id="showcase">
+  <div class="sc-hdr">
+    <div class="s-lbl">What We Build</div>
+    <h2 class="s-hl" style="margin-bottom:0;">Real deliverables. Real systems.</h2>
+  </div>
+  <div class="sc-rail">
+    <div class="sc-card sc-c1">
+      <div class="sc-bg-n">01</div>
+      <div class="sc-tag">// Automation</div>
+      <div class="sc-ttl">Custom Broker Consoles & Dashboards</div>
+      <div class="sc-body">Real-time ops visibility. Driver status, policy tracking, COI pipeline — all unified.</div>
+    </div>
+    <div class="sc-card sc-c2">
+      <div class="sc-bg-n">02</div>
+      <div class="sc-tag">// AI Agents</div>
+      <div class="sc-ttl">Intelligent Document Pipelines</div>
+      <div class="sc-body">Automated intake, validation, and routing. Zero manual entry, full audit trail.</div>
+    </div>
+    <div class="sc-card sc-c3">
+      <div class="sc-bg-n">03</div>
+      <div class="sc-tag">// AI Video</div>
+      <div class="sc-ttl">AI Avatar Content Pipelines</div>
+      <div class="sc-body">Custom digital avatars producing 3–5 pieces per week. No camera, no studio needed.</div>
+    </div>
+    <div class="sc-card sc-c4">
+      <div class="sc-bg-n">04</div>
+      <div class="sc-tag">// Creative</div>
+      <div class="sc-ttl">AI Ad Creatives & Brand Assets</div>
+      <div class="sc-body">Performance ad creatives, brand identity systems, social content — all on-brand.</div>
+    </div>
+    <div class="sc-card sc-c5">
+      <div class="sc-bg-n">05</div>
+      <div class="sc-tag">// Workflow</div>
+      <div class="sc-ttl">n8n / Make Automation Systems</div>
+      <div class="sc-body">Multi-step workflows connecting CRM, email, Slack, Monday.com. Runs without anyone touching it.</div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section id="process">
+  <div class="s-wrap">
+    <div class="s-lbl">How It Works</div>
+    <h2 class="s-hl" style="max-width:440px;">From first call to live system in weeks, not months.</h2>
+    <div class="proc-steps">
+      <div class="step">
+        <div class="step-dot-row"><div class="step-dot"></div><span class="step-n">STEP 01</span></div>
+        <h3 class="step-ttl">Discovery & Mapping</h3>
+        <p class="step-body">One 30-minute call. We map your biggest operational bottleneck and visibility gap. You leave with clarity — even if you don't work with us.</p>
+      </div>
+      <div class="step">
+        <div class="step-dot-row"><div class="step-dot"></div><span class="step-n">STEP 02</span></div>
+        <h3 class="step-ttl">Build & Deploy</h3>
+        <p class="step-body">We design and deploy your custom system — typically 2–4 weeks. You're hands-off. Architecture, integration, testing, and launch. Done-for-you.</p>
+      </div>
+      <div class="step">
+        <div class="step-dot-row"><div class="step-dot"></div><span class="step-n">STEP 03</span></div>
+        <h3 class="step-ttl">Scale & Compound</h3>
+        <p class="step-body">Once live, we optimize and extend. Add automation layers, expand the content pipeline, upgrade AI agents. Your system compounds over time.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RESULTS -->
+<section id="results">
+  <div class="s-wrap">
+    <div class="s-lbl">Results</div>
+    <h2 class="s-hl">Built for operators who measure everything.</h2>
+    <div class="res-grid">
+      <div class="cs">
+        <div class="cs-tag">Insurance Brokerage · Commercial Trucking</div>
+        <div class="cs-flow">
+          <div class="cs-box before">
+            <div class="cs-bl">Before</div>
+            <div class="cs-bt">Team manually processing driver docs across 3 platforms. COIs chased by email. Duplicate data entry daily.</div>
+          </div>
+          <div class="cs-ar">→</div>
+          <div class="cs-box after">
+            <div class="cs-bl">After</div>
+            <div class="cs-bt">Automated intake, validation & routing. Zero manual entry. Real-time dashboards. Team on client work.</div>
+          </div>
+        </div>
+        <div class="cs-result">
+          <div class="cs-big">70%</div>
+          <div class="cs-txt">Reduction in document processing time. Team reallocated to revenue-generating work.</div>
+        </div>
+      </div>
+      <div class="cs">
+        <div class="cs-tag">Insurtech · Brand Presence</div>
+        <div class="cs-flow">
+          <div class="cs-box before">
+            <div class="cs-bl">Before</div>
+            <div class="cs-bt">Founder too busy to record. Zero social presence. Brand invisible outside referral network.</div>
+          </div>
+          <div class="cs-ar">→</div>
+          <div class="cs-box after">
+            <div class="cs-bl">After</div>
+            <div class="cs-bt">AI avatar pipeline producing 3–5 pieces/week. Automated scheduling. Inbound leads in 60 days.</div>
+          </div>
+        </div>
+        <div class="cs-result">
+          <div class="cs-big">5×</div>
+          <div class="cs-txt">Content output per week with zero additional time from the founder.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHO IT'S FOR -->
+<section id="for-who">
+  <div class="s-wrap">
+    <div class="s-lbl">Who This Is For</div>
+    <h2 class="s-hl">If you see yourself here,<br>we built this for you.</h2>
+    <div class="fw-grid">
+      <div class="fw-card">
+        <div class="fw-ind">Insurance Brokers & MGAs</div>
+        <div class="fw-role">Commercial · Trucking · Specialty Lines</div>
+        <p class="fw-body">Managing high volumes of documentation, carrier relationships, and client comms — all manually. You know there's a better way but haven't had time to build it. We build it for you.</p>
+      </div>
+      <div class="fw-card">
+        <div class="fw-ind">Logistics & Fleet Operators</div>
+        <div class="fw-role">Trucking · Last-Mile · Supply Chain</div>
+        <p class="fw-body">Driver onboarding, compliance docs, dispatch coordination — all eating ops bandwidth. You also need a brand that attracts drivers and clients without a full marketing team.</p>
+      </div>
+      <div class="fw-card">
+        <div class="fw-ind">Insurtech Founders</div>
+        <div class="fw-role">Early-Stage · Series A · Digital-First</div>
+        <p class="fw-body">Moving fast but internal ops haven't kept up. You need scalable automation and a content presence that builds investor and customer trust simultaneously.</p>
+      </div>
+      <div class="fw-card">
+        <div class="fw-ind">Not sure if you qualify?</div>
+        <div class="fw-role">One call will tell you</div>
+        <p class="fw-body">If you're in Insurance or Logistics and have at least one major manual process you want to eliminate — that's enough. Book a call and we'll tell you exactly what's possible.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="s-wrap">
+    <div class="about-grid">
+      <div class="about-frame">
+        <div class="about-ph">AK</div>
+        <div class="about-ph-lbl">founder · aktivate.ai</div>
+      </div>
+      <div>
+        <div class="s-lbl">The Founder</div>
+        <h2 class="about-hl">Built by someone who actually works in your industry.</h2>
+        <p class="about-body">Most AI agencies are generalists who've never touched an insurance policy or managed a fleet. Aktivate was built by someone inside insurance operations — building the exact systems brokers and logistics operators actually need.</p>
+        <p class="about-body">When you work with Aktivate, you work directly with the founder. No junior team, no handoffs. Someone who understands your compliance requirements, carrier relationships, and operational reality.</p>
+        <p class="about-body">The creative side — AI video, brand systems, avatars — came from a background in design and content before the tech. That combination is rare, and it's what makes the system hit differently.</p>
+        <div class="about-tags">
+          <span class="about-tag">Insurance Ops</span>
+          <span class="about-tag">AI Automation</span>
+          <span class="about-tag">Monday.com</span>
+          <span class="about-tag">n8n / Make</span>
+          <span class="about-tag">AI Video</span>
+          <span class="about-tag">Brand Systems</span>
+          <span class="about-tag">Supabase</span>
+          <span class="about-tag">Canada 🍁</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="cta">
+  <div class="cta-bg-word">AKTIVATE</div>
+  <div class="cta-inner">
+    <div class="cta-lbl">Ready to build?</div>
+    <h2 class="cta-hl">See what's possible<br>in 30 minutes.</h2>
+    <p class="cta-body">No pitch deck. No pressure. A focused conversation about where automation and AI create the most impact — and a clear picture of what we'd build together.</p>
+    <a href="#" class="cta-btn">Book Your Free Strategy Call</a>
+    <p class="cta-note">// Insurance & Logistics // Canada & North America //</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="f-logo"><div class="f-logo-dot"></div>aktivate.ai</div>
+  <ul class="f-links">
+    <li><a href="#system">The System</a></li>
+    <li><a href="#results">Results</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="mailto:hi@aktivate.ai">Contact</a></li>
+  </ul>
+  <div class="f-copy">© 2025 Aktivate.ai</div>
+</footer>
+
+</body>
+</html>
