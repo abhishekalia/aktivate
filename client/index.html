@@ -71,39 +71,49 @@ nav {
 .keycap {
   font-family:'DM Mono',monospace; font-weight:500;
   letter-spacing:0.1em; text-transform:uppercase;
-  background:linear-gradient(180deg, #4dff33 0%, #30d910 100%);
   color:#0a1a00;
   border:none; cursor:pointer; text-decoration:none;
   display:inline-flex; align-items:center; gap:10px;
   position:relative;
-  border-radius:10px;
-  box-shadow:
-    inset 0 2px 0 rgba(255,255,255,0.4),
-    inset 0 -2px 4px rgba(0,0,0,0.08),
-    0 8px 0 0 #1a7a00,
-    0 9px 0 0 #0f5500,
-    0 12px 8px rgba(0,0,0,0.4);
+  border-radius:4px;
   transform:translateY(0);
-  transition:all 80ms ease;
+  transition:transform 80ms ease;
+  background:transparent;
 }
-.keycap:hover {
-  background:linear-gradient(180deg, #5fff44 0%, #39e618 100%);
+.keycap::before {
+  content:'';
+  position:absolute;
+  inset:-3px -5px -10px -5px;
+  border-radius:5px;
+  background:linear-gradient(180deg, #1a7a00 0%, #0f5500 100%);
+  z-index:-2;
+  transition:inset 80ms ease;
+}
+.keycap::after {
+  content:'';
+  position:absolute;
+  inset:0;
+  border-radius:4px;
+  background:linear-gradient(180deg, #5aff3a 0%, #38e015 50%, #2ebe10 100%);
   box-shadow:
-    inset 0 2px 0 rgba(255,255,255,0.4),
-    inset 0 -2px 4px rgba(0,0,0,0.08),
-    0 5px 0 0 #1a7a00,
-    0 6px 0 0 #0f5500,
-    0 8px 6px rgba(0,0,0,0.35);
+    inset 0 2px 0 rgba(255,255,255,0.45),
+    inset 0 -2px 0 rgba(0,0,0,0.06),
+    inset 2px 0 0 rgba(255,255,255,0.12),
+    inset -2px 0 0 rgba(0,0,0,0.04);
+  z-index:-1;
+}
+.keycap > * { position:relative; z-index:1; }
+.keycap:hover {
   transform:translateY(3px);
 }
+.keycap:hover::before {
+  inset:-3px -5px -7px -5px;
+}
 .keycap:active {
-  box-shadow:
-    inset 0 2px 0 rgba(255,255,255,0.25),
-    inset 0 -1px 2px rgba(0,0,0,0.1),
-    0 2px 0 0 #1a7a00,
-    0 3px 0 0 #0f5500,
-    0 4px 4px rgba(0,0,0,0.3);
   transform:translateY(6px);
+}
+.keycap:active::before {
+  inset:-2px -4px -4px -4px;
 }
 .keycap-sm { font-size:11px; padding:10px 22px; }
 .keycap-lg { font-size:12px; padding:18px 40px; }
@@ -777,7 +787,7 @@ body:hover #cursor-glow {
     <li><a href="#for-who">Who It's For</a></li>
     <li><a href="#about">About</a></li>
   </ul>
-  <a class="keycap keycap-sm" href="#cta" data-testid="link-book-call"><span class="keycap-ico">&#9783;</span> Schedule a Call</a>
+  <a class="keycap keycap-sm" href="#cta" data-testid="link-book-call"><span class="keycap-ico">&#9783;</span><span>Schedule a Call</span></a>
 </nav>
 
 <div id="root"></div>
@@ -794,7 +804,7 @@ body:hover #cursor-glow {
       </h1>
       <p class="hero-desc">Automated ops. Automated presence. One studio built specifically for Insurance &amp; Logistics operators who are ready to scale.</p>
       <div class="hero-btns">
-        <a href="#cta" class="keycap keycap-lg" data-testid="button-book-call"><span class="keycap-ico">&#9783;</span> Book a Free Call</a>
+        <a href="#cta" class="keycap keycap-lg" data-testid="button-book-call"><span class="keycap-ico">&#9783;</span><span>Book a Free Call</span></a>
         <a href="#system" class="btn-s" data-testid="link-how-it-works">See how it works</a>
       </div>
       <div class="hero-stats">
@@ -1150,7 +1160,7 @@ body:hover #cursor-glow {
     <div class="cta-lbl">Ready to Start</div>
     <h2 class="cta-hl">Let's build<br>your system.</h2>
     <p class="cta-body">One call. 30 minutes. We'll map your biggest operational bottleneck and show you exactly what the build looks like. No pitch deck. No pressure.</p>
-    <a href="mailto:hello@aktivate.ai" class="keycap keycap-lg" data-testid="button-book-call-cta"><span class="keycap-ico">&#9783;</span> Book a Free Call</a>
+    <a href="mailto:hello@aktivate.ai" class="keycap keycap-lg" data-testid="button-book-call-cta"><span class="keycap-ico">&#9783;</span><span>Book a Free Call</span></a>
     <div class="cta-note">Typically responds within 24 hours</div>
   </div>
 </section>
