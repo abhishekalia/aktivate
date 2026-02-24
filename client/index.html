@@ -121,7 +121,7 @@ nav {
 ════════════════════════════════════════ */
 .scroll-journey {
   position:relative;
-  height:300vh;
+  height:200vh;
   background: linear-gradient(160deg, #0a0a18 0%, #12102a 40%, #1a1040 70%, #0a0a18 100%);
 }
 
@@ -249,6 +249,8 @@ nav {
   width:100%;
   height:auto;
   display:block;
+  position:relative;
+  z-index:2;
   filter:drop-shadow(0 20px 60px rgba(0,0,0,0.6)) drop-shadow(0 0 40px rgba(139,92,246,0.12));
 }
 
@@ -260,6 +262,7 @@ nav {
   height:37%;
   overflow:hidden;
   border-radius:4px;
+  z-index:3;
 }
 
 .screen-scanlines {
@@ -276,7 +279,7 @@ nav {
     rgba(0,0,0,0.12) 1px,
     rgba(0,0,0,0.12) 2px
   );
-  z-index:6;
+  z-index:4;
   pointer-events:none;
 }
 
@@ -289,7 +292,7 @@ nav {
   border-radius:4px;
   background: radial-gradient(ellipse at 50% 50%,
     transparent 40%, rgba(0,0,0,0.5) 100%);
-  z-index:5;
+  z-index:4;
   pointer-events:none;
 }
 
@@ -490,6 +493,59 @@ nav {
   color:rgba(57,255,20,0.35);
   letter-spacing:0.15em;
   text-transform:uppercase;
+}
+
+.screen-bg-fill {
+  position:absolute;
+  inset:-10%;
+  background: linear-gradient(180deg, var(--void) 0%, #0e0a20 100%);
+  z-index:0;
+  opacity:0;
+  pointer-events:none;
+}
+
+.zoom-reveal {
+  position:absolute;
+  inset:0;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  z-index:10;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity 0.1s;
+}
+
+.zoom-reveal-label {
+  font-family:'DM Mono',monospace;
+  font-size:5px;
+  color:var(--neon);
+  letter-spacing:0.3em;
+  text-transform:uppercase;
+  margin-bottom:6px;
+  text-shadow:0 0 6px var(--neon-glow);
+  opacity:0.6;
+}
+
+.zoom-reveal-hl {
+  font-family:'Unbounded',sans-serif;
+  font-weight:700;
+  font-size:8px;
+  color:var(--chrome-hi);
+  text-align:center;
+  line-height:1.2;
+  letter-spacing:-0.02em;
+}
+
+.zoom-reveal-sub {
+  font-family:'DM Mono',monospace;
+  font-size:4px;
+  color:var(--chrome-lo);
+  text-align:center;
+  line-height:1.6;
+  margin-top:5px;
+  max-width:80%;
 }
 
 /* ── FLOATING CHIPS ── */
@@ -847,7 +903,7 @@ footer{
 ════════════════════════════════════════ */
 @media(max-width:960px){
   nav{padding:0 20px;} .nav-links{display:none;}
-  .scroll-journey{height:250vh;}
+  .scroll-journey{height:180vh;}
   #hero{grid-template-columns:1fr;padding:80px 20px 60px;gap:32px;}
   .hero-text{padding-right:0;text-align:center;}
   .hero-kicker,.hero-btns,.hero-stats{justify-content:center;}
@@ -937,6 +993,8 @@ footer{
 
       <img src="/retro-monitor.png" alt="Retro CRT Monitor" class="monitor-img" data-testid="monitor-img">
 
+      <div class="screen-bg-fill"></div>
+
       <div class="screen-overlay">
         <div class="screen-content">
           <div class="screen-reel">
@@ -977,6 +1035,12 @@ footer{
               <div class="ss-hud-label">00:42 &middot; PROCESSING</div>
             </div>
           </div>
+        </div>
+
+        <div class="zoom-reveal" data-testid="zoom-reveal">
+          <div class="zoom-reveal-label">The Aktivate Method</div>
+          <div class="zoom-reveal-hl">One connected system.<br>Three interlocking layers.</div>
+          <div class="zoom-reveal-sub">Automation and brand presence compounding on each other continuously.</div>
         </div>
       </div>
 
@@ -1312,14 +1376,11 @@ footer{
   var img = monitorContainer ? monitorContainer.querySelector('.monitor-img') : null;
   var scanlines = monitorContainer ? monitorContainer.querySelector('.screen-scanlines') : null;
   var crtGlow = monitorContainer ? monitorContainer.querySelector('.screen-crt-glow') : null;
-  var screenOverlay = monitorContainer ? monitorContainer.querySelector('.screen-overlay') : null;
+  var screenContent = monitorContainer ? monitorContainer.querySelector('.screen-content') : null;
+  var zoomReveal = monitorContainer ? monitorContainer.querySelector('.zoom-reveal') : null;
+  var bgFill = monitorContainer ? monitorContainer.querySelector('.screen-bg-fill') : null;
 
   if (!journey || !hero || !monitorContainer || !heroText) return;
-
-  var origTop = 11.5;
-  var origLeft = 19;
-  var origWidth = 56;
-  var origHeight = 37;
 
   var ticking = false;
 
@@ -1328,10 +1389,6 @@ footer{
       requestAnimationFrame(update);
       ticking = true;
     }
-  }
-
-  function lerp(a, b, t) {
-    return a + (b - a) * t;
   }
 
   function update() {
@@ -1346,16 +1403,16 @@ footer{
 
     var progress = scrollRange > 0 ? scrolled / scrollRange : 0;
 
-    var textFade = 1 - Math.min(progress / 0.15, 1);
+    var textFade = 1 - Math.min(progress / 0.12, 1);
     heroText.style.opacity = textFade;
-    heroText.style.transform = 'translateY(' + (-progress * 120) + 'px)';
+    heroText.style.transform = 'translateY(' + (-progress * 100) + 'px)';
 
     for (var i = 0; i < chips.length; i++) {
       chips[i].style.opacity = textFade;
     }
 
-    var zoomStart = 0.08;
-    var zoomEnd = 0.55;
+    var zoomStart = 0.05;
+    var zoomEnd = 0.7;
     var zoomProgress = 0;
     if (progress > zoomStart) {
       zoomProgress = Math.min((progress - zoomStart) / (zoomEnd - zoomStart), 1);
@@ -1365,14 +1422,12 @@ footer{
       ? 2 * zoomProgress * zoomProgress
       : 1 - Math.pow(-2 * zoomProgress + 2, 2) / 2;
 
-    var startScale = 1;
-    var endScale = 5.5;
-    var scale = startScale + (endScale - startScale) * eased;
+    var scale = 1 + (4.5 - 1) * eased;
 
     monitorContainer.style.transform = 'scale(' + scale + ')';
 
     var bezelFadeStart = 0.35;
-    var bezelFadeEnd = 0.55;
+    var bezelFadeEnd = 0.6;
     var bezelOpacity = 1;
     if (progress > bezelFadeStart) {
       bezelOpacity = 1 - Math.min((progress - bezelFadeStart) / (bezelFadeEnd - bezelFadeStart), 1);
@@ -1380,37 +1435,28 @@ footer{
 
     if (img) img.style.opacity = bezelOpacity;
     if (crtGlow) crtGlow.style.opacity = bezelOpacity;
+    if (scanlines) scanlines.style.opacity = bezelOpacity < 0.2 ? 0 : bezelOpacity;
 
-    var expandStart = 0.3;
-    var expandEnd = 0.55;
-    var expandT = 0;
-    if (progress > expandStart) {
-      expandT = Math.min((progress - expandStart) / (expandEnd - expandStart), 1);
-    }
-    var expandEased = expandT < 0.5
-      ? 2 * expandT * expandT
-      : 1 - Math.pow(-2 * expandT + 2, 2) / 2;
-
-    if (screenOverlay) {
-      var curTop = lerp(origTop, 0, expandEased);
-      var curLeft = lerp(origLeft, 0, expandEased);
-      var curWidth = lerp(origWidth, 100, expandEased);
-      var curHeight = lerp(origHeight, 100, expandEased);
-      var curRadius = lerp(4, 0, expandEased);
-
-      screenOverlay.style.top = curTop + '%';
-      screenOverlay.style.left = curLeft + '%';
-      screenOverlay.style.width = curWidth + '%';
-      screenOverlay.style.height = curHeight + '%';
-      screenOverlay.style.borderRadius = curRadius + 'px';
+    if (bgFill) {
+      bgFill.style.opacity = 1 - bezelOpacity;
     }
 
-    if (scanlines) {
-      scanlines.style.opacity = Math.max(bezelOpacity, 0.15);
-      scanlines.style.top = screenOverlay ? screenOverlay.style.top : '';
-      scanlines.style.left = screenOverlay ? screenOverlay.style.left : '';
-      scanlines.style.width = screenOverlay ? screenOverlay.style.width : '';
-      scanlines.style.height = screenOverlay ? screenOverlay.style.height : '';
+    var contentFadeStart = 0.3;
+    var contentFadeEnd = 0.5;
+    var contentOpacity = 1;
+    if (progress > contentFadeStart) {
+      contentOpacity = 1 - Math.min((progress - contentFadeStart) / (contentFadeEnd - contentFadeStart), 1);
+    }
+    if (screenContent) screenContent.style.opacity = contentOpacity;
+
+    var revealStart = 0.5;
+    var revealEnd = 0.7;
+    var revealOpacity = 0;
+    if (progress > revealStart) {
+      revealOpacity = Math.min((progress - revealStart) / (revealEnd - revealStart), 1);
+    }
+    if (zoomReveal) {
+      zoomReveal.style.opacity = revealOpacity;
     }
   }
 
