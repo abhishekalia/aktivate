@@ -75,35 +75,37 @@ nav {
   cursor:pointer; text-decoration:none;
   display:inline-flex; align-items:center; gap:10px;
   position:relative;
-  border-radius:0;
-  background:#3ce818;
+  border-radius:10px;
+  background:#30c810;
   border-style:solid;
-  border-top:4px solid #7fff5a;
-  border-left:5px solid #5af03a;
-  border-right:5px solid #28a80e;
-  border-bottom:8px solid #1a7a06;
+  border-top:4px solid #6aee48;
+  border-left:5px solid #4ad828;
+  border-right:5px solid #22960a;
+  border-bottom:8px solid #166808;
   box-shadow:
-    0 4px 8px rgba(0,0,0,0.4),
-    inset 0 1px 0 rgba(255,255,255,0.15);
+    0 6px 16px rgba(0,0,0,0.5),
+    0 2px 4px rgba(0,0,0,0.3),
+    inset 0 1px 0 rgba(255,255,255,0.12);
   transform:translateY(0);
   transition:all 80ms ease;
 }
 .keycap:hover {
-  background:#42f01c;
+  background:#36d414;
   border-bottom-width:5px;
   transform:translateY(3px);
   box-shadow:
-    0 2px 4px rgba(0,0,0,0.3),
-    inset 0 1px 0 rgba(255,255,255,0.15);
+    0 3px 10px rgba(0,0,0,0.45),
+    0 1px 3px rgba(0,0,0,0.25),
+    inset 0 1px 0 rgba(255,255,255,0.12);
 }
 .keycap:active {
-  background:#38d814;
+  background:#2cb80e;
   border-top-width:5px;
   border-bottom-width:2px;
   transform:translateY(6px);
   box-shadow:
-    0 1px 2px rgba(0,0,0,0.2),
-    inset 0 1px 0 rgba(255,255,255,0.1);
+    0 1px 4px rgba(0,0,0,0.3),
+    inset 0 1px 0 rgba(255,255,255,0.08);
 }
 .keycap-sm { font-size:11px; padding:8px 20px; }
 .keycap-lg { font-size:12px; padding:14px 38px; }
