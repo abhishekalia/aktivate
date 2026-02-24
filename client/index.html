@@ -153,51 +153,53 @@ nav {
   display:block;
 }
 #zoom-overlay {
-  position:absolute;
+  position:fixed;
   inset:0;
   background:var(--off-white);
   opacity:0;
   pointer-events:none;
-  z-index:20;
+  z-index:9999;
 }
 #zoom-overlay.glitch-flash {
-  animation: crtGlitch 1s ease-out forwards;
+  pointer-events:all;
+  animation: crtGlitch 1.2s ease-out forwards;
 }
 @keyframes crtGlitch {
-  0%   { opacity:0; }
-  5%   { opacity:1; background:#fff; transform:translateX(8px) skewX(-3deg); }
-  8%   { opacity:0; transform:translateX(-12px) skewX(4deg); }
-  12%  { opacity:1; background:#0f0; transform:translateX(5px); }
-  15%  { opacity:0; transform:translateX(-8px) skewX(-2deg); }
-  20%  { opacity:1; background:#fff; transform:translateX(15px) skewX(3deg); }
-  23%  { opacity:0.3; transform:translateX(-6px); }
-  28%  { opacity:1; background:var(--off-white); transform:translateX(10px) skewX(-4deg); }
-  32%  { opacity:0; transform:translateX(-15px) skewX(5deg); }
-  38%  { opacity:1; background:#fff; transform:translateX(4px); }
-  42%  { opacity:0.5; background:#0f0; transform:translateX(-10px) skewX(-3deg); }
-  48%  { opacity:1; background:#fff; transform:translateX(6px) skewX(2deg); }
-  52%  { opacity:0.2; transform:translateX(-4px); }
-  58%  { opacity:1; background:var(--off-white); transform:translateX(3px) skewX(-1deg); }
-  65%  { opacity:0.8; transform:translateX(-2px); }
-  75%  { opacity:1; background:var(--off-white); transform:translateX(1px); }
-  85%  { opacity:1; transform:none; }
-  100% { opacity:1; transform:none; background:var(--off-white); }
+  0%   { opacity:1; background:#1e2830; }
+  4%   { background:#fff; transform:translateX(10px) skewX(-4deg); }
+  7%   { background:#1e2830; transform:translateX(-15px) skewX(5deg); }
+  10%  { background:#39ff14; transform:translateX(8px); }
+  13%  { background:#1e2830; transform:translateX(-10px) skewX(-3deg); }
+  17%  { background:#fff; transform:translateX(20px) skewX(4deg); }
+  20%  { background:#1e2830; transform:translateX(-8px); }
+  24%  { background:#39ff14; transform:translateX(12px) skewX(-5deg); }
+  27%  { background:#fff; transform:translateX(-18px) skewX(3deg); }
+  30%  { background:#1e2830; transform:translateX(6px); }
+  35%  { background:#fff; transform:translateX(-5px) skewX(-2deg); }
+  40%  { background:#1e2830; transform:translateX(8px) skewX(2deg); }
+  45%  { background:#fff; transform:translateX(-4px); }
+  50%  { background:var(--off-white); transform:translateX(3px) skewX(-1deg); }
+  55%  { background:#fff; transform:translateX(-3px); }
+  60%  { background:var(--off-white); transform:translateX(2px); }
+  70%  { background:var(--off-white); transform:translateX(-1px); }
+  80%  { background:var(--off-white); transform:none; }
+  100% { opacity:0; transform:none; background:var(--off-white); }
 }
 #zoom-overlay.glitch-flash::before {
   content:'';
   position:absolute;
   inset:0;
   pointer-events:none;
-  animation: scanBars 1s linear forwards;
+  animation: scanBars 0.8s linear forwards;
   background:repeating-linear-gradient(
-    0deg, transparent, transparent 3px,
-    rgba(0,0,0,0.08) 3px, rgba(0,0,0,0.08) 6px
+    0deg, transparent, transparent 2px,
+    rgba(255,255,255,0.15) 2px, rgba(255,255,255,0.15) 4px
   );
 }
 @keyframes scanBars {
   0%   { opacity:1; transform:translateY(0); }
-  30%  { opacity:0.8; transform:translateY(-20px); }
-  60%  { opacity:0.4; transform:translateY(-10px); }
+  40%  { opacity:0.6; transform:translateY(-30px); }
+  70%  { opacity:0.3; transform:translateY(-15px); }
   100% { opacity:0; transform:translateY(0); }
 }
 #main-content {
@@ -811,9 +813,10 @@ body:hover #cursor-glow {
     <div id="imac-scene" data-testid="monitor-container">
       <img id="imac-front" src="/imac-front.png" alt="iMac G3" data-testid="imac-front">
     </div>
-    <div id="zoom-overlay"></div>
   </div>
 </div>
+
+<div id="zoom-overlay"></div>
 
 <div id="main-content">
 
@@ -1177,22 +1180,10 @@ body:hover #cursor-glow {
       if (glitchTrigger && !zoomOv.dataset.glitched) {
         zoomOv.dataset.glitched = '1';
         zoomOv.classList.add('glitch-flash');
-        var problemEl = document.getElementById('problem');
         setTimeout(function() {
-          spacer.style.pointerEvents = 'none';
-          spacer.style.zIndex = '1';
-          if (problemEl) {
-            window.scrollTo({ top: problemEl.offsetTop, behavior: 'instant' });
-          }
-        }, 900);
-      }
-
-      if (zoomEased < 0.5 && zoomOv.dataset.glitched) {
-        delete zoomOv.dataset.glitched;
-        zoomOv.classList.remove('glitch-flash');
-        zoomOv.style.opacity = '0';
-        spacer.style.pointerEvents = '';
-        spacer.style.zIndex = '30';
+          spacer.style.display = 'none';
+          window.scrollTo(0, 0);
+        }, 300);
       }
 
     }, { passive: true });
