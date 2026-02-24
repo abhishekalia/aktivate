@@ -47,6 +47,10 @@ body {
   font-weight:300;
   overflow-x:hidden;
   -webkit-font-smoothing:antialiased;
+  cursor:crosshair;
+}
+a, button, .keycap, .pain, [role="button"] {
+  cursor:pointer;
 }
 
 a { color:inherit; text-decoration:none; }
@@ -160,80 +164,12 @@ nav {
   position:relative;
   z-index:1;
 }
-#screen-overlay {
-  position:absolute;
-  z-index:2;
-  overflow:hidden;
-  border-radius:8px;
+#imac-inner {
+  filter:drop-shadow(0 0 30px rgba(142,181,204,0.35)) drop-shadow(0 0 80px rgba(142,181,204,0.15));
+  transition:filter 0.4s ease;
 }
-.crt-scanlines,
-.crt-vignette,
-.crt-roll,
-.crt-flicker,
-.crt-glass {
-  position:absolute;
-  inset:0;
-}
-.crt-scanlines {
-  z-index:5;
-  pointer-events:none;
-  background:repeating-linear-gradient(
-    0deg,
-    rgba(0,0,0,0.055) 0px,
-    rgba(0,0,0,0.055) 1px,
-    transparent 1px,
-    transparent 3px
-  );
-}
-.crt-vignette {
-  z-index:6;
-  pointer-events:none;
-  background:radial-gradient(ellipse at 50% 50%,
-    transparent 60%,
-    rgba(0,0,0,0.15) 100%
-  );
-}
-.crt-roll {
-  z-index:7;
-  pointer-events:none;
-  left:0; right:0;
-  height:18%;
-  inset:auto 0 auto 0;
-  background:linear-gradient(
-    180deg,
-    transparent 0%,
-    rgba(255,255,255,0.018) 40%,
-    rgba(255,255,255,0.032) 50%,
-    rgba(255,255,255,0.018) 60%,
-    transparent 100%
-  );
-  animation:crt-roll 8s linear infinite;
-}
-@keyframes crt-roll {
-  from { top:110%; }
-  to   { top:-20%; }
-}
-.crt-flicker {
-  z-index:8;
-  pointer-events:none;
-  animation:crt-flicker 5s infinite;
-}
-@keyframes crt-flicker {
-  0%,89%,91%,93%,100% { opacity:1; }
-  90%  { opacity:0.93; }
-  92%  { opacity:0.97; }
-}
-.crt-glass {
-  z-index:9;
-  pointer-events:none;
-  background:linear-gradient(
-    135deg,
-    rgba(255,255,255,0.04) 0%,
-    transparent 40%,
-    transparent 60%,
-    rgba(255,255,255,0.02) 100%
-  );
-  border-radius:inherit;
+#imac-scene:hover #imac-inner {
+  filter:drop-shadow(0 0 40px rgba(57,255,20,0.25)) drop-shadow(0 0 100px rgba(57,255,20,0.12)) drop-shadow(0 0 60px rgba(142,181,204,0.3));
 }
 #zoom-overlay {
   position:fixed;
@@ -854,14 +790,7 @@ body:hover #cursor-glow {
     <div id="imac-scene" data-testid="monitor-container">
       <div id="imac-inner">
         <img id="imac-front" src="/imac-front.png" alt="iMac G3" data-testid="imac-front">
-        <div id="screen-overlay">
-          <div class="crt-scanlines"></div>
-          <div class="crt-vignette"></div>
-          <div class="crt-roll"></div>
-          <div class="crt-flicker"></div>
-          <div class="crt-glass"></div>
         </div>
-      </div>
     </div>
   </div>
 </div>
@@ -1182,32 +1111,13 @@ body:hover #cursor-glow {
   var scene    = document.getElementById('imac-scene');
   var heroLeft = document.getElementById('hero-left');
   var zoomOv   = document.getElementById('zoom-overlay');
-  var overlay  = document.getElementById('screen-overlay');
   var img      = document.getElementById('imac-front');
   var isMobile = window.innerWidth <= 960;
-
-  var SCREEN_TOP    = 0.075;
-  var SCREEN_LEFT   = 0.125;
-  var SCREEN_WIDTH  = 0.75;
-  var SCREEN_HEIGHT = 0.525;
-
-  function positionOverlay() {
-    var r = img.getBoundingClientRect();
-    var sceneR = scene.getBoundingClientRect();
-    var imgOffsetLeft = r.left - sceneR.left;
-    var imgOffsetTop  = r.top  - sceneR.top;
-    overlay.style.position = 'absolute';
-    overlay.style.left     = (imgOffsetLeft + r.width  * SCREEN_LEFT)   + 'px';
-    overlay.style.top      = (imgOffsetTop  + r.height * SCREEN_TOP)    + 'px';
-    overlay.style.width    = (r.width  * SCREEN_WIDTH)  + 'px';
-    overlay.style.height   = (r.height * SCREEN_HEIGHT) + 'px';
-  }
 
   var driftX = 0, driftY = 0, measured = false;
 
   function measure() {
     scene.style.transform = 'none';
-    positionOverlay();
     var r  = img.getBoundingClientRect();
     var cx = r.left + r.width  * 0.5;
     var cy = r.top  + r.height * 0.34;
