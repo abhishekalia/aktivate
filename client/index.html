@@ -150,29 +150,6 @@ nav {
   width:100%;
   display:block;
 }
-#screen-content {
-  position:absolute;
-  top:8%; left:12.5%; width:75%; height:52%;
-  overflow:hidden;
-  border-radius:4px;
-  opacity:0;
-  background:var(--off-white);
-}
-#screen-preview {
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  object-position:top center;
-  display:block;
-}
-#zoom-overlay {
-  position:absolute;
-  inset:0;
-  background:var(--off-white);
-  opacity:0;
-  pointer-events:none;
-  z-index:15;
-}
 #main-content {
   position:relative;
   z-index:20;
@@ -784,11 +761,7 @@ body:hover #cursor-glow {
 
     <div id="imac-scene" data-testid="monitor-container">
       <img id="imac-front" src="/imac-front.png" alt="iMac G3" data-testid="imac-front">
-      <div id="screen-content">
-        <img src="/screen-preview.png" alt="" id="screen-preview">
-      </div>
     </div>
-    <div id="zoom-overlay"></div>
   </div>
 </div>
 
@@ -1101,30 +1074,24 @@ body:hover #cursor-glow {
 
 <script>
 (function() {
-  var spacer     = document.getElementById('hero-spacer');
-  var sticky     = document.getElementById('hero-sticky');
-  var scene      = document.getElementById('imac-scene');
-  var heroLeft   = document.getElementById('hero-left');
-  var zoomOv     = document.getElementById('zoom-overlay');
-  var screenCont = document.getElementById('screen-content');
-  var isMobile   = window.innerWidth <= 960;
+  var spacer    = document.getElementById('hero-spacer');
+  var sticky    = document.getElementById('hero-sticky');
+  var scene     = document.getElementById('imac-scene');
+  var heroLeft  = document.getElementById('hero-left');
+  var isMobile  = window.innerWidth <= 960;
 
-  if (!isMobile && spacer && scene && heroLeft && sticky && zoomOv && screenCont) {
+  if (!isMobile && spacer && scene && heroLeft && sticky) {
     window.addEventListener('scroll', function() {
       var rect    = spacer.getBoundingClientRect();
       var scrolled = -rect.top;
       var total   = rect.height - window.innerHeight;
       var p       = Math.min(Math.max(scrolled / total, 0), 1);
 
-      var screenFade = Math.min(Math.max((p - 0.08) / 0.15, 0), 1);
-      screenCont.style.opacity = screenFade;
+      var zoomEased = p < 0.5
+        ? 2 * p * p
+        : 1 - Math.pow(-2 * p + 2, 2) / 2;
 
-      var zoomP = Math.min(Math.max((p - 0.2) / 0.8, 0), 1);
-      var zoomEased = zoomP < 0.5
-        ? 2 * zoomP * zoomP
-        : 1 - Math.pow(-2 * zoomP + 2, 2) / 2;
-
-      var scale = 1 + zoomEased * 18;
+      var scale = 1 + zoomEased * 20;
 
       var imgH = scene.offsetHeight;
       var imgW = scene.offsetWidth;
@@ -1142,8 +1109,10 @@ body:hover #cursor-glow {
       heroLeft.style.opacity = 1 - Math.min(zoomEased * 3, 1);
       heroLeft.style.pointerEvents = zoomEased > 0.05 ? 'none' : 'auto';
 
-      var overlayP = Math.max(0, (zoomEased - 0.6) / 0.4);
-      zoomOv.style.opacity = overlayP;
+      var bgFade = Math.max(0, (zoomEased - 0.5) / 0.5);
+      sticky.style.background = bgFade > 0.01
+        ? 'rgba(240,236,228,' + bgFade + ')'
+        : '';
 
     }, { passive: true });
   }
