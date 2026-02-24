@@ -203,7 +203,6 @@ nav {
 #main-content {
   position:relative;
   z-index:20;
-  margin-top:-200vh;
 }
 
 /* ── HERO TEXT ─────────────────────── */
@@ -1178,10 +1177,14 @@ body:hover #cursor-glow {
       if (glitchTrigger && !zoomOv.dataset.glitched) {
         zoomOv.dataset.glitched = '1';
         zoomOv.classList.add('glitch-flash');
+        var problemEl = document.getElementById('problem');
         setTimeout(function() {
           spacer.style.pointerEvents = 'none';
           spacer.style.zIndex = '1';
-        }, 1000);
+          if (problemEl) {
+            window.scrollTo({ top: problemEl.offsetTop, behavior: 'instant' });
+          }
+        }, 900);
       }
 
       if (zoomEased < 0.5 && zoomOv.dataset.glitched) {
