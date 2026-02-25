@@ -1,83 +1,53 @@
 import { Suspense, useRef, useMemo, useState, useEffect } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { Grid } from "@react-three/drei";
 import { EffectComposer, Bloom, Noise, Vignette } from "@react-three/postprocessing";
 import * as THREE from "three";
 
-function SynthwaveFloor() {
-  const matRef = useRef<THREE.ShaderMaterial>(null);
-  const shader = useMemo(() => ({
-    uniforms: {
-      uTime: { value: 0 },
-    },
-    vertexShader: `
-      varying vec3 vWorldPos;
-      void main() {
-        vec4 worldPos = modelMatrix * vec4(position, 1.0);
-        vWorldPos = worldPos.xyz;
-        gl_Position = projectionMatrix * viewMatrix * worldPos;
-      }
-    `,
-    fragmentShader: `
-      uniform float uTime;
-      varying vec3 vWorldPos;
-
-      void main() {
-        vec3 col = vec3(0.0);
-
-        float scrollZ = vWorldPos.z + uTime * 3.0;
-
-        float gx = abs(fract(vWorldPos.x * 0.5) - 0.5);
-        float gz = abs(fract(scrollZ * 0.5) - 0.5);
-
-        float lineX = smoothstep(0.03, 0.005, gx);
-        float lineZ = smoothstep(0.03, 0.005, gz);
-
-        float grid = max(lineX, lineZ);
-
-        float distFade = 1.0 - smoothstep(2.0, 25.0, length(vWorldPos.xz));
-        distFade = max(distFade, 0.0);
-
-        float glowStr = grid * distFade;
-
-        vec3 green = vec3(0.2, 1.0, 0.2);
-        col = green * glowStr * 1.2;
-
-        float edgeGlow = grid * distFade * 0.4;
-        col += green * edgeGlow;
-
-        gl_FragColor = vec4(col, glowStr * 0.9 + edgeGlow * 0.3);
-      }
-    `,
-  }), []);
+function ScrollingGrid() {
+  const groupRef = useRef<THREE.Group>(null);
 
   useFrame((state) => {
-    if (matRef.current) matRef.current.uniforms.uTime.value = state.clock.elapsedTime;
+    if (groupRef.current) {
+      groupRef.current.position.z = (state.clock.elapsedTime * 2.5) % 2;
+    }
   });
 
   return (
-    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.5, 0]}>
-      <planeGeometry args={[60, 60, 1, 1]} />
-      <shaderMaterial ref={matRef} args={[shader]} transparent side={THREE.DoubleSide} depthWrite={false} />
-    </mesh>
+    <group ref={groupRef}>
+      <Grid
+        args={[80, 80]}
+        cellSize={2}
+        cellThickness={1.2}
+        cellColor="#33ff33"
+        sectionSize={6}
+        sectionThickness={1.8}
+        sectionColor="#44ff66"
+        fadeDistance={40}
+        fadeStrength={1.5}
+        infiniteGrid
+        position={[0, 0, 0]}
+      />
+    </group>
   );
 }
 
 function Starfield() {
-  const count = 350;
+  const count = 300;
   const meshRef = useRef<THREE.InstancedMesh>(null);
   const dummy = useMemo(() => new THREE.Object3D(), []);
   const stars = useMemo(() =>
     Array.from({ length: count }, () => {
       const isBig = Math.random() < 0.1;
       return {
-        x: (Math.random() - 0.5) * 30,
-        y: Math.random() * 12 - 2,
-        z: -2 - Math.random() * 15,
-        baseScale: isBig ? (0.03 + Math.random() * 0.04) : (0.006 + Math.random() * 0.015),
+        x: (Math.random() - 0.5) * 40,
+        y: 1 + Math.random() * 15,
+        z: -30 + Math.random() * 50,
+        baseScale: isBig ? (0.04 + Math.random() * 0.06) : (0.008 + Math.random() * 0.02),
         twinkleSpeed: 1 + Math.random() * 5,
         offset: Math.random() * Math.PI * 2,
-        speedX: (Math.random() - 0.5) * 0.3,
-        speedY: (Math.random() - 0.5) * 0.15,
+        speedX: (Math.random() - 0.5) * 0.2,
+        speedY: (Math.random() - 0.5) * 0.08,
       };
     }), []);
 
@@ -87,8 +57,8 @@ function Starfield() {
     stars.forEach((s, i) => {
       let x = s.x + t * s.speedX;
       let y = s.y + t * s.speedY;
-      x = ((x % 30) + 30) % 30 - 15;
-      y = ((y % 14) + 14) % 14 - 2;
+      x = ((x % 40) + 40) % 40 - 20;
+      y = ((y % 16) + 16) % 16;
       dummy.position.set(x, y, s.z);
       const tw = 0.3 + 0.7 * (0.5 + 0.5 * Math.sin(t * s.twinkleSpeed + s.offset));
       dummy.scale.setScalar(s.baseScale * tw);
@@ -101,26 +71,41 @@ function Starfield() {
   return (
     <instancedMesh ref={meshRef} args={[undefined, undefined, count]}>
       <sphereGeometry args={[1, 6, 6]} />
-      <meshBasicMaterial color="#55ff55" transparent opacity={0.75} toneMapped={false} />
+      <meshBasicMaterial color="#aaffaa" transparent opacity={0.8} toneMapped={false} />
     </instancedMesh>
   );
+}
+
+function SceneSetup() {
+  const { scene } = useThree();
+  useEffect(() => {
+    scene.fog = new THREE.FogExp2(0x0d0015, 0.025);
+  }, [scene]);
+  return null;
 }
 
 function Scene() {
   return (
     <>
-      <color attach="background" args={["#000000"]} />
-      <SynthwaveFloor />
+      <color attach="background" args={["#0d0015"]} />
+      <SceneSetup />
+
+      <pointLight position={[0, 8, -5]} color="#7700ff" intensity={2} distance={30} decay={1.5} />
+      <pointLight position={[0, -1, 5]} color="#33ff33" intensity={0.5} distance={15} decay={2} />
+      <ambientLight intensity={0.08} color="#220033" />
+
+      <ScrollingGrid />
       <Starfield />
+
       <EffectComposer>
         <Bloom
-          intensity={0.6}
-          luminanceThreshold={0.2}
-          luminanceSmoothing={0.9}
+          intensity={1.2}
+          luminanceThreshold={0.1}
+          luminanceSmoothing={0.4}
           mipmapBlur
         />
-        <Noise opacity={0.03} />
-        <Vignette eskil={false} offset={0.05} darkness={0.7} />
+        <Noise opacity={0.06} />
+        <Vignette eskil={false} offset={0.05} darkness={0.65} />
       </EffectComposer>
     </>
   );
@@ -131,7 +116,7 @@ function GlitchBar() {
 
   useEffect(() => {
     const loop = () => {
-      const delay = 2000 + Math.random() * 5000;
+      const delay = 2500 + Math.random() * 5000;
       const timer = setTimeout(() => {
         setBar({ top: 10 + Math.random() * 80, h: 1 + Math.random() * 3 });
         setTimeout(() => setBar(null), 50 + Math.random() * 100);
@@ -148,7 +133,7 @@ function GlitchBar() {
     <div style={{
       position: "absolute", left: 0, right: 0,
       top: `${bar.top}%`, height: bar.h,
-      background: "rgba(51,255,51,0.2)", zIndex: 15,
+      background: "rgba(51,255,51,0.15)", zIndex: 15,
       pointerEvents: "none", mixBlendMode: "screen",
     }} />
   );
@@ -163,10 +148,13 @@ export default function MobileHero3D() {
   return (
     <div style={ui.container} data-testid="mobile-hero-3d">
       <Canvas
-        camera={{ position: [0, 2.5, 8], fov: 55, near: 0.1, far: 100 }}
+        camera={{ position: [0, 1.8, 6], fov: 65, near: 0.1, far: 100, rotation: [-0.15, 0, 0] }}
         dpr={[1, 1.5]}
         gl={{ antialias: false, alpha: false }}
         style={ui.canvas}
+        onCreated={({ camera }) => {
+          camera.lookAt(0, 0.5, -10);
+        }}
       >
         <Scene />
       </Canvas>
@@ -204,9 +192,7 @@ export default function MobileHero3D() {
             </div>
           ))}
         </div>
-      </div>
 
-      <div style={ui.bottomBar}>
         <div style={ui.navCol}>
           {[
             { label: "THE SYSTEM", href: "#system" },
@@ -225,17 +211,6 @@ export default function MobileHero3D() {
             </button>
           ))}
         </div>
-        <a
-          href="#cta"
-          data-testid="button-book-call-mobile-hero"
-          onClick={(e) => {
-            e.preventDefault();
-            document.querySelector("#cta")?.scrollIntoView({ behavior: "smooth" });
-          }}
-          style={ui.ctaBtn}
-        >
-          BOOK A FREE CALL
-        </a>
       </div>
     </div>
   );
@@ -247,7 +222,7 @@ const ui: Record<string, React.CSSProperties> = {
     height: "100dvh",
     position: "relative",
     overflow: "hidden",
-    background: "#000",
+    background: "#0d0015",
   },
   canvas: {
     position: "absolute",
@@ -258,7 +233,7 @@ const ui: Record<string, React.CSSProperties> = {
     position: "absolute",
     inset: 0,
     pointerEvents: "none",
-    background: "repeating-linear-gradient(0deg, rgba(0,0,0,0.06) 0px, rgba(0,0,0,0.06) 1px, transparent 1px, transparent 3px)",
+    background: "repeating-linear-gradient(0deg, rgba(0,0,0,0.05) 0px, rgba(0,0,0,0.05) 1px, transparent 1px, transparent 3px)",
     zIndex: 12,
   },
   topBar: {
@@ -268,7 +243,7 @@ const ui: Record<string, React.CSSProperties> = {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-    padding: "14px 18px",
+    padding: "14px 20px",
   },
   logoWrap: {
     display: "flex",
@@ -295,37 +270,36 @@ const ui: Record<string, React.CSSProperties> = {
   },
   content: {
     position: "absolute",
-    top: "42%",
+    bottom: 20,
     left: 20, right: 20,
-    transform: "translateY(-50%)",
     zIndex: 10,
-    pointerEvents: "none",
   },
   label: {
     fontFamily: "'DM Mono', monospace",
     fontSize: 10, color: "#33ff33",
     letterSpacing: "0.15em",
-    marginBottom: 12, opacity: 0.6,
+    marginBottom: 10, opacity: 0.6,
   },
   headline: {
     fontFamily: "'Space Grotesk', sans-serif",
-    fontSize: 32, fontWeight: 700,
+    fontSize: 30, fontWeight: 700,
     lineHeight: 1.1, color: "#e0e0e0",
-    margin: "0 0 12px",
-    textShadow: "0 0 30px rgba(51,255,51,0.15), 0 2px 4px rgba(0,0,0,0.6)",
+    margin: "0 0 10px",
+    textShadow: "0 0 30px rgba(51,255,51,0.12), 0 2px 4px rgba(0,0,0,0.7)",
   },
   accent: {
     color: "#33ff33",
     fontStyle: "italic",
-    textShadow: "0 0 25px rgba(51,255,51,0.5), 0 0 60px rgba(51,255,51,0.15)",
+    textShadow: "0 0 20px rgba(51,255,51,0.5), 0 0 50px rgba(51,255,51,0.15)",
   },
   desc: {
     fontFamily: "'DM Mono', monospace",
-    fontSize: 11, lineHeight: 1.7,
-    color: "#666", margin: "0 0 16px",
+    fontSize: 10, lineHeight: 1.7,
+    color: "#666", margin: "0 0 14px",
   },
   statsRow: {
     display: "flex", gap: 22,
+    marginBottom: 16,
   },
   stat: {
     display: "flex",
@@ -333,9 +307,9 @@ const ui: Record<string, React.CSSProperties> = {
   },
   statVal: {
     fontFamily: "'Space Grotesk', sans-serif",
-    fontSize: 18, fontWeight: 700,
+    fontSize: 17, fontWeight: 700,
     color: "#33ff33",
-    textShadow: "0 0 12px rgba(51,255,51,0.3)",
+    textShadow: "0 0 10px rgba(51,255,51,0.3)",
   },
   statLbl: {
     fontFamily: "'DM Mono', monospace",
@@ -343,18 +317,10 @@ const ui: Record<string, React.CSSProperties> = {
     letterSpacing: "0.08em",
     textTransform: "uppercase" as const,
   },
-  bottomBar: {
-    position: "absolute",
-    bottom: 0, left: 0, right: 0,
-    zIndex: 20,
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "flex-end",
-    padding: "0 18px 20px",
-  },
   navCol: {
     display: "flex",
-    flexDirection: "column" as const, gap: 1,
+    flexDirection: "column" as const, gap: 0,
+    pointerEvents: "auto" as const,
   },
   navBtn: {
     background: "none", border: "none",
@@ -364,16 +330,6 @@ const ui: Record<string, React.CSSProperties> = {
     textAlign: "left" as const,
     padding: "4px 0", color: "#555",
     transition: "color 0.15s",
-  },
-  ctaBtn: {
-    fontFamily: "'DM Mono', monospace",
-    fontSize: 9, letterSpacing: "0.06em",
-    color: "#000", background: "#33ff33",
-    border: "none", padding: "10px 16px",
-    textDecoration: "none",
-    textTransform: "uppercase" as const,
-    fontWeight: 700,
-    boxShadow: "0 0 16px rgba(51,255,51,0.3)",
-    whiteSpace: "nowrap" as const,
+    pointerEvents: "auto" as const,
   },
 };
