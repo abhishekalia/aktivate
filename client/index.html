@@ -803,51 +803,71 @@ body.terminal-active nav { opacity:0; pointer-events:none; }
   transform:translateY(-100%); opacity:0; pointer-events:none;
 }
 #term-mac-frame {
-  width:90vw; max-width:680px;
+  width:94vw; max-width:960px;
   display:flex; flex-direction:column; align-items:center;
-  filter:drop-shadow(0 0 40px rgba(50,255,50,0.25)) drop-shadow(0 0 80px rgba(50,255,50,0.1));
+  filter:drop-shadow(0 0 50px rgba(50,255,50,0.3)) drop-shadow(0 0 100px rgba(50,255,50,0.12));
 }
 #term-mac-screen {
   width:100%;
-  background:#000;
-  border:3px solid #444;
+  background:#0a0a0a;
+  border:3px solid #333;
   border-bottom:none;
-  border-radius:20px 20px 0 0;
-  padding:40px 32px 32px;
+  border-radius:16px 16px 0 0;
+  padding:12px 0 0;
   position:relative;
+  overflow:hidden;
+  display:flex; flex-direction:column;
+}
+#term-mac-titlebar {
+  display:flex; align-items:center; gap:6px;
+  padding:0 16px 10px;
+  border-bottom:1px solid #222;
+  flex-shrink:0;
+}
+#term-mac-titlebar .dot { width:10px; height:10px; border-radius:50%; }
+#term-mac-titlebar .dot.red { background:#ff5f57; }
+#term-mac-titlebar .dot.yellow { background:#febc2e; }
+#term-mac-titlebar .dot.green { background:#28c840; }
+#term-mac-titlebar .title {
+  flex:1; text-align:center; font-size:11px; color:#666;
+  letter-spacing:0.05em; margin-right:48px;
+}
+#term-mac-body {
+  flex:1;
   overflow-y:auto;
-  max-height:70vh;
-  display:flex; flex-direction:column; align-items:center; justify-content:center;
-  min-height:400px;
+  padding:32px 48px 40px;
+  display:flex; flex-direction:column; align-items:flex-start; justify-content:center;
+  min-height:480px;
+  max-height:78vh;
 }
 #term-mac-screen::after {
   content:''; position:absolute; inset:0; z-index:1; pointer-events:none;
-  border-radius:18px 18px 0 0;
-  background:repeating-linear-gradient(0deg, rgba(0,0,0,0.12) 0px, rgba(0,0,0,0.12) 1px, transparent 1px, transparent 3px);
+  border-radius:14px 14px 0 0;
+  background:repeating-linear-gradient(0deg, rgba(0,0,0,0.08) 0px, rgba(0,0,0,0.08) 1px, transparent 1px, transparent 3px);
 }
 #term-mac-chin {
   width:100%;
-  background:linear-gradient(180deg, #c0c0c0 0%, #a8a8a8 50%, #999 100%);
-  border:3px solid #444;
-  border-top:1px solid #888;
-  border-radius:0 0 20px 20px;
-  padding:14px 0 18px;
+  background:linear-gradient(180deg, #c8c8c8 0%, #aaa 50%, #999 100%);
+  border:3px solid #333;
+  border-top:1px solid #777;
+  border-radius:0 0 16px 16px;
+  padding:10px 0 14px;
   text-align:center;
 }
 #term-mac-logo {
-  font-family:'DM Mono',monospace; font-size:10px; font-weight:500;
+  font-family:'DM Mono',monospace; font-size:9px; font-weight:500;
   color:#555; letter-spacing:0.15em; text-transform:lowercase;
 }
 #term-step-counter {
-  position:absolute; top:14px; left:0; right:0; z-index:3;
-  text-align:center; font-size:10px; color:#1a8c1a;
+  text-align:left; font-size:10px; color:#1a8c1a;
   letter-spacing:0.2em; text-transform:uppercase;
+  margin-bottom:12px; width:100%;
   opacity:0; transition:opacity 0.4s ease;
 }
 #term-step-counter.visible { opacity:1; }
 #terminal-content {
   position:relative; z-index:2;
-  max-width:560px; width:100%; padding:0 12px;
+  width:100%;
   opacity:1; transition:opacity 0.35s ease;
 }
 #terminal-content.fade-out { opacity:0; }
@@ -906,11 +926,14 @@ body.terminal-active nav { opacity:0; pointer-events:none; }
 
 @media (max-width:600px) {
   #terminal-overlay { font-size:12px; }
-  #term-mac-frame { width:95vw; }
-  #term-mac-screen { padding:32px 16px 24px; max-height:65vh; min-height:300px; border-radius:14px 14px 0 0; }
-  #term-mac-screen::after { border-radius:12px 12px 0 0; }
-  #term-mac-chin { border-radius:0 0 14px 14px; padding:10px 0 14px; }
-  #terminal-content { padding:0 4px; }
+  #term-mac-frame { width:97vw; }
+  #term-mac-screen { border-radius:12px 12px 0 0; }
+  #term-mac-screen::after { border-radius:10px 10px 0 0; }
+  #term-mac-titlebar { padding:0 12px 8px; }
+  #term-mac-titlebar .dot { width:8px; height:8px; }
+  #term-mac-titlebar .title { font-size:9px; margin-right:36px; }
+  #term-mac-body { padding:20px 20px 28px; min-height:360px; max-height:72vh; }
+  #term-mac-chin { border-radius:0 0 12px 12px; padding:8px 0 12px; }
   .term-line.large { font-size:16px; }
   .term-line.xl { font-size:20px; }
   .term-btn { padding:10px 16px; font-size:11px; }
@@ -922,8 +945,16 @@ body.terminal-active nav { opacity:0; pointer-events:none; }
 <div id="terminal-overlay">
   <div id="term-mac-frame">
     <div id="term-mac-screen">
-      <div id="term-step-counter"></div>
-      <div id="terminal-content"></div>
+      <div id="term-mac-titlebar">
+        <span class="dot red"></span>
+        <span class="dot yellow"></span>
+        <span class="dot green"></span>
+        <span class="title">aktivate — diagnostic</span>
+      </div>
+      <div id="term-mac-body">
+        <div id="term-step-counter"></div>
+        <div id="terminal-content"></div>
+      </div>
     </div>
     <div id="term-mac-chin">
       <div id="term-mac-logo">aktivate</div>
