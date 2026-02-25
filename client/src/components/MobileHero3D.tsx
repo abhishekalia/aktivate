@@ -1,6 +1,5 @@
 import { Suspense, useRef, useMemo, useState, useEffect } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import * as THREE from "three";
 
 function Starfield() {
@@ -42,7 +41,7 @@ function Starfield() {
   return (
     <instancedMesh ref={meshRef} args={[undefined, undefined, count]}>
       <sphereGeometry args={[1, 6, 6]} />
-      <meshBasicMaterial color="#aaffaa" transparent opacity={0.8} toneMapped={false} />
+      <meshBasicMaterial color="#66ff88" transparent opacity={0.9} toneMapped={false} />
     </instancedMesh>
   );
 }
@@ -55,15 +54,6 @@ function Scene() {
       <ambientLight intensity={0.08} color="#220033" />
 
       <Starfield />
-
-      <EffectComposer>
-        <Bloom
-          intensity={1.5}
-          luminanceThreshold={0.05}
-          luminanceSmoothing={0.4}
-          mipmapBlur
-        />
-      </EffectComposer>
     </>
   );
 }
