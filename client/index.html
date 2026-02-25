@@ -804,6 +804,8 @@ body:hover #cursor-glow {
   display:flex;
   flex-direction:column;
   justify-content:center;
+  position:relative;
+  overflow:hidden;
 }
 #mobile-hero .mh-screen::after {
   content:''; position:absolute; inset:0; pointer-events:none;
@@ -848,20 +850,49 @@ body:hover #cursor-glow {
   text-align:center;
   padding:8px 0;
 }
+#mobile-hero .mh-progress {
+  height:6px;
+  background:#111;
+  border:1px solid #1a8c1a;
+  margin:6px 0;
+  overflow:hidden;
+}
+#mobile-hero .mh-progress-fill {
+  height:100%;
+  width:0;
+  background:#33ff33;
+  transition:width 0.06s linear;
+  box-shadow:0 0 8px rgba(51,255,51,0.4);
+}
 
 /* ── RESPONSIVE ────────────────────── */
 @media(max-width:960px) {
   #mobile-hero { display:block; }
   #hero-spacer { display:none !important; }
   #zoom-overlay { display:none !important; }
-  nav { padding:0 20px; }
+  nav { padding:0 16px; height:52px; }
+  nav .keycap-sm { font-size:9px; padding:6px 14px; gap:6px; }
+  nav .keycap-ico { font-size:11px; }
+  .nav-links { display:none; }
   .s-wrap, .sc-hdr { padding:0 20px; }
   .sc-rail { padding-left:20px; }
+  #problem { padding:60px 0; }
+  .prob-grid { gap:40px; }
+  #system { padding:60px 0; }
+  .sys-hdr { margin-bottom:40px; }
+  .pillar { padding:28px 20px; }
+  .p-n { font-size:40px; }
+  .loop-bar { padding:20px; flex-direction:column; align-items:flex-start; }
   .prob-grid, .pillars, .proc-steps, .res-grid,
   .fw-grid, .about-grid { grid-template-columns:1fr; }
   .proc-steps::before { display:none; }
-  footer { flex-direction:column; gap:16px; text-align:center; padding:24px 20px; }
+  .proc-step { padding:24px 20px; }
+  section.light-section, section.sky-section, section.dark-section { padding:60px 0; }
+  .res-grid { gap:16px; }
+  .fw-grid { gap:16px; }
   .cta-inner { padding:0 20px; }
+  .cta-inner .s-hl { font-size:24px; }
+  footer { flex-direction:column; gap:16px; text-align:center; padding:24px 20px; }
   .about-grid { gap:40px; }
   .about-frame { margin:0 auto; }
 }
@@ -1065,24 +1096,7 @@ body.terminal-active #mobile-hero { display:none; }
       <span class="mh-dot green"></span>
       <span class="mh-titlebar-text">aktivate.ai</span>
     </div>
-    <div class="mh-screen">
-      <div class="mh-line dim">AKTIVATE OS v1.0</div>
-      <div class="mh-line dim">SYSTEM READY</div>
-      <div class="mh-line dim">────────────────────────</div>
-      <div class="mh-gap"></div>
-      <div class="mh-line bright large">BUILD THE ENGINE.</div>
-      <div class="mh-line green-glow large">BUILD THE FACE.</div>
-      <div class="mh-gap"></div>
-      <div class="mh-line dim">// the growth studio</div>
-      <div class="mh-gap-sm"></div>
-      <div class="mh-line white">Automated ops. Automated presence.</div>
-      <div class="mh-line white">One studio for Insurance &amp; Logistics</div>
-      <div class="mh-line white">operators ready to scale.</div>
-      <div class="mh-gap"></div>
-      <a href="#cta" class="mh-term-btn" data-testid="button-book-call-mobile">[ BOOK A FREE CALL ]</a>
-      <div class="mh-gap-sm"></div>
-      <a href="#problem" class="mh-scroll-link">// scroll down</a>
-    </div>
+    <div class="mh-screen" id="mh-screen"></div>
   </div>
 </section>
 
@@ -1600,6 +1614,77 @@ body.terminal-active #mobile-hero { display:none; }
       } catch(err) {}
     });
   });
+
+  // ── MOBILE HERO TERMINAL ──────────────────
+  var mhScreen = document.getElementById('mh-screen');
+  if (mhScreen && window.innerWidth <= 960) {
+    (function() {
+      var delay = 0;
+      function mhAdd(cls, text, d) {
+        delay += (d || 80);
+        setTimeout(function() {
+          var el = document.createElement('div');
+          el.className = cls;
+          if (text) el.textContent = text;
+          mhScreen.appendChild(el);
+        }, delay);
+      }
+      function mhBtn(text, href, cls, d) {
+        delay += (d || 80);
+        setTimeout(function() {
+          var a = document.createElement('a');
+          a.className = 'mh-term-btn' + (cls ? ' ' + cls : '');
+          a.href = href;
+          a.textContent = text;
+          a.setAttribute('data-testid', 'button-book-call-mobile');
+          mhScreen.appendChild(a);
+        }, delay);
+      }
+
+      mhAdd('mh-line dim', 'AKTIVATE OS v1.0', 300);
+      mhAdd('mh-line dim', 'INITIALIZING...', 200);
+
+      delay += 400;
+      setTimeout(function() {
+        var bar = document.createElement('div');
+        bar.className = 'mh-progress';
+        bar.innerHTML = '<div class="mh-progress-fill"></div>';
+        mhScreen.appendChild(bar);
+        var fill = bar.querySelector('.mh-progress-fill');
+        var w = 0;
+        var iv = setInterval(function() {
+          w += Math.random() * 15 + 5;
+          if (w >= 100) { w = 100; clearInterval(iv); }
+          fill.style.width = w + '%';
+        }, 60);
+      }, delay);
+
+      mhAdd('mh-line dim', 'LOADING MODULES: AUTOMATION · CREATIVE · STRATEGY', 900);
+      mhAdd('mh-line dim', 'SYSTEM READY', 300);
+      mhAdd('mh-line dim', '────────────────────────────', 200);
+      mhAdd('mh-gap', '', 300);
+      mhAdd('mh-line bright large', 'BUILD THE ENGINE.', 200);
+      mhAdd('mh-line green-glow large', 'BUILD THE FACE.', 150);
+      mhAdd('mh-gap', '', 100);
+      mhAdd('mh-line dim', '// the growth studio', 200);
+      mhAdd('mh-gap-sm', '', 50);
+      mhAdd('mh-line white', 'Automated ops. Automated presence.', 100);
+      mhAdd('mh-line white', 'One studio for Insurance & Logistics', 80);
+      mhAdd('mh-line white', 'operators ready to scale.', 80);
+      mhAdd('mh-gap', '', 100);
+      mhBtn('[ BOOK A FREE CALL ]', '#cta', '', 200);
+      mhAdd('mh-gap-sm', '', 50);
+
+      delay += 100;
+      setTimeout(function() {
+        var link = document.createElement('a');
+        link.className = 'mh-scroll-link';
+        link.href = '#problem';
+        link.textContent = '// scroll down';
+        mhScreen.appendChild(link);
+      }, delay);
+    })();
+  }
 
   // ── TERMINAL GAME ──────────────────────────
   var termOverlay = document.getElementById('terminal-overlay');
