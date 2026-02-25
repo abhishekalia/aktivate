@@ -766,17 +766,12 @@ body:hover #cursor-glow {
 @media(max-width:960px) {
   nav { padding:0 20px; }
   .nav-links { display:none; }
-  #hero-spacer { height:auto !important; }
+  #hero-spacer { height:300vh; }
   #hero-sticky {
-    position:relative !important;
-    height:auto !important;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    padding:100px 20px 60px;
-    gap:24px;
-    min-height:100vh;
+    grid-template-columns:1fr;
+    padding:80px 20px 40px;
+    gap:20px;
+    justify-items:center;
   }
   #hero-left {
     text-align:center; max-width:100%;
@@ -791,7 +786,6 @@ body:hover #cursor-glow {
     max-width:60vw;
     order:1;
   }
-  #zoom-overlay { display:none !important; }
   .s-wrap, .sc-hdr { padding:0 20px; }
   .sc-rail { padding-left:20px; }
   .prob-grid, .pillars, .proc-steps, .res-grid,
@@ -1375,7 +1369,6 @@ body.terminal-active nav { opacity:0; pointer-events:none; }
 
   if (spacer && scene && heroLeft && sticky && zoomOv) {
     window.addEventListener('scroll', function() {
-      if (isMobileView()) return;
       if (!measured) { measure(); }
       if (!measured) return;
 
