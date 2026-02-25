@@ -857,77 +857,49 @@ body:hover #cursor-glow {
   text-align:center;
   padding:8px 0;
 }
-.mh-monitor-section {
+.mh-hero-section {
   display:none;
-  background:#000;
-  padding:40px 16px 60px;
+  background:#050505;
+  padding:80px 24px 60px;
+  border-top:1px solid #1a1a1a;
 }
-.mh-imac-wrap {
-  position:relative;
-  width:100%;
-  max-width:380px;
-  margin:0 auto 32px;
-}
-.mh-imac-img {
-  width:100%;
-  height:auto;
-  display:block;
-  filter:drop-shadow(0 0 40px rgba(51,255,51,0.15));
-}
-.mh-imac-content {
-  position:absolute;
-  top:7%;
-  left:12%;
-  right:12%;
-  bottom:28%;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  padding:12px 14px;
-  overflow:hidden;
-}
-.mh-label {
+.mh-hero-label {
   font-family:'DM Mono',monospace;
-  font-size:9px;
+  font-size:12px;
   color:var(--term-green);
   letter-spacing:0.08em;
-  margin-bottom:6px;
+  margin-bottom:16px;
   text-transform:uppercase;
 }
-.mh-headline {
+.mh-hero-headline {
   font-family:'Space Grotesk',sans-serif;
-  font-size:22px;
+  font-size:40px;
   font-weight:700;
-  line-height:1.15;
+  line-height:1.1;
   color:#fff;
-  margin:0 0 8px;
+  margin:0 0 20px;
 }
-.mh-headline em {
+.mh-hero-headline em {
   font-style:normal;
   color:var(--term-green);
 }
-.mh-desc {
+.mh-hero-desc {
   font-family:'DM Mono',monospace;
-  font-size:8px;
-  line-height:1.5;
+  font-size:13px;
+  line-height:1.7;
   color:#999;
-  margin:0 0 10px;
+  margin:0 0 28px;
+  max-width:340px;
 }
-.mh-hero-btns {
+.mh-hero-actions {
   display:flex;
   align-items:center;
-  gap:12px;
-}
-.mh-hero-btns .keycap {
-  font-size:8px !important;
-  padding:6px 12px !important;
-}
-.mh-hero-btns .keycap-ico {
-  font-size:9px !important;
+  gap:20px;
+  margin-bottom:48px;
 }
 .mh-how-link {
   font-family:'DM Mono',monospace;
-  font-size:9px;
+  font-size:11px;
   color:var(--term-green);
   text-decoration:underline;
   text-underline-offset:3px;
@@ -935,24 +907,23 @@ body:hover #cursor-glow {
 }
 .mh-stats-row {
   display:flex;
-  justify-content:center;
-  gap:28px;
-  padding:0 20px;
+  justify-content:flex-start;
+  gap:32px;
 }
 .mh-stat-n {
   font-family:'Space Grotesk',sans-serif;
-  font-size:24px;
+  font-size:28px;
   font-weight:700;
   color:var(--term-green);
   line-height:1.2;
 }
 .mh-stat-l {
   font-family:'DM Mono',monospace;
-  font-size:8px;
+  font-size:9px;
   color:#666;
   letter-spacing:0.06em;
   text-transform:uppercase;
-  margin-top:2px;
+  margin-top:4px;
 }
 
 #mobile-hero .mh-progress {
@@ -973,7 +944,7 @@ body:hover #cursor-glow {
 /* ── RESPONSIVE ────────────────────── */
 @media(max-width:960px) {
   #mobile-hero { display:block; }
-  .mh-monitor-section { display:block; }
+  .mh-hero-section { display:block; }
   #hero-spacer { display:none !important; }
   #zoom-overlay { display:none !important; }
   nav { padding:0 16px; height:52px; }
@@ -1205,18 +1176,13 @@ body.terminal-active #mobile-hero { display:none; }
     <div class="mh-screen" id="mh-screen"></div>
   </div>
 
-  <div class="mh-monitor-section" id="mh-monitor-section">
-    <div class="mh-imac-wrap">
-      <img src="/imac-front.png" alt="iMac G3" class="mh-imac-img">
-      <div class="mh-imac-content">
-        <div class="mh-label">&gt; THE GROWTH STUDIO _</div>
-        <h2 class="mh-headline">Build the<br>Engine.<br>Build the <em>Face.</em></h2>
-        <p class="mh-desc">Automated ops. Automated presence. One studio built specifically for Insurance &amp; Logistics operators who are ready to scale.</p>
-        <div class="mh-hero-btns">
-          <a href="#cta" class="keycap keycap-lg" data-testid="button-book-call-mobile-hero"><span class="keycap-ico">&#9783;</span><span>Book a Free Call</span></a>
-          <a href="#system" class="mh-how-link" data-testid="link-how-it-works-mobile">SEE HOW IT WORKS &rarr;</a>
-        </div>
-      </div>
+  <div class="mh-hero-section" id="mh-monitor-section">
+    <div class="mh-hero-label">&gt; THE GROWTH STUDIO _</div>
+    <h2 class="mh-hero-headline">Build the<br>Engine.<br>Build the <em>Face.</em></h2>
+    <p class="mh-hero-desc">Automated ops. Automated presence. One studio built specifically for Insurance &amp; Logistics operators who are ready to scale.</p>
+    <div class="mh-hero-actions">
+      <a href="#cta" class="keycap keycap-lg" data-testid="button-book-call-mobile-hero"><span class="keycap-ico">&#9783;</span><span>Book a Free Call</span></a>
+      <a href="#system" class="mh-how-link" data-testid="link-how-it-works-mobile">SEE HOW IT WORKS &rarr;</a>
     </div>
     <div class="mh-stats-row">
       <div>
