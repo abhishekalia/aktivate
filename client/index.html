@@ -1278,6 +1278,7 @@ body.terminal-active nav { opacity:0; pointer-events:none; }
   var heroLeft = document.getElementById('hero-left');
   var zoomOv   = document.getElementById('zoom-overlay');
   var img      = document.getElementById('imac-front');
+  var imacInner = document.getElementById('imac-inner');
   var isMobile = window.innerWidth <= 960;
 
   var driftX = 0, driftY = 0, measured = false;
@@ -1325,6 +1326,17 @@ body.terminal-active nav { opacity:0; pointer-events:none; }
 
       var overlayFade = Math.min(Math.max((zoomEased - 0.8) / 0.2, 0), 1);
       zoomOv.style.opacity = overlayFade;
+
+      if (imacInner) {
+        var g = zoomEased;
+        var ga = Math.round(0.4 + g * 0.5, 2);
+        var gb = Math.round(0.2 + g * 0.4, 2);
+        var gc = Math.round(0.12 + g * 0.3, 2);
+        var r1 = Math.round(40 + g * 30);
+        var r2 = Math.round(90 + g * 60);
+        var r3 = Math.round(150 + g * 80);
+        imacInner.style.filter = 'drop-shadow(0 0 ' + r1 + 'px rgba(50,255,50,' + ga + ')) drop-shadow(0 0 ' + r2 + 'px rgba(50,255,50,' + gb + ')) drop-shadow(0 0 ' + r3 + 'px rgba(255,255,255,' + gc + '))';
+      }
 
     }, { passive: true });
   }
