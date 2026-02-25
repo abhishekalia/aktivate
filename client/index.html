@@ -768,12 +768,17 @@ body:hover #cursor-glow {
   .nav-links { display:none; }
   #hero-sticky {
     grid-template-columns:1fr;
-    padding:80px 20px 40px;
-    gap:30px;
+    padding:60px 20px 20px;
+    gap:16px;
+    align-content:center;
   }
   #hero-spacer { height:300vh; }
   #hero-left { text-align:center; max-width:100%; }
-  #imac-scene { max-width:300px; }
+  #hero-left .hero-desc { display:none; }
+  #hero-left .hero-stats { display:none; }
+  #hero-left .hero-btns { display:none; }
+  .hero-headline { font-size:28px; line-height:1.15; }
+  #imac-scene { max-width:260px; order:-1; }
   .hero-label, .hero-btns, .hero-stats { justify-content:center; }
   .hero-desc { margin:0 auto 40px; text-align:center; }
   .hero-headline { text-align:center; }
