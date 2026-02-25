@@ -95,29 +95,66 @@ function RetroMonitor({ springProps }: { springProps: any }) {
   );
 }
 
-function FloatingParticles() {
-  const count = 12;
+function Starfield() {
+  const count = 200;
   const meshRef = useRef<THREE.InstancedMesh>(null);
   const dummy = useMemo(() => new THREE.Object3D(), []);
-  const particles = useMemo(() =>
-    Array.from({ length: count }, () => ({
-      x: (Math.random() - 0.5) * 6,
-      y: (Math.random() - 0.5) * 4,
-      z: (Math.random() - 0.5) * 2 - 2,
-      speed: 0.15 + Math.random() * 0.3,
-      offset: Math.random() * Math.PI * 2,
-    })), []);
+  const stars = useMemo(() =>
+    Array.from({ length: count }, () => {
+      const isBright = Math.random() < 0.12;
+      return {
+        x: (Math.random() - 0.5) * 16,
+        y: (Math.random() - 0.5) * 10,
+        z: -1 - Math.random() * 12,
+        baseScale: isBright ? (0.012 + Math.random() * 0.018) : (0.003 + Math.random() * 0.008),
+        speed: 0.1 + Math.random() * 0.5,
+        twinkleSpeed: 1 + Math.random() * 4,
+        offset: Math.random() * Math.PI * 2,
+        driftX: (Math.random() - 0.5) * 0.15,
+        driftY: (Math.random() - 0.5) * 0.1,
+        brightness: isBright ? 1 : (0.2 + Math.random() * 0.5),
+      };
+    }), []);
+
+  const colorArray = useMemo(() => {
+    const arr = new Float32Array(count * 3);
+    stars.forEach((s, i) => {
+      const hueRoll = Math.random();
+      let r: number, g: number, b: number;
+      if (hueRoll < 0.6) {
+        r = 0.2 * s.brightness; g = 1.0 * s.brightness; b = 0.2 * s.brightness;
+      } else if (hueRoll < 0.8) {
+        r = 0.9 * s.brightness; g = 0.95 * s.brightness; b = 1.0 * s.brightness;
+      } else if (hueRoll < 0.92) {
+        r = 1.0 * s.brightness; g = 0.85 * s.brightness; b = 0.4 * s.brightness;
+      } else {
+        r = 0.6 * s.brightness; g = 0.7 * s.brightness; b = 1.0 * s.brightness;
+      }
+      arr[i * 3] = r;
+      arr[i * 3 + 1] = g;
+      arr[i * 3 + 2] = b;
+    });
+    return arr;
+  }, [stars]);
+
+  useEffect(() => {
+    if (!meshRef.current) return;
+    const mesh = meshRef.current;
+    const geo = mesh.geometry;
+    geo.setAttribute('instanceColor', new THREE.InstancedBufferAttribute(colorArray, 3));
+  }, [colorArray]);
 
   useFrame((state) => {
     if (!meshRef.current) return;
     const t = state.clock.elapsedTime;
-    particles.forEach((p, i) => {
+    stars.forEach((s, i) => {
       dummy.position.set(
-        p.x + Math.sin(t * p.speed + p.offset) * 0.3,
-        p.y + Math.cos(t * p.speed * 0.7 + p.offset) * 0.2,
-        p.z
+        s.x + Math.sin(t * s.speed * 0.3 + s.offset) * s.driftX,
+        s.y + Math.cos(t * s.speed * 0.2 + s.offset) * s.driftY,
+        s.z
       );
-      dummy.scale.setScalar(0.004 + Math.sin(t * 2 + p.offset) * 0.002);
+      const twinkle = 0.5 + 0.5 * Math.sin(t * s.twinkleSpeed + s.offset);
+      dummy.scale.setScalar(s.baseScale * (0.6 + twinkle * 0.4));
       dummy.updateMatrix();
       meshRef.current!.setMatrixAt(i, dummy.matrix);
     });
@@ -126,8 +163,8 @@ function FloatingParticles() {
 
   return (
     <instancedMesh ref={meshRef} args={[undefined, undefined, count]}>
-      <sphereGeometry args={[1, 6, 6]} />
-      <meshBasicMaterial color="#33ff33" transparent opacity={0.2} />
+      <sphereGeometry args={[1, 8, 8]} />
+      <meshBasicMaterial color="#ffffff" transparent opacity={0.7} toneMapped={false} />
     </instancedMesh>
   );
 }
@@ -178,7 +215,7 @@ function Scene() {
       <Suspense fallback={null}>
         <RetroMonitor springProps={springProps} />
       </Suspense>
-      <FloatingParticles />
+      <Starfield />
       <EffectComposer>
         <Noise opacity={0.04} />
         <Vignette eskil={false} offset={0.1} darkness={0.85} />
