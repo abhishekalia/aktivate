@@ -79,7 +79,7 @@ function Starfield() {
 function SceneSetup() {
   const { scene } = useThree();
   useEffect(() => {
-    scene.fog = new THREE.FogExp2(0x0d0015, 0.018);
+    scene.fog = new THREE.FogExp2(0x000000, 0.015);
   }, [scene]);
   return null;
 }
@@ -87,7 +87,6 @@ function SceneSetup() {
 function Scene() {
   return (
     <>
-      <color attach="background" args={["#0d0015"]} />
       <SceneSetup />
 
       <pointLight position={[0, 8, -5]} color="#7700ff" intensity={2} distance={30} decay={1.5} />
@@ -150,7 +149,7 @@ export default function MobileHero3D() {
       <Canvas
         camera={{ position: [0, 3, 8], fov: 70, near: 0.1, far: 100 }}
         dpr={[1, 1.5]}
-        gl={{ antialias: false, alpha: false }}
+        gl={{ antialias: false, alpha: true }}
         style={ui.canvas}
         onCreated={({ camera }) => {
           camera.lookAt(0, -1, -20);
@@ -222,7 +221,7 @@ const ui: Record<string, React.CSSProperties> = {
     height: "100dvh",
     position: "relative",
     overflow: "hidden",
-    background: "#0d0015",
+    background: "transparent",
   },
   canvas: {
     position: "absolute",

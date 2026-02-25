@@ -357,19 +357,19 @@ nav {
 }
 .s-body { font-size:14px; line-height:1.8; }
 
-.light-section { background:rgba(13,0,21,0.55); color:#ccc; }
+.light-section { background:rgba(13,0,21,0.3); color:#ccc; }
 .light-section .s-lbl { color:var(--term-dim); }
 .light-section .s-lbl span { color:var(--term-green); }
 .light-section .s-hl { color:#e0e0e0; }
 .light-section .s-body { color:#888; }
 
-.sky-section { background:rgba(13,0,21,0.5); color:#ccc; }
+.sky-section { background:rgba(13,0,21,0.25); color:#ccc; }
 .sky-section .s-lbl { color:var(--term-dim); }
 .sky-section .s-lbl span { color:var(--term-green); }
 .sky-section .s-hl { color:#e0e0e0; }
 .sky-section .s-body { color:#888; }
 
-.dark-section { background:rgba(13,0,21,0.5); color:#ccc; }
+.dark-section { background:rgba(13,0,21,0.25); color:#ccc; }
 .dark-section .s-lbl { color:var(--term-dim); }
 .dark-section .s-lbl span { color:var(--term-green); }
 .dark-section .s-hl { color:#e0e0e0; }
@@ -814,11 +814,15 @@ body:hover #cursor-glow {
 /* ── MOBILE HERO ──────────────────── */
 #mobile-hero {
   display:none;
+  position:relative;
+  z-index:1;
+  background:transparent;
 }
 #mobile-hero-3d-root {
   width:100%;
   height:100dvh;
   height:100vh;
+  background:transparent;
 }
 @keyframes glitch-flicker {
   0% { opacity:1; transform:translateX(0); }
