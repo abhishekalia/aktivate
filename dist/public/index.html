@@ -1,0 +1,1943 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>aktivate — Build the Engine. Build the Face.</title>
+<meta name="description" content="AI automation and creative studio serving Insurance & Logistics operators. Automated ops, automated presence, one studio built to scale.">
+<meta property="og:title" content="aktivate — Build the Engine. Build the Face.">
+<meta property="og:description" content="AI automation and creative studio for Insurance & Logistics operators ready to scale.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Instrument+Serif:ital@0;1&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --sky:        #0a0a0a;
+  --sky-light:  #0e0e0e;
+  --sky-dark:   #060606;
+  --off-white:  #0a0a0a;
+  --ink:        #e0e0e0;
+  --ink-mid:    #999;
+  --ink-dim:    #555;
+  --ink-light:  #e0e0e0;
+  --ink-light-mid: #888;
+  --ink-light-dim: #555;
+  --neon:       #33ff33;
+  --neon-dim:   #1a8c1a;
+  --purple:     #8b5cf6;
+  --red:        #ff4444;
+  --chrome-1:   #33ff33;
+  --chrome-2:   #66ff66;
+  --chrome-3:   #1a8c1a;
+  --chrome-4:   #33ff33;
+  --chrome-border: rgba(51,255,51,0.15);
+  --border-dark:  rgba(51,255,51,0.1);
+  --border-dark-h:rgba(51,255,51,0.2);
+  --border-light: rgba(51,255,51,0.08);
+  --border-light-h:rgba(51,255,51,0.18);
+  --card-dark:  rgba(51,255,51,0.02);
+  --card-dark-h:rgba(51,255,51,0.05);
+  --card-light: rgba(51,255,51,0.02);
+  --card-light-h:rgba(51,255,51,0.05);
+  --term-green: #33ff33;
+  --term-dim:   #1a8c1a;
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+
+body {
+  background:#000;
+  color:var(--ink);
+  font-family:'DM Mono', monospace;
+  font-weight:400;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+  cursor:crosshair;
+}
+body::after {
+  content:''; position:fixed; inset:0; z-index:9000; pointer-events:none;
+  background:repeating-linear-gradient(0deg, rgba(0,0,0,0.08) 0px, rgba(0,0,0,0.08) 1px, transparent 1px, transparent 3px);
+}
+a, button, .keycap, .pain, [role="button"] {
+  cursor:pointer;
+}
+
+a { color:inherit; text-decoration:none; }
+
+@keyframes chrome-shift {
+  0%   { background-position:0% 0%; }
+  50%  { background-position:100% 100%; }
+  100% { background-position:0% 0%; }
+}
+.chrome-text {
+  background:linear-gradient(
+    170deg,
+    #0a3a0a 0%, #1a8c1a 15%, #33ff33 30%, #66ff66 45%,
+    #33ff33 55%, #1a8c1a 70%, #0a3a0a 85%, #33ff33 100%
+  );
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.chrome-text-glow {
+  filter:drop-shadow(0 0 6px rgba(51,255,51,0.3)) drop-shadow(0 0 1px rgba(51,255,51,0.6));
+}
+.chrome-text-anim {
+  background-size:200% 200%;
+  animation:chrome-shift 8s ease infinite;
+}
+
+/* ── NAV ───────────────────────────── */
+nav {
+  position:fixed; top:0; left:0; right:0; z-index:1000;
+  height:60px; padding:0 48px;
+  display:flex; align-items:center; justify-content:space-between;
+  background:rgba(0,0,0,0.9);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid rgba(51,255,51,0.1);
+}
+.nav-logo {
+  font-family:'DM Mono',monospace; font-weight:400; font-size:14px;
+  color:var(--term-green); display:flex; align-items:center; gap:8px;
+}
+.logo-dot {
+  width:7px; height:7px; border-radius:50%;
+  background:#33ff33;
+  box-shadow:0 0 6px rgba(51,255,51,0.5);
+}
+.nav-links { display:flex; gap:36px; list-style:none; }
+.nav-links a {
+  font-size:11px; font-weight:400; color:var(--term-dim);
+  letter-spacing:0.08em; text-transform:uppercase; transition:color .2s;
+}
+.nav-links a:hover { color:var(--term-green); }
+.keycap {
+  font-family:'DM Mono',monospace; font-weight:700;
+  letter-spacing:0.1em; text-transform:uppercase;
+  color:#0a0a0a;
+  cursor:pointer; text-decoration:none;
+  display:inline-flex; align-items:center; gap:10px;
+  position:relative;
+  border-radius:8px;
+  background:linear-gradient(180deg, #d8d8d8 0%, #b8b8b8 40%, #a0a0a0 100%);
+  border-style:solid;
+  border-top:3px solid #e8e8e8;
+  border-left:4px solid #d0d0d0;
+  border-right:4px solid #909090;
+  border-bottom:6px solid #666666;
+  box-shadow:
+    0 4px 12px rgba(0,0,0,0.5),
+    0 2px 4px rgba(0,0,0,0.3),
+    inset 0 1px 0 rgba(255,255,255,0.35);
+  transform:translateY(0);
+  transition:all 80ms ease;
+}
+.keycap:hover {
+  background:linear-gradient(180deg, #e0e0e0 0%, #c4c4c4 40%, #aaa 100%);
+  border-bottom-width:4px;
+  transform:translateY(2px);
+  box-shadow:
+    0 2px 8px rgba(0,0,0,0.45),
+    0 1px 3px rgba(0,0,0,0.25),
+    inset 0 1px 0 rgba(255,255,255,0.3);
+}
+.keycap:active {
+  background:linear-gradient(180deg, #c0c0c0 0%, #a8a8a8 40%, #909090 100%);
+  border-top-width:4px;
+  border-bottom-width:2px;
+  transform:translateY(4px);
+  box-shadow:
+    0 1px 4px rgba(0,0,0,0.3),
+    inset 0 1px 0 rgba(255,255,255,0.15);
+}
+.keycap-sm { font-size:11px; padding:8px 20px; }
+.keycap-lg { font-size:12px; padding:14px 38px; }
+.keycap-ico {
+  font-size:14px; line-height:1; opacity:0.6;
+}
+
+/* ── HERO / ZOOM PORTAL ───────────── */
+#hero-spacer {
+  height:300vh;
+  position:relative;
+  z-index:30;
+}
+#hero-sticky {
+  position:sticky;
+  top:0;
+  height:100vh;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  align-items:center;
+  padding:0 52px;
+  background:#000;
+  overflow:hidden;
+  z-index:31;
+}
+#hero-left {
+  z-index:10;
+  max-width:520px;
+}
+#imac-scene {
+  position:relative;
+  width:100%;
+  max-width:720px;
+  margin:0 auto;
+  will-change:transform;
+}
+#imac-inner {
+  position:relative;
+  width:100%;
+  line-height:0;
+}
+#imac-front {
+  width:100%;
+  height:auto;
+  display:block;
+  position:relative;
+  z-index:1;
+}
+#imac-inner {
+  filter:drop-shadow(0 0 30px rgba(50,255,50,0.2)) drop-shadow(0 0 60px rgba(50,255,50,0.1));
+  transition:filter 0.4s ease;
+}
+#imac-scene:hover #imac-inner {
+  filter:drop-shadow(0 0 60px rgba(50,255,50,0.6)) drop-shadow(0 0 120px rgba(50,255,50,0.35)) drop-shadow(0 0 200px rgba(50,255,50,0.15)) drop-shadow(0 0 50px rgba(255,255,255,0.2));
+}
+#zoom-overlay {
+  position:fixed;
+  inset:0;
+  background:#000;
+  opacity:0;
+  pointer-events:none;
+  z-index:35;
+}
+#main-content {
+  position:relative;
+  z-index:40;
+}
+
+/* ── HERO TEXT ─────────────────────── */
+.hero-label {
+  font-size:11px; font-weight:400; color:var(--term-green);
+  letter-spacing:0.2em; text-transform:uppercase;
+  margin-bottom:28px; display:flex; align-items:center; gap:10px;
+}
+.hero-label::before {
+  content:'> '; color:var(--term-dim);
+}
+.hero-label::after {
+  content:'_'; color:var(--term-dim); animation:blink-cursor 0.8s step-end infinite;
+}
+@keyframes blink-cursor { 0%,100%{opacity:1} 50%{opacity:0} }
+.hero-headline {
+  font-family:'Space Grotesk',sans-serif; font-weight:700;
+  font-size:clamp(38px, 4.5vw, 64px);
+  line-height:1.0; letter-spacing:-0.03em;
+  color:#e0e0e0; margin-bottom:28px;
+}
+.hero-headline em {
+  font-style:normal;
+  font-family:inherit;
+  font-weight:inherit;
+  color:var(--term-green);
+  text-shadow:0 0 20px rgba(51,255,51,0.3);
+}
+.hero-desc {
+  font-size:14px; font-weight:300; color:#777;
+  line-height:1.8; max-width:420px; margin-bottom:40px;
+}
+.hero-btns {
+  display:flex; align-items:center; gap:24px; margin-bottom:56px;
+}
+.btn-s {
+  font-family:'DM Mono',monospace; font-size:11px; font-weight:400;
+  color:var(--term-dim); letter-spacing:0.06em; text-transform:uppercase;
+  transition:color .2s; display:flex; align-items:center; gap:6px;
+}
+.btn-s:hover { color:var(--term-green); }
+.btn-s::after { content:'\2192'; transition:transform .2s; }
+.btn-s:hover::after { transform:translateX(4px); }
+
+.hero-stats {
+  display:flex; gap:40px;
+  padding-top:28px; border-top:1px solid rgba(51,255,51,0.1);
+}
+.hs-n {
+  font-family:'Space Grotesk',sans-serif; font-weight:700;
+  font-size:28px; color:var(--term-green); line-height:1; letter-spacing:-0.03em;
+  text-shadow:0 0 10px rgba(51,255,51,0.3);
+}
+.hs-l {
+  font-size:9px; font-weight:400; color:#555;
+  letter-spacing:0.14em; text-transform:uppercase; margin-top:6px;
+}
+
+/* ── TICKER ────────────────────────── */
+.ticker {
+  padding:16px 0; overflow:hidden;
+  border-top:1px solid rgba(51,255,51,0.08);
+  border-bottom:1px solid rgba(51,255,51,0.08);
+  background:rgba(51,255,51,0.02);
+}
+.ticker-inner {
+  display:flex; gap:48px; white-space:nowrap;
+  animation:tick 20s linear infinite;
+}
+@keyframes tick { from{transform:translateX(0);} to{transform:translateX(-50%);} }
+.ti {
+  font-size:10px; font-weight:400; color:var(--term-dim);
+  letter-spacing:0.15em; text-transform:uppercase;
+  display:flex; align-items:center; gap:10px; flex-shrink:0;
+}
+.ti::before { content:'·'; color:var(--term-green); }
+
+/* ── SHARED SECTION ────────────────── */
+.s-wrap { max-width:1100px; margin:0 auto; padding:0 48px; }
+.s-lbl {
+  font-size:11px; font-weight:400;
+  letter-spacing:0.15em; text-transform:uppercase;
+  margin-bottom:16px; display:flex; align-items:center; gap:8px;
+}
+.s-lbl::before { content:'// '; color:var(--term-dim); }
+.s-lbl::after { content:''; }
+.s-hl {
+  font-family:'Space Grotesk',sans-serif; font-weight:700;
+  font-size:clamp(26px, 3vw, 44px);
+  line-height:1.1; letter-spacing:-0.025em; margin-bottom:16px;
+}
+.s-body { font-size:14px; line-height:1.8; }
+
+.light-section { background:#080808; color:#ccc; }
+.light-section .s-lbl { color:var(--term-dim); }
+.light-section .s-lbl span { color:var(--term-green); }
+.light-section .s-hl { color:#e0e0e0; }
+.light-section .s-body { color:#888; }
+
+.sky-section { background:#050505; color:#ccc; }
+.sky-section .s-lbl { color:var(--term-dim); }
+.sky-section .s-lbl span { color:var(--term-green); }
+.sky-section .s-hl { color:#e0e0e0; }
+.sky-section .s-body { color:#888; }
+
+.dark-section { background:#0c0c0c; color:#ccc; }
+.dark-section .s-lbl { color:var(--term-dim); }
+.dark-section .s-lbl span { color:var(--term-green); }
+.dark-section .s-hl { color:#e0e0e0; }
+.dark-section .s-body { color:#888; }
+
+/* ── PROBLEM ───────────────────────── */
+#problem { padding:120px 0; position:relative; }
+.prob-grid {
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:80px; align-items:start;
+}
+.pain-stack { display:flex; flex-direction:column; gap:1px; }
+.pain {
+  padding:24px 28px; border:1px solid rgba(51,255,51,0.08);
+  background:rgba(51,255,51,0.02); position:relative; overflow:hidden;
+  transition:background .3s, border-color .3s;
+}
+.pain:hover { background:rgba(51,255,51,0.05); border-color:rgba(51,255,51,0.15); }
+.pain::before {
+  content:''; position:absolute; left:0; top:0; bottom:0; width:2px;
+  background:var(--red);
+}
+.pain-code {
+  font-size:9px; color:var(--red); letter-spacing:0.15em;
+  margin-bottom:8px; opacity:0.8;
+}
+.pain-title {
+  font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:14px;
+  color:#e0e0e0; margin-bottom:8px;
+}
+.pain-txt { font-size:12px; color:#888; line-height:1.7; }
+
+/* ── SYSTEM ────────────────────────── */
+#system { padding:120px 0; }
+.sys-hdr { text-align:center; margin-bottom:72px; }
+.sys-hdr .s-lbl { justify-content:center; }
+.sys-hdr .s-hl { max-width:520px; margin:0 auto 16px; }
+.sys-hdr .s-body { text-align:center; max-width:520px; margin:0 auto; }
+
+.pillars {
+  display:grid; grid-template-columns:repeat(3,1fr); gap:1px;
+}
+.pillar {
+  background:var(--card-dark); border:1px solid var(--border-dark);
+  padding:44px 36px; position:relative; overflow:hidden;
+  transition:all .3s;
+}
+.pillar:hover { background:var(--card-dark-h); border-color:rgba(51,255,51,0.2); }
+.p-n {
+  font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:64px;
+  position:absolute; top:8px; right:16px; line-height:1;
+  color:rgba(51,255,51,0.06);
+}
+.p-tag {
+  font-size:9px; color:var(--term-dim); letter-spacing:0.2em;
+  text-transform:uppercase; margin-bottom:18px;
+}
+.p-ico { font-size:24px; display:block; margin-bottom:16px; color:var(--term-green); }
+.p-ttl {
+  font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:17px;
+  color:var(--ink-light); margin-bottom:6px;
+}
+.p-role {
+  font-size:9px; color:var(--term-dim); letter-spacing:0.12em;
+  text-transform:uppercase; margin-bottom:18px;
+}
+.p-div {
+  width:24px; height:1px; background:rgba(51,255,51,0.15);
+  margin-bottom:16px;
+}
+.p-body { font-size:12px; color:var(--ink-light-mid); line-height:1.7; margin-bottom:20px; }
+.p-list { list-style:none; display:flex; flex-direction:column; gap:7px; }
+.p-list li {
+  font-size:10px; color:var(--ink-light-dim); letter-spacing:0.03em;
+  display:flex; align-items:center; gap:8px;
+}
+.p-list li::before { content:'\2014'; color:rgba(255,255,255,0.15); }
+
+.loop-bar {
+  border:1px solid rgba(51,255,51,0.1); background:rgba(51,255,51,0.02);
+  padding:28px 40px; display:flex; align-items:center; gap:24px;
+  margin-top:1px;
+}
+.loop-ico {
+  font-size:32px; min-width:44px; line-height:1; color:var(--term-green);
+}
+.loop-ttl {
+  font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:14px;
+  color:var(--ink-light); margin-bottom:6px;
+}
+.loop-body { font-size:12px; color:var(--ink-light-mid); line-height:1.7; }
+
+/* ── SHOWCASE ──────────────────────── */
+#showcase { padding:120px 0; }
+.sc-hdr { padding:0 48px; margin-bottom:48px; }
+.sc-rail {
+  display:flex; gap:1px; overflow-x:auto; padding:0 48px 1px;
+  scrollbar-width:none; scroll-snap-type:x mandatory;
+}
+.sc-rail::-webkit-scrollbar { display:none; }
+.sc-card {
+  flex-shrink:0; width:300px; height:220px;
+  border:1px solid var(--border-light); background:var(--card-light);
+  scroll-snap-align:start; position:relative; overflow:hidden;
+  transition:all .3s; display:flex; flex-direction:column;
+  justify-content:flex-end; padding:24px;
+}
+.sc-card:hover { background:var(--card-light-h); border-color:rgba(51,255,51,0.18); }
+.sc-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; }
+.sc-c1::before { background:linear-gradient(90deg, #0a3a0a 0%, #33ff33 50%, #0a3a0a 100%); }
+.sc-c2::before { background:linear-gradient(90deg, #1a8c1a 0%, #66ff66 50%, #1a8c1a 100%); }
+.sc-c3::before { background:linear-gradient(90deg, #0a3a0a 0%, #33ff33 40%, #66ff66 60%, #0a3a0a 100%); }
+.sc-c4::before { background:linear-gradient(90deg, #1a8c1a 0%, #33ff33 50%, #1a8c1a 100%); }
+.sc-c5::before { background:linear-gradient(90deg, #0a3a0a 0%, #33ff33 50%, #0a3a0a 100%); }
+.sc-bg-n {
+  position:absolute; top:10px; right:14px;
+  font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:72px;
+  color:rgba(51,255,51,0.04); line-height:1; pointer-events:none;
+}
+.sc-tag {
+  font-size:9px; color:var(--term-dim); letter-spacing:0.15em;
+  text-transform:uppercase; margin-bottom:8px;
+}
+.sc-ttl {
+  font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:14px;
+  color:#e0e0e0; margin-bottom:6px;
+}
+.sc-body { font-size:11px; color:#888; line-height:1.6; }
+
+/* ── PROCESS ───────────────────────── */
+#process { padding:120px 0; }
+.proc-steps {
+  display:grid; grid-template-columns:repeat(3,1fr); gap:0;
+  margin-top:64px; position:relative;
+}
+.proc-steps::before {
+  content:''; position:absolute; top:20px; left:7%; right:7%; height:1px;
+  background:rgba(51,255,51,0.1);
+}
+.step { padding-right:44px; }
+.step-dot-row { display:flex; align-items:center; gap:10px; margin-bottom:24px; }
+.step-dot {
+  width:12px; height:12px; border-radius:50%;
+  background:#33ff33;
+  flex-shrink:0; z-index:1;
+  box-shadow:0 0 0 4px #050505, 0 0 8px rgba(51,255,51,0.4);
+}
+.step-n {
+  font-size:9px; color:var(--term-dim); letter-spacing:0.2em; opacity:0.7;
+}
+.step-ttl {
+  font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:15px;
+  color:#e0e0e0; margin-bottom:10px;
+}
+.step-body { font-size:12px; color:#888; line-height:1.7; }
+
+/* ── RESULTS ───────────────────────── */
+#results { padding:120px 0; }
+.res-grid {
+  display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-top:56px;
+}
+.cs {
+  border:1px solid rgba(51,255,51,0.08); background:rgba(51,255,51,0.02);
+  padding:40px; transition:all .3s; display:flex; flex-direction:column;
+}
+.cs:hover { background:rgba(51,255,51,0.05); border-color:rgba(51,255,51,0.18); }
+.cs-tag {
+  font-size:9px; color:var(--term-dim); letter-spacing:0.15em;
+  text-transform:uppercase; padding:4px 10px;
+  border:1px solid rgba(51,255,51,0.15); display:inline-block;
+  margin-bottom:28px;
+}
+.cs-flow {
+  display:grid; grid-template-columns:1fr 1.5fr;
+  gap:16px; align-items:stretch; margin-bottom:28px; flex:1;
+}
+.cs-box { padding:18px; border:1px solid; border-radius:4px; }
+.cs-box.before { border-color:rgba(255,68,68,0.2); background:rgba(255,68,68,0.04); }
+.cs-box.after { border-color:rgba(51,255,51,0.15); background:rgba(51,255,51,0.03); }
+.cs-bl { font-size:8px; letter-spacing:0.15em; text-transform:uppercase; margin-bottom:8px; font-weight:700; }
+.cs-box.before .cs-bl { color:rgba(255,68,68,0.8); }
+.cs-box.after .cs-bl { color:var(--term-green); }
+.cs-bt { font-size:11px; color:#888; line-height:1.6; }
+.cs-box.after .cs-bt { color:#ccc; }
+.cs-result {
+  display:flex; align-items:center; gap:20px;
+  padding-top:22px; border-top:1px solid rgba(51,255,51,0.1);
+}
+.cs-big {
+  font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:48px;
+  line-height:1; letter-spacing:-0.03em;
+  color:var(--term-green);
+  text-shadow:0 0 20px rgba(51,255,51,0.3);
+}
+.cs-txt { font-size:11px; color:#888; line-height:1.5; max-width:240px; }
+
+/* ── WHO IT'S FOR ──────────────────── */
+#for-who { padding:120px 0; }
+.fw-grid {
+  display:grid; grid-template-columns:repeat(2,1fr);
+  gap:1px; margin-top:56px;
+}
+.fw-card {
+  border:1px solid rgba(51,255,51,0.08); background:rgba(51,255,51,0.02);
+  padding:36px; transition:all .3s;
+}
+.fw-card:hover { background:rgba(51,255,51,0.05); border-color:rgba(51,255,51,0.18); }
+.fw-ind {
+  font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:15px;
+  color:#e0e0e0; margin-bottom:6px;
+}
+.fw-role {
+  font-size:9px; color:var(--term-dim); letter-spacing:0.15em;
+  text-transform:uppercase; margin-bottom:16px;
+}
+.fw-body { font-size:12px; color:#888; line-height:1.7; }
+
+/* ── ABOUT ─────────────────────────── */
+#about { padding:120px 0; }
+.about-grid {
+  display:grid; grid-template-columns:280px 1fr;
+  gap:72px; align-items:center;
+}
+.about-frame {
+  width:280px; height:350px;
+  border:1px solid rgba(51,255,51,0.1); background:rgba(51,255,51,0.02);
+  position:relative; overflow:hidden;
+}
+.about-frame::before {
+  content:''; position:absolute; top:8px; left:8px; width:28px; height:28px;
+  border-top:2px solid var(--term-green); border-left:2px solid var(--term-green); z-index:2;
+  opacity:0.4;
+}
+.about-frame::after {
+  content:''; position:absolute; bottom:8px; right:8px; width:28px; height:28px;
+  border-bottom:2px solid var(--term-green); border-right:2px solid var(--term-green); z-index:2;
+  opacity:0.4;
+}
+.about-ph {
+  width:100%; height:100%; display:flex; align-items:center; justify-content:center;
+  font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:80px;
+  color:rgba(51,255,51,0.06);
+}
+.about-ph-lbl {
+  position:absolute; bottom:0; left:0; right:0; padding:12px;
+  background:rgba(0,0,0,0.85);
+  font-size:9px; color:var(--term-dim); letter-spacing:0.12em;
+  text-transform:uppercase; text-align:center;
+  border-top:1px solid rgba(51,255,51,0.1); opacity:0.7;
+}
+.about-hl {
+  font-family:'Space Grotesk',sans-serif; font-weight:700;
+  font-size:clamp(20px, 2.2vw, 32px); color:#e0e0e0;
+  line-height:1.15; margin-bottom:20px;
+}
+.about-body {
+  font-size:13px; color:#888; line-height:1.8; margin-bottom:12px;
+}
+.about-tags { display:flex; gap:6px; flex-wrap:wrap; margin-top:22px; }
+.about-tag {
+  font-size:9px; padding:5px 12px; border:1px solid rgba(51,255,51,0.15);
+  background:rgba(51,255,51,0.03); color:var(--term-dim);
+  letter-spacing:0.08em; text-transform:uppercase;
+}
+
+/* ── CTA ───────────────────────────── */
+#cta {
+  padding:140px 0; text-align:center;
+  position:relative; overflow:hidden;
+}
+.cta-bg-word {
+  position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+  font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:180px;
+  white-space:nowrap; pointer-events:none;
+  color:rgba(51,255,51,0.03);
+}
+.cta-inner {
+  position:relative; z-index:1; max-width:560px; margin:0 auto; padding:0 48px;
+}
+.cta-lbl {
+  font-size:11px; color:var(--term-dim); letter-spacing:0.15em;
+  text-transform:uppercase; margin-bottom:24px;
+  display:flex; align-items:center; justify-content:center; gap:10px;
+}
+.cta-lbl::before, .cta-lbl::after {
+  content:''; display:block; width:20px; height:1px;
+  background:linear-gradient(90deg, transparent, rgba(51,255,51,0.3), transparent);
+}
+.cta-hl {
+  font-family:'Space Grotesk',sans-serif; font-weight:700;
+  font-size:clamp(30px, 4.5vw, 56px);
+  line-height:1.0; letter-spacing:-0.03em; margin-bottom:20px;
+  color:var(--term-green);
+  text-shadow:0 0 30px rgba(51,255,51,0.3), 0 0 60px rgba(51,255,51,0.1);
+}
+.cta-body {
+  font-size:14px; color:#888; line-height:1.8; margin-bottom:44px;
+}
+.cta-note {
+  font-size:9px; color:#555; letter-spacing:0.1em; margin-top:18px;
+}
+
+/* ── FOOTER ────────────────────────── */
+footer {
+  padding:36px 48px; background:#000;
+  border-top:1px solid rgba(51,255,51,0.08);
+  display:flex; align-items:center; justify-content:space-between;
+}
+.f-logo {
+  font-family:'DM Mono',monospace; font-weight:400; font-size:13px;
+  color:var(--term-green); display:flex; align-items:center; gap:6px;
+}
+.f-logo-dot {
+  width:6px; height:6px; border-radius:50%;
+  background:#33ff33;
+  box-shadow:0 0 4px rgba(51,255,51,0.5);
+}
+.f-links { display:flex; gap:28px; list-style:none; }
+.f-links a {
+  font-size:9px; color:var(--term-dim); letter-spacing:0.12em;
+  text-transform:uppercase; transition:color .2s;
+}
+.f-links a:hover { color:var(--term-green); }
+.f-copy { font-size:9px; color:rgba(51,255,51,0.15); letter-spacing:0.1em; }
+
+/* ── SCROLL REVEAL ─────────────────── */
+.reveal {
+  opacity:0;
+  transform:translateY(24px);
+  transition:opacity 0.7s ease, transform 0.7s ease;
+}
+.reveal.visible {
+  opacity:1;
+  transform:translateY(0);
+}
+.reveal-group > * {
+  opacity:0;
+  transform:translateY(20px);
+  transition:opacity 0.6s ease, transform 0.6s ease;
+}
+.reveal-group.visible > * {
+  opacity:1;
+  transform:translateY(0);
+}
+.reveal-group.visible > *:nth-child(1) { transition-delay:0ms; }
+.reveal-group.visible > *:nth-child(2) { transition-delay:100ms; }
+.reveal-group.visible > *:nth-child(3) { transition-delay:200ms; }
+.reveal-group.visible > *:nth-child(4) { transition-delay:300ms; }
+.reveal-group.visible > *:nth-child(5) { transition-delay:400ms; }
+.reveal-group.visible > *:nth-child(6) { transition-delay:500ms; }
+
+/* ── NAV SCROLL STATE ──────────────── */
+nav {
+  transition:background 0.3s ease, border-color 0.3s ease;
+}
+nav.scrolled {
+  background:rgba(0,0,0,0.95);
+  border-bottom-color:rgba(51,255,51,0.15);
+}
+
+/* ── ACCORDION (PROBLEM SECTION) ──── */
+.pain {
+  cursor:pointer;
+}
+.pain .pain-txt {
+  max-height:0;
+  overflow:hidden;
+  transition:max-height 0.4s ease, opacity 0.3s ease;
+  opacity:0;
+}
+.pain.open .pain-txt {
+  max-height:200px;
+  opacity:1;
+}
+.pain-title {
+  transition:color 0.2s;
+}
+.pain:hover .pain-title {
+  color:#fff;
+}
+.pain:hover {
+  border-color:rgba(51,255,51,0.18);
+}
+.pain-counter {
+  font-family:'DM Mono',monospace;
+  font-size:10px;
+  color:var(--term-dim);
+  letter-spacing:0.1em;
+  margin-top:16px;
+}
+
+/* ── CARD HOVER GLOW ───────────────── */
+.pillar, .fw-card, .sc-card, .cs {
+  position:relative;
+}
+.pillar::after {
+  content:'';
+  position:absolute;
+  inset:0;
+  border-radius:inherit;
+  background:radial-gradient(ellipse at 50% 0%, rgba(51,255,51,0.06) 0%, transparent 70%);
+  opacity:0;
+  transition:opacity 0.3s ease;
+  pointer-events:none;
+}
+.pillar:hover::after {
+  opacity:1;
+}
+.fw-card::after {
+  content:'';
+  position:absolute;
+  inset:0;
+  border-radius:inherit;
+  background:radial-gradient(ellipse at 50% 0%, rgba(51,255,51,0.06) 0%, transparent 70%);
+  opacity:0;
+  transition:opacity 0.3s ease;
+  pointer-events:none;
+}
+.fw-card:hover::after {
+  opacity:1;
+}
+
+
+/* ── CURSOR GLOW ───────────────────── */
+#cursor-glow {
+  position:fixed;
+  pointer-events:none;
+  z-index:9998;
+  width:500px;
+  height:500px;
+  border-radius:50%;
+  background:radial-gradient(circle, rgba(51,255,51,0.03) 0%, transparent 70%);
+  transform:translate(-50%, -50%);
+  opacity:0;
+  transition:opacity 0.4s ease;
+}
+body:hover #cursor-glow {
+  opacity:1;
+}
+
+/* ── RESPONSIVE ────────────────────── */
+@media(max-width:960px) {
+  nav { padding:0 20px; }
+  .nav-links { display:none; }
+  #hero-sticky {
+    grid-template-columns:1fr;
+    padding:80px 20px 40px;
+    gap:30px;
+  }
+  #hero-spacer { height:100vh; }
+  #hero-left { text-align:center; max-width:100%; }
+  #imac-scene { max-width:300px; }
+  .hero-label, .hero-btns, .hero-stats { justify-content:center; }
+  .hero-desc { margin:0 auto 40px; text-align:center; }
+  .hero-headline { text-align:center; }
+  .s-wrap, .sc-hdr { padding:0 20px; }
+  .sc-rail { padding-left:20px; }
+  .prob-grid, .pillars, .proc-steps, .res-grid,
+  .fw-grid, .about-grid { grid-template-columns:1fr; }
+  .proc-steps::before { display:none; }
+  footer { flex-direction:column; gap:16px; text-align:center; padding:24px 20px; }
+  .cta-inner { padding:0 20px; }
+  .about-grid { gap:40px; }
+  .about-frame { margin:0 auto; }
+}
+
+/* ── TERMINAL GAME ────────────────── */
+body.terminal-active { overflow:hidden; }
+body.terminal-active nav { opacity:0; pointer-events:none; }
+
+#terminal-overlay {
+  position:fixed; inset:0; z-index:9999;
+  background:#0a0a0a; color:#33ff33;
+  font-family:'DM Mono', monospace; font-size:14px; font-weight:400;
+  display:flex; align-items:center; justify-content:center;
+  transition:transform 0.7s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s ease;
+}
+#terminal-overlay.dismissed {
+  transform:translateY(-100%); opacity:0; pointer-events:none;
+}
+#term-mac-frame {
+  width:94vw; max-width:960px;
+  display:flex; flex-direction:column; align-items:center;
+  filter:drop-shadow(0 0 20px rgba(50,255,50,0.08));
+}
+#term-mac-screen {
+  width:100%;
+  background:#0a0a0a;
+  border:3px solid #333;
+  border-bottom:none;
+  border-radius:16px 16px 0 0;
+  padding:12px 0 0;
+  position:relative;
+  overflow:hidden;
+  display:flex; flex-direction:column;
+}
+#term-mac-titlebar {
+  display:flex; align-items:center; gap:6px;
+  padding:0 16px 10px;
+  border-bottom:1px solid #222;
+  flex-shrink:0;
+}
+#term-mac-titlebar .dot { width:10px; height:10px; border-radius:50%; }
+#term-mac-titlebar .dot.red { background:#ff5f57; }
+#term-mac-titlebar .dot.yellow { background:#febc2e; }
+#term-mac-titlebar .dot.green { background:#28c840; }
+#term-mac-titlebar .title {
+  flex:1; text-align:center; font-size:11px; color:#666;
+  letter-spacing:0.05em; margin-right:48px;
+}
+#term-mac-body {
+  flex:1;
+  overflow-y:auto;
+  padding:32px 48px 40px;
+  display:flex; flex-direction:column; align-items:flex-start; justify-content:center;
+  min-height:480px;
+  max-height:78vh;
+}
+#term-mac-screen::after {
+  content:''; position:absolute; inset:0; z-index:1; pointer-events:none;
+  border-radius:14px 14px 0 0;
+  background:repeating-linear-gradient(0deg, rgba(0,0,0,0.08) 0px, rgba(0,0,0,0.08) 1px, transparent 1px, transparent 3px);
+}
+#term-mac-chin {
+  width:100%;
+  background:linear-gradient(180deg, #c8c8c8 0%, #aaa 50%, #999 100%);
+  border:3px solid #333;
+  border-top:1px solid #777;
+  border-radius:0 0 16px 16px;
+  padding:10px 0 14px;
+  text-align:center;
+}
+#term-mac-logo {
+  font-family:'DM Mono',monospace; font-size:9px; font-weight:500;
+  color:#555; letter-spacing:0.15em; text-transform:lowercase;
+}
+#term-step-counter {
+  text-align:left; font-size:10px; color:#1a8c1a;
+  letter-spacing:0.2em; text-transform:uppercase;
+  margin-bottom:12px; width:100%;
+  opacity:0; transition:opacity 0.4s ease;
+}
+#term-step-counter.visible { opacity:1; }
+#terminal-content {
+  position:relative; z-index:2;
+  width:100%;
+  opacity:1; transition:opacity 0.35s ease;
+}
+#terminal-content.fade-out { opacity:0; }
+.term-line {
+  margin-bottom:4px; line-height:1.6;
+  white-space:pre-wrap; word-break:break-word;
+}
+.term-line.dim { color:#1a8c1a; }
+.term-line.bright { color:#66ff66; font-weight:500; }
+.term-line.white { color:#e0e0e0; }
+.term-line.red { color:#ff4444; }
+.term-line.amber { color:#ffaa00; }
+.term-line.large { font-size:20px; font-weight:500; letter-spacing:0.04em; }
+.term-line.xl { font-size:26px; font-weight:500; letter-spacing:0.06em; margin-top:8px; margin-bottom:8px; }
+.term-gap { height:20px; }
+.term-gap-sm { height:10px; }
+
+@keyframes blink-cursor { 0%,100%{opacity:1} 50%{opacity:0} }
+.term-cursor::after { content:'█'; animation:blink-cursor 0.8s step-end infinite; }
+
+.term-btn-row { display:flex; flex-direction:column; gap:8px; margin-top:16px; }
+.term-btn {
+  font-family:'DM Mono', monospace; font-size:13px; font-weight:400;
+  color:#33ff33; background:transparent;
+  border:1px solid #33ff33; padding:12px 24px;
+  cursor:pointer; text-transform:uppercase; letter-spacing:0.06em;
+  text-align:left; transition:all 0.15s ease;
+}
+.term-btn:hover { background:#33ff33; color:#000; box-shadow:0 0 12px rgba(51,255,51,0.3); }
+.term-btn.primary { background:#33ff33; color:#000; font-weight:500; text-align:center; }
+.term-btn.primary:hover { background:#66ff66; box-shadow:0 0 20px rgba(51,255,51,0.4); }
+
+.term-divider { color:#1a8c1a; margin:4px 0; }
+
+.term-error-block {
+  border-left:2px solid #ff4444; padding:8px 0 8px 16px; margin:12px 0;
+}
+.term-error-block .term-line { margin-bottom:2px; }
+
+.term-scroll-link {
+  color:#1a8c1a; cursor:pointer; font-size:12px; margin-top:16px;
+  display:inline-block; transition:color 0.2s;
+  border:none; background:none; font-family:'DM Mono', monospace; letter-spacing:0.05em;
+}
+.term-scroll-link:hover { color:#33ff33; }
+
+.term-replay-link {
+  color:#1a8c1a; cursor:pointer; font-size:11px; margin-top:12px;
+  display:inline-block; transition:color 0.2s;
+  border:none; background:none; font-family:'DM Mono', monospace; letter-spacing:0.05em;
+}
+.term-replay-link:hover { color:#33ff33; }
+
+@keyframes flicker { 0%,100%{opacity:1} 50%{opacity:0.3} }
+.term-flicker { animation:flicker 0.1s ease infinite; }
+
+@media (max-width:600px) {
+  #terminal-overlay { font-size:12px; }
+  #term-mac-frame { width:97vw; }
+  #term-mac-screen { border-radius:12px 12px 0 0; }
+  #term-mac-screen::after { border-radius:10px 10px 0 0; }
+  #term-mac-titlebar { padding:0 12px 8px; }
+  #term-mac-titlebar .dot { width:8px; height:8px; }
+  #term-mac-titlebar .title { font-size:9px; margin-right:36px; }
+  #term-mac-body { padding:20px 20px 28px; min-height:360px; max-height:72vh; }
+  #term-mac-chin { border-radius:0 0 12px 12px; padding:8px 0 12px; }
+  .term-line.large { font-size:16px; }
+  .term-line.xl { font-size:20px; }
+  .term-btn { padding:10px 16px; font-size:11px; }
+}
+</style>
+  <script type="module" crossorigin src="/assets/index-CkdMqPFG.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-C6LG1JIq.css">
+</head>
+<body class="terminal-active">
+
+<div id="terminal-overlay">
+  <div id="term-mac-frame">
+    <div id="term-mac-screen">
+      <div id="term-mac-titlebar">
+        <span class="dot red"></span>
+        <span class="dot yellow"></span>
+        <span class="dot green"></span>
+        <span class="title">aktivate.ai</span>
+      </div>
+      <div id="term-mac-body">
+        <div id="term-step-counter"></div>
+        <div id="terminal-content"></div>
+      </div>
+    </div>
+    <div id="term-mac-chin">
+      <div id="term-mac-logo">aktivate</div>
+    </div>
+  </div>
+</div>
+
+<nav>
+  <a class="nav-logo" href="#"><div class="logo-dot"></div>aktivate</a>
+  <ul class="nav-links">
+    <li><a href="#system">The System</a></li>
+    <li><a href="#results">Results</a></li>
+    <li><a href="#for-who">Who It's For</a></li>
+    <li><a href="#about">About</a></li>
+  </ul>
+  <a class="keycap keycap-sm" href="#cta" data-testid="link-book-call"><span class="keycap-ico">&#9783;</span><span>Schedule a Call</span></a>
+</nav>
+
+<div id="root"></div>
+
+<div id="cursor-glow"></div>
+
+<div id="hero-spacer">
+  <div id="hero-sticky">
+    <div id="hero-left" data-testid="hero-text">
+      <div class="hero-label">The Growth Studio</div>
+      <h1 class="hero-headline">
+        Build the<br>Engine.<br>Build the <em>Face.</em>
+      </h1>
+      <p class="hero-desc">Automated ops. Automated presence. One studio built specifically for Insurance &amp; Logistics operators who are ready to scale.</p>
+      <div class="hero-btns">
+        <a href="#cta" class="keycap keycap-lg" data-testid="button-book-call"><span class="keycap-ico">&#9783;</span><span>Book a Free Call</span></a>
+        <a href="#system" class="btn-s" data-testid="link-how-it-works">See how it works</a>
+      </div>
+      <div class="hero-stats">
+        <div>
+          <div class="hs-n" data-testid="text-stat-ops">70%</div>
+          <div class="hs-l">Ops Time Saved</div>
+        </div>
+        <div>
+          <div class="hs-n" data-testid="text-stat-build">2&ndash;4wk</div>
+          <div class="hs-l">Build Time</div>
+        </div>
+        <div>
+          <div class="hs-n" data-testid="text-stat-content">5&times;</div>
+          <div class="hs-l">Content Output</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="imac-scene" data-testid="monitor-container">
+      <div id="imac-inner">
+        <img id="imac-front" src="/imac-front.png" alt="iMac G3" data-testid="imac-front">
+        </div>
+    </div>
+  </div>
+</div>
+
+<div id="zoom-overlay"></div>
+
+<div id="main-content">
+
+<section id="problem" class="light-section">
+  <div class="s-wrap">
+    <div class="prob-grid">
+      <div class="reveal">
+        <div class="s-lbl"><span>The Problem</span></div>
+        <h2 class="s-hl">Your competitors are moving faster. You're still doing it manually.</h2>
+        <p class="s-body">Insurance brokers and logistics operators are sitting on massive growth potential &mdash; held back by the same two problems wearing different masks.</p>
+      </div>
+      <div class="pain-stack reveal">
+        <div class="pain" data-testid="card-pain-1">
+          <div class="pain-code">ERR_01 //</div>
+          <div class="pain-title">Operations eating your time</div>
+          <p class="pain-txt">Manually chasing COIs, updating driver logs, copy-pasting between platforms. Your team is doing the work that software should be doing.</p>
+        </div>
+        <div class="pain" data-testid="card-pain-2">
+          <div class="pain-code">ERR_02 //</div>
+          <div class="pain-title">Invisible in your market</div>
+          <p class="pain-txt">Real expertise, real results &mdash; but no consistent brand presence. No content. No digital footprint that builds trust before a prospect calls.</p>
+        </div>
+        <div class="pain" data-testid="card-pain-3">
+          <div class="pain-code">ERR_03 //</div>
+          <div class="pain-title">Leads falling through the cracks</div>
+          <p class="pain-txt">No automated follow-up, no intelligent intake, no pipeline that works while you sleep. Every missed touchpoint is revenue left behind.</p>
+        </div>
+        <div class="pain-counter" data-testid="text-pain-counter">0 / 3</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="ticker">
+  <div class="ticker-inner">
+    <span class="ti">Commercial Trucking</span>
+    <span class="ti">Insurance Brokerage</span>
+    <span class="ti">Workflow Automation</span>
+    <span class="ti">AI Agents</span>
+    <span class="ti">AI Video Marketing</span>
+    <span class="ti">Custom Avatars</span>
+    <span class="ti">Internal Dashboards</span>
+    <span class="ti">Done For You</span>
+    <span class="ti">Commercial Trucking</span>
+    <span class="ti">Insurance Brokerage</span>
+    <span class="ti">Workflow Automation</span>
+    <span class="ti">AI Agents</span>
+    <span class="ti">AI Video Marketing</span>
+    <span class="ti">Custom Avatars</span>
+    <span class="ti">Internal Dashboards</span>
+    <span class="ti">Done For You</span>
+  </div>
+</div>
+
+<section id="system" class="dark-section">
+  <div class="s-wrap">
+    <div class="sys-hdr reveal">
+      <div class="s-lbl"><span>The aktivate Method</span></div>
+      <h2 class="s-hl">One connected system.<br>Three interlocking layers.</h2>
+      <p class="s-body">We don't sell tools. We build a complete operating system &mdash; where automation and brand presence compound on each other continuously.</p>
+    </div>
+    <div class="pillars reveal-group">
+      <div class="pillar" data-testid="card-pillar-1">
+        <div class="p-n">01</div>
+        <div class="p-tag">// Layer 01</div>
+        <span class="p-ico">&#9881;</span>
+        <h3 class="p-ttl">The Engine</h3>
+        <div class="p-role">Ops Automation &amp; Infrastructure</div>
+        <div class="p-div"></div>
+        <p class="p-body">The invisible machine under your business. Automated pipelines, internal dashboards, and AI agents trained on your specific workflows.</p>
+        <ul class="p-list">
+          <li>Workflow automation &amp; custom scripts</li>
+          <li>Internal dashboards &amp; live reporting</li>
+          <li>AI agents trained on your data</li>
+          <li>API integrations &amp; data sync</li>
+          <li>Document automation (COIs, contracts)</li>
+        </ul>
+      </div>
+      <div class="pillar" data-testid="card-pillar-2">
+        <div class="p-n">02</div>
+        <div class="p-tag">// Layer 02</div>
+        <span class="p-ico">&#9672;</span>
+        <h3 class="p-ttl">The Interface</h3>
+        <div class="p-role">AI Agents &amp; Client-Facing Systems</div>
+        <div class="p-div"></div>
+        <p class="p-body">The smart front door of your business. AI agents that qualify leads, answer queries, and handle intake &mdash; 24/7, trained on your brand voice.</p>
+        <ul class="p-list">
+          <li>Custom AI chatbots (web + WhatsApp)</li>
+          <li>Lead qualification agents</li>
+          <li>Client onboarding automation</li>
+          <li>Automated follow-up sequences</li>
+          <li>CRM integration &amp; pipeline management</li>
+        </ul>
+      </div>
+      <div class="pillar" data-testid="card-pillar-3">
+        <div class="p-n">03</div>
+        <div class="p-tag">// Layer 03</div>
+        <span class="p-ico">&#9654;</span>
+        <h3 class="p-ttl">The Presence</h3>
+        <div class="p-role">AI Video, Ads &amp; Brand Automation</div>
+        <div class="p-div"></div>
+        <p class="p-body">The brand that never sleeps. AI video, custom digital avatars, ad creatives, and automated content pipelines &mdash; no camera needed.</p>
+        <ul class="p-list">
+          <li>Custom AI avatars (your face or faceless)</li>
+          <li>AI video marketing &amp; ad creatives</li>
+          <li>Automated content pipeline</li>
+          <li>Social scheduling &amp; distribution</li>
+          <li>Brand identity &amp; visual system</li>
+        </ul>
+      </div>
+    </div>
+    <div class="loop-bar">
+      <div class="loop-ico">&#8635;</div>
+      <div>
+        <div class="loop-ttl">The Compound Loop</div>
+        <div class="loop-body">Engine frees your team's time &rarr; Interface captures and qualifies leads 24/7 &rarr; Presence builds market trust that brings more leads in &rarr; back into the Engine. Each layer makes the others more effective. It compounds continuously.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="showcase" class="light-section">
+  <div class="sc-hdr reveal">
+    <div class="s-lbl"><span>What We Build</span></div>
+    <h2 class="s-hl" style="margin-bottom:0;">Real deliverables. Real systems.</h2>
+  </div>
+  <div class="sc-rail">
+    <div class="sc-card sc-c1" data-testid="card-showcase-1">
+      <div class="sc-bg-n">01</div>
+      <div class="sc-tag">// Automation</div>
+      <div class="sc-ttl">Custom Broker Consoles &amp; Dashboards</div>
+      <div class="sc-body">Real-time ops visibility. Driver status, policy tracking, COI pipeline &mdash; all unified.</div>
+    </div>
+    <div class="sc-card sc-c2" data-testid="card-showcase-2">
+      <div class="sc-bg-n">02</div>
+      <div class="sc-tag">// AI Agents</div>
+      <div class="sc-ttl">Intelligent Document Pipelines</div>
+      <div class="sc-body">Automated intake, validation, and routing. Zero manual entry, full audit trail.</div>
+    </div>
+    <div class="sc-card sc-c3" data-testid="card-showcase-3">
+      <div class="sc-bg-n">03</div>
+      <div class="sc-tag">// AI Video</div>
+      <div class="sc-ttl">AI Avatar Content Pipelines</div>
+      <div class="sc-body">Custom digital avatars producing 3&ndash;5 pieces per week. No camera, no studio needed.</div>
+    </div>
+    <div class="sc-card sc-c4" data-testid="card-showcase-4">
+      <div class="sc-bg-n">04</div>
+      <div class="sc-tag">// Creative</div>
+      <div class="sc-ttl">AI Ad Creatives &amp; Brand Assets</div>
+      <div class="sc-body">Performance ad creatives, brand identity systems, social content &mdash; all on-brand.</div>
+    </div>
+    <div class="sc-card sc-c5" data-testid="card-showcase-5">
+      <div class="sc-bg-n">05</div>
+      <div class="sc-tag">// Workflow</div>
+      <div class="sc-ttl">n8n / Make Automation Systems</div>
+      <div class="sc-body">Multi-step workflows connecting CRM, email, Slack, Monday.com. Runs without anyone touching it.</div>
+    </div>
+  </div>
+</section>
+
+<section id="process" class="sky-section">
+  <div class="s-wrap">
+    <div class="s-lbl reveal"><span>How It Works</span></div>
+    <h2 class="s-hl reveal" style="max-width:480px;">From first call to live system in weeks, not months.</h2>
+    <div class="proc-steps reveal-group">
+      <div class="step" data-testid="card-step-1">
+        <div class="step-dot-row"><div class="step-dot"></div><span class="step-n">STEP 01</span></div>
+        <h3 class="step-ttl">Discovery &amp; Mapping</h3>
+        <p class="step-body">One 30-minute call. We map your biggest operational bottleneck and visibility gap. You leave with clarity &mdash; even if you don't work with us.</p>
+      </div>
+      <div class="step" data-testid="card-step-2">
+        <div class="step-dot-row"><div class="step-dot"></div><span class="step-n">STEP 02</span></div>
+        <h3 class="step-ttl">Build &amp; Deploy</h3>
+        <p class="step-body">We design and deploy your custom system &mdash; typically 2&ndash;4 weeks. You're hands-off. Architecture, integration, testing, and launch. Done-for-you.</p>
+      </div>
+      <div class="step" data-testid="card-step-3">
+        <div class="step-dot-row"><div class="step-dot"></div><span class="step-n">STEP 03</span></div>
+        <h3 class="step-ttl">Scale &amp; Compound</h3>
+        <p class="step-body">Once live, we optimize and extend. Add automation layers, expand the content pipeline, upgrade AI agents. Your system compounds over time.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="results" class="light-section">
+  <div class="s-wrap">
+    <div class="s-lbl reveal"><span>Results</span></div>
+    <h2 class="s-hl reveal">Built for operators who measure everything.</h2>
+    <div class="res-grid reveal-group">
+      <div class="cs" data-testid="card-result-1">
+        <div class="cs-tag">Insurance Brokerage &middot; Commercial Trucking</div>
+        <div class="cs-flow">
+          <div class="cs-box before">
+            <div class="cs-bl">Before</div>
+            <div class="cs-bt">Team manually processing driver docs across 3 platforms. COIs chased by email. Duplicate data entry daily.</div>
+          </div>
+
+          <div class="cs-box after">
+            <div class="cs-bl">After</div>
+            <div class="cs-bt">Automated intake, validation &amp; routing. Zero manual entry. Real-time dashboards. Team on client work.</div>
+          </div>
+        </div>
+        <div class="cs-result">
+          <div class="cs-big" data-testid="text-result-70">70%</div>
+          <div class="cs-txt">Reduction in document processing time. Team reallocated to revenue-generating work.</div>
+        </div>
+      </div>
+      <div class="cs" data-testid="card-result-2">
+        <div class="cs-tag">Insurtech &middot; Brand Presence</div>
+        <div class="cs-flow">
+          <div class="cs-box before">
+            <div class="cs-bl">Before</div>
+            <div class="cs-bt">Founder too busy to record. Zero social presence. Brand invisible outside referral network.</div>
+          </div>
+
+          <div class="cs-box after">
+            <div class="cs-bl">After</div>
+            <div class="cs-bt">AI avatar pipeline producing 3&ndash;5 pieces/week. Automated scheduling. Inbound leads in 60 days.</div>
+          </div>
+        </div>
+        <div class="cs-result">
+          <div class="cs-big" data-testid="text-result-5x">5&times;</div>
+          <div class="cs-txt">Content output per week with zero additional time from the founder.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="for-who" class="sky-section">
+  <div class="s-wrap">
+    <div class="s-lbl reveal"><span>Who This Is For</span></div>
+    <h2 class="s-hl reveal">If you see yourself here,<br>we built this for you.</h2>
+    <div class="fw-grid reveal-group">
+      <div class="fw-card" data-testid="card-audience-1">
+        <div class="fw-ind">Insurance Brokers &amp; MGAs</div>
+        <div class="fw-role">Commercial &middot; Trucking &middot; Specialty Lines</div>
+        <p class="fw-body">Managing high volumes of documentation, carrier relationships, and client comms &mdash; all manually. You know there's a better way but haven't had time to build it. We build it for you.</p>
+      </div>
+      <div class="fw-card" data-testid="card-audience-2">
+        <div class="fw-ind">Logistics &amp; Fleet Operators</div>
+        <div class="fw-role">Trucking &middot; Last-Mile &middot; Supply Chain</div>
+        <p class="fw-body">Driver onboarding, compliance docs, dispatch coordination &mdash; all eating ops bandwidth. You also need a brand that attracts drivers and clients without a full marketing team.</p>
+      </div>
+      <div class="fw-card" data-testid="card-audience-3">
+        <div class="fw-ind">Insurtech Founders</div>
+        <div class="fw-role">Early-Stage &middot; Series A &middot; Digital-First</div>
+        <p class="fw-body">Moving fast but internal ops haven't kept up. You need scalable automation and a content presence that builds investor and customer trust simultaneously.</p>
+      </div>
+      <div class="fw-card" data-testid="card-audience-4">
+        <div class="fw-ind">B2B SaaS Founders</div>
+        <div class="fw-role">Startups &middot; Growth-Stage SaaS</div>
+        <p class="fw-body">You've built the product. Now you need the engine — content that compounds, outbound that converts, and ops that don't depend on you. We build that.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="about" class="light-section">
+  <div class="s-wrap">
+    <div class="about-grid reveal-group">
+      <div class="about-frame">
+        <div class="about-ph">AK</div>
+        <div class="about-ph-lbl">// Founder &middot; Builder</div>
+      </div>
+      <div>
+        <div class="s-lbl"><span>About</span></div>
+        <h2 class="about-hl">I started in strategy.<br>Then I got obsessed.</h2>
+        <p class="about-body">aktivate grew from curiosity and direct collaboration with people who&rsquo;ve built and run multiple insurance groups. That&rsquo;s where the operational knowledge came from &mdash; not a course, not a template.</p>
+        <p class="about-body">The niche is the edge. Most operators don&rsquo;t need another generic automation vendor. They need someone who already understands how a trucking book works, what a COI pipeline actually looks like, and why most AI content in this space falls flat.</p>
+        <p class="about-body">Everyone is using AI for marketing right now. Almost none of it is interesting. We treat creative like it matters &mdash; because in a commoditized industry, the brand that doesn&rsquo;t look like everyone else is the one that gets remembered.</p>
+        <div class="about-tags">
+          <span class="about-tag">Automation Architecture</span>
+          <span class="about-tag">AI Engineering</span>
+          <span class="about-tag">Video Production</span>
+          <span class="about-tag">Brand Systems</span>
+          <span class="about-tag">Insurance Ops</span>
+          <span class="about-tag">Logistics Tech</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="cta" class="dark-section">
+  <div class="cta-bg-word">AKTIVATE</div>
+  <div class="cta-inner reveal">
+    <div class="cta-lbl">Ready to Start</div>
+    <h2 class="cta-hl">Let's build<br>your system.</h2>
+    <p class="cta-body">One call. 30 minutes. We'll map your biggest operational bottleneck and show you exactly what the build looks like. No pitch deck. No pressure.</p>
+    <a href="mailto:hello@aktivate.ai" class="keycap keycap-lg" data-testid="button-book-call-cta"><span class="keycap-ico">&#9783;</span><span>Book a Free Call</span></a>
+    <div class="cta-note">Typically responds within 24 hours</div>
+  </div>
+</section>
+
+<footer>
+  <div class="f-logo"><div class="f-logo-dot"></div>aktivate</div>
+  <ul class="f-links">
+    <li><a href="#system">System</a></li>
+    <li><a href="#results">Results</a></li>
+    <li><a href="#for-who">Who It's For</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#cta">Contact</a></li>
+  </ul>
+  <div class="f-copy">&copy; 2026 aktivate</div>
+</footer>
+
+</div>
+
+<script>
+(function() {
+  var spacer   = document.getElementById('hero-spacer');
+  var sticky   = document.getElementById('hero-sticky');
+  var scene    = document.getElementById('imac-scene');
+  var heroLeft = document.getElementById('hero-left');
+  var zoomOv   = document.getElementById('zoom-overlay');
+  var img      = document.getElementById('imac-front');
+  var imacInner = document.getElementById('imac-inner');
+  var isMobile = window.innerWidth <= 960;
+
+  var driftX = 0, driftY = 0, measured = false;
+
+  function measure() {
+    scene.style.transform = 'none';
+    var r  = img.getBoundingClientRect();
+    var cx = r.left + r.width  * 0.5;
+    var cy = r.top  + r.height * 0.34;
+    driftX = window.innerWidth  / 2 - cx;
+    driftY = window.innerHeight / 2 - cy;
+    measured = true;
+  }
+
+  if (img.complete) { measure(); }
+  else { img.addEventListener('load', measure); }
+
+  window.addEventListener('resize', measure);
+
+  if (!isMobile && spacer && scene && heroLeft && sticky && zoomOv) {
+    window.addEventListener('scroll', function() {
+      if (!measured) return;
+
+      var rect     = spacer.getBoundingClientRect();
+      var scrolled = -rect.top;
+      var total    = rect.height - window.innerHeight;
+      var p        = Math.min(Math.max(scrolled / total, 0), 1);
+
+      var e1 = Math.min(Math.max(p / 0.35, 0), 1);
+      var slideEased = e1 < 0.5 ? 2*e1*e1 : 1 - Math.pow(-2*e1+2,2)/2;
+
+      var e2 = Math.min(Math.max((p - 0.15) / 0.55, 0), 1);
+      var zoomEased = e2 < 0.5 ? 2*e2*e2 : 1 - Math.pow(-2*e2+2,2)/2;
+
+      var scale = 1 + zoomEased * 3;
+      var tx    = driftX * slideEased;
+      var ty    = driftY * slideEased;
+
+      scene.style.transform       = 'translate(' + tx + 'px, ' + ty + 'px) scale(' + scale + ')';
+      scene.style.transformOrigin = '50% 34%';
+
+      var textFade = Math.min(p * 4, 1);
+      heroLeft.style.opacity       = 1 - textFade;
+      heroLeft.style.pointerEvents = textFade > 0.1 ? 'none' : 'auto';
+
+      var overlayFade = Math.min(Math.max((zoomEased - 0.8) / 0.2, 0), 1);
+      zoomOv.style.opacity = overlayFade;
+
+      if (imacInner) {
+        var g = zoomEased;
+        var ga = Math.round(0.4 + g * 0.5, 2);
+        var gb = Math.round(0.2 + g * 0.4, 2);
+        var gc = Math.round(0.12 + g * 0.3, 2);
+        var r1 = Math.round(40 + g * 30);
+        var r2 = Math.round(90 + g * 60);
+        var r3 = Math.round(150 + g * 80);
+        imacInner.style.filter = 'drop-shadow(0 0 ' + r1 + 'px rgba(50,255,50,' + ga + ')) drop-shadow(0 0 ' + r2 + 'px rgba(50,255,50,' + gb + ')) drop-shadow(0 0 ' + r3 + 'px rgba(255,255,255,' + gc + '))';
+      }
+
+    }, { passive: true });
+  }
+
+  var revealEls = document.querySelectorAll('.reveal, .reveal-group');
+  var revealObs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        revealObs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+  revealEls.forEach(function(el) { revealObs.observe(el); });
+
+  var nav = document.querySelector('nav');
+  window.addEventListener('scroll', function() {
+    if (window.scrollY > 60) {
+      nav.classList.add('scrolled');
+    } else {
+      nav.classList.remove('scrolled');
+    }
+  }, { passive: true });
+
+  var pains = document.querySelectorAll('.pain');
+  var counter = document.querySelector('.pain-counter');
+  pains.forEach(function(p) {
+    p.addEventListener('click', function() {
+      var wasOpen = p.classList.contains('open');
+      pains.forEach(function(pp) { pp.classList.remove('open'); });
+      if (!wasOpen) p.classList.add('open');
+      if (counter) {
+        var expanded = 0;
+        pains.forEach(function(pp) { if (pp.classList.contains('open')) expanded++; });
+        counter.textContent = expanded + ' / ' + pains.length;
+      }
+    });
+  });
+
+  var glow = document.getElementById('cursor-glow');
+  if (glow && window.matchMedia('(pointer: fine)').matches) {
+    document.addEventListener('mousemove', function(e) {
+      glow.style.left = e.clientX + 'px';
+      glow.style.top = e.clientY + 'px';
+    }, { passive: true });
+  }
+
+  if (imacInner && sticky && window.matchMedia('(pointer: fine)').matches) {
+    sticky.addEventListener('mousemove', function(e) {
+      var r = scene.getBoundingClientRect();
+      var cx = r.left + r.width / 2;
+      var cy = r.top + r.height / 2;
+      var dist = Math.sqrt(Math.pow(e.clientX - cx, 2) + Math.pow(e.clientY - cy, 2));
+      var maxDist = Math.max(window.innerWidth, window.innerHeight) * 0.6;
+      var intensity = Math.max(1 - dist / maxDist, 0);
+      var i = intensity;
+      var r1 = Math.round(30 + i * 50);
+      var r2 = Math.round(60 + i * 80);
+      var r3 = Math.round(100 + i * 120);
+      var a1 = (0.2 + i * 0.5).toFixed(2);
+      var a2 = (0.1 + i * 0.3).toFixed(2);
+      var a3 = (0.05 + i * 0.2).toFixed(2);
+      imacInner.style.filter = 'drop-shadow(0 0 ' + r1 + 'px rgba(50,255,50,' + a1 + ')) drop-shadow(0 0 ' + r2 + 'px rgba(50,255,50,' + a2 + ')) drop-shadow(0 0 ' + r3 + 'px rgba(255,255,255,' + a3 + '))';
+    }, { passive: true });
+    sticky.addEventListener('mouseleave', function() {
+      imacInner.style.filter = '';
+    });
+  }
+
+  var logo = document.querySelector('.nav-logo');
+  if (logo) {
+    logo.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  }
+
+  var links = document.querySelectorAll('a[href^="#"]');
+  links.forEach(function(link) {
+    if (link.classList.contains('nav-logo')) return;
+    link.addEventListener('click', function(e) {
+      var href = link.getAttribute('href');
+      if (!href || href === '#') return;
+      try {
+        var target = document.querySelector(href);
+        if (target) {
+          e.preventDefault();
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      } catch(err) {}
+    });
+  });
+
+  // ── TERMINAL GAME ──────────────────────────
+  var termOverlay = document.getElementById('terminal-overlay');
+  var termContent = document.getElementById('terminal-content');
+  var termCounter = document.getElementById('term-step-counter');
+  if (termOverlay && termContent) {
+    var gameState = { path: null, answers: {} };
+    var typeSpeed = 22;
+
+    function addEl(tag, cls, text, parent) {
+      var el = document.createElement(tag || 'div');
+      if (cls) el.className = cls;
+      if (text) el.textContent = text;
+      (parent || termContent).appendChild(el);
+      return el;
+    }
+    function addLine(t, cls) { return addEl('div', 'term-line' + (cls ? ' ' + cls : ''), t); }
+    function addGap(s) { return addEl('div', s ? 'term-gap-sm' : 'term-gap'); }
+    function addDivider() { return addLine('─────────────────────────', 'dim'); }
+
+    function typewrite(text, cls, cb) {
+      var el = addLine('', cls);
+      var i = 0;
+      var iv = setInterval(function() {
+        if (i < text.length) { el.textContent += text[i]; i++; }
+        else { clearInterval(iv); if (cb) cb(el); }
+      }, typeSpeed);
+    }
+
+    function setStep(n, total) {
+      termCounter.textContent = 'STEP ' + n + ' OF ' + total;
+      termCounter.classList.add('visible');
+    }
+    function hideStep() { termCounter.classList.remove('visible'); }
+
+    function fadeToScreen(buildFn) {
+      termContent.classList.add('fade-out');
+      setTimeout(function() {
+        termContent.innerHTML = '';
+        buildFn();
+        termContent.classList.remove('fade-out');
+      }, 400);
+    }
+
+    function addButtons(btns) {
+      var row = addEl('div', 'term-btn-row');
+      btns.forEach(function(b) {
+        var btn = addEl('button', 'term-btn' + (b.primary ? ' primary' : ''), b.label, row);
+        btn.setAttribute('data-testid', 'term-btn-' + (b.id || ''));
+        btn.addEventListener('click', function() {
+          row.querySelectorAll('.term-btn').forEach(function(bb) {
+            bb.disabled = true; bb.style.opacity = '0.3'; bb.style.pointerEvents = 'none';
+          });
+          btn.style.opacity = '1'; btn.style.background = '#33ff33'; btn.style.color = '#000';
+          if (b.onClick) b.onClick();
+        });
+      });
+    }
+
+    function showResponse(text, isNeg, nextFn) {
+      addGap(true);
+      addLine('> ' + text, isNeg ? 'red' : 'bright');
+      setTimeout(function() { fadeToScreen(nextFn); }, 1200);
+    }
+
+    function animateProgress(cb) {
+      var el = addLine('');
+      var n = 0, total = 20;
+      var iv = setInterval(function() {
+        n++;
+        var bar = '';
+        for (var j = 0; j < total; j++) bar += j < n ? '█' : '░';
+        el.textContent = '[ ' + bar + ' ] ' + Math.round(n/total*100) + '%';
+        if (n >= total) { clearInterval(iv); setTimeout(cb, 300); }
+      }, 70);
+    }
+
+    // ── PATH DEFINITIONS ──────────────
+    var pathA = [
+      {
+        q: 'YOUR TEAM PROCESSES DOCUMENTS\nEVERY DAY — COIS, DRIVER FILES,\nCARRIER SUBMISSIONS.\n\nHOW DOES THAT ACTUALLY WORK?',
+        opts: [
+          { label: '[ A ]  MANUALLY. EMAIL, SPREADSHEETS, COPY-PASTE.', resp: 'THAT\'S THE #1 OPS DRAIN IN THIS INDUSTRY. NOTED.', neg: true },
+          { label: '[ B ]  MIXED. SOME TOOLS BUT STILL A LOT OF MANUAL.', resp: 'THE GAPS IN "MIXED" SYSTEMS COST MORE THAN YOU THINK.', neg: true },
+          { label: '[ C ]  MOSTLY AUTOMATED. SYSTEMS ARE IN PLACE.', resp: 'SOLID. LET\'S SEE WHERE ELSE THERE\'S ROOM.', neg: false }
+        ]
+      },
+      {
+        q: 'WHEN A NEW LEAD OR CLIENT\nCOMES IN — WHAT HAPPENS NEXT?',
+        opts: [
+          { label: '[ A ]  WE FOLLOW UP FAST. EVERY SINGLE TIME.', resp: 'PIPELINE DISCIPLINE IS RARE IN THIS SPACE. RESPECT.', neg: false },
+          { label: '[ B ]  WE TRY TO. BUT THINGS SLIP THROUGH.', resp: 'EVERY MISSED TOUCHPOINT IS REVENUE WALKING OUT THE DOOR.', neg: true },
+          { label: '[ C ]  HONESTLY DEPENDS ON HOW BUSY WE ARE.', resp: 'INCONSISTENCY IS A LEAK. IT COMPOUNDS OVER TIME.', neg: true }
+        ]
+      },
+      {
+        q: 'IF A PROSPECT SEARCHED YOUR\nNICHE RIGHT NOW —\n\nWOULD THEY FIND YOU BEFORE\nTHEY FIND YOUR COMPETITOR?',
+        opts: [
+          { label: '[ A ]  YES. WE HAVE STRONG VISIBILITY.', resp: 'GOOD. IS THAT PRESENCE WORKING AS HARD AS IT COULD?', neg: false },
+          { label: '[ B ]  PROBABLY NOT. WE\'RE NOT VERY VISIBLE.', resp: 'IN A TRUST-BASED INDUSTRY, INVISIBILITY IS EXPENSIVE.', neg: true },
+          { label: '[ C ]  WE RUN ON REFERRALS. ALWAYS HAVE.', resp: 'REFERRALS ARE GREAT UNTIL THEY\'RE NOT. THEN WHAT?', neg: true }
+        ]
+      },
+      {
+        q: 'DOES YOUR BUSINESS HAVE ANY\nKIND OF CONTENT PRESENCE —\nSOCIAL, VIDEO, THOUGHT LEADERSHIP?',
+        opts: [
+          { label: '[ A ]  YES. WE POST CONSISTENTLY.', resp: 'GOOD. BUT IS IT ACTUALLY CONVERTING OR JUST EXISTING?', neg: false },
+          { label: '[ B ]  OCCASIONALLY. NOTHING SYSTEMATIC.', resp: 'OCCASIONAL IS INVISIBLE. CONSISTENCY IS WHAT COMPOUNDS.', neg: true },
+          { label: '[ C ]  NO. WE\'VE NEVER PRIORITIZED IT.', resp: 'YOUR COMPETITORS ARE BUILDING TRUST WHILE YOU\'RE QUIET.', neg: true }
+        ]
+      },
+      {
+        q: 'ONE LAST ONE.\n\nIF YOU COULD ELIMINATE ONE\nTHING FROM YOUR WEEK —\nWHAT WOULD IT BE?',
+        opts: [
+          { label: '[ A ]  CHASING DOCUMENTS AND FOLLOWING UP.', resp: 'THAT\'S AN AUTOMATION PROBLEM. FULLY SOLVABLE.', neg: false },
+          { label: '[ B ]  CREATING CONTENT AND MARKETING.', resp: 'THAT\'S A SYSTEMS PROBLEM. FULLY SOLVABLE.', neg: false },
+          { label: '[ C ]  BOTH. HONESTLY BOTH.', resp: 'THAT\'S EXACTLY WHY AKTIVATE EXISTS.', neg: false }
+        ]
+      }
+    ];
+
+    var pathB = [
+      {
+        q: 'YOU\'RE BUILDING SOMETHING.\n\nHOW ARE YOU CURRENTLY\nGETTING IN FRONT OF\nTHE RIGHT PEOPLE?',
+        opts: [
+          { label: '[ A ]  CONTENT, ADS, SOCIAL — WE\'RE ACTIVE.', resp: 'ACTIVE IS GOOD. BUT ACTIVE AND EFFECTIVE ARE DIFFERENT THINGS.', neg: false },
+          { label: '[ B ]  MOSTLY WORD OF MOUTH AND OUTBOUND.', resp: 'WORD OF MOUTH HAS A CEILING. WHAT HAPPENS AFTER THAT?', neg: true },
+          { label: '[ C ]  HONESTLY WE\'RE FIGURING THAT OUT.', resp: 'MOST FOUNDERS ARE. THAT\'S NOT A WEAKNESS — YET.', neg: true }
+        ]
+      },
+      {
+        q: 'HOW MUCH CONTENT IS YOUR\nBRAND ACTUALLY PRODUCING\nRIGHT NOW?',
+        opts: [
+          { label: '[ A ]  A LOT. WE HAVE A REAL SYSTEM.', resp: 'A SYSTEM IS GOOD. IS IT PRODUCING RESULTS OR JUST VOLUME?', neg: false },
+          { label: '[ B ]  SOME. BUT IT\'S INCONSISTENT.', resp: 'INCONSISTENCY MEANS YOUR AUDIENCE FORGETS YOU EXIST.', neg: true },
+          { label: '[ C ]  BARELY ANY. NO TIME, NO PROCESS.', resp: 'IN A CROWDED MARKET, SILENCE IS INVISIBLE.', neg: true }
+        ]
+      },
+      {
+        q: 'BE HONEST.\n\nDOES YOUR BRAND LOOK DIFFERENT\nFROM EVERYONE ELSE IN YOUR SPACE?',
+        opts: [
+          { label: '[ A ]  YES. WE HAVE A CLEAR POINT OF VIEW.', resp: 'GOOD. LET\'S MAKE SURE IT\'S ACTUALLY LANDING.', neg: false },
+          { label: '[ B ]  SORT OF. WE\'RE WORKING ON IT.', resp: '"SORT OF" IS THE MOST DANGEROUS PLACE TO BE.', neg: true },
+          { label: '[ C ]  NOT REALLY. WE LOOK LIKE THE OTHERS.', resp: 'THAT\'S THE MOST COMMON PROBLEM IN B2B. AND THE MOST FIXABLE.', neg: true }
+        ]
+      },
+      {
+        q: 'YOUR INTERNAL OPS —\nOUTREACH, FOLLOW-UPS,\nCONTENT SCHEDULING, REPORTING.\n\nHOW MUCH OF THAT IS MANUAL?',
+        opts: [
+          { label: '[ A ]  MOST OF IT IS AUTOMATED.', resp: 'CLEAN. LET\'S SEE IF THERE\'S STILL ROOM TO TIGHTEN.', neg: false },
+          { label: '[ B ]  SOME TOOLS BUT STILL A LOT OF MANUAL WORK.', resp: 'THE GAPS IN PARTIAL AUTOMATION ADD UP FAST.', neg: true },
+          { label: '[ C ]  ALMOST ALL OF IT IS MANUAL.', resp: 'YOU\'RE SPENDING FOUNDER TIME ON THINGS THAT SHOULDN\'T NEED YOU.', neg: true }
+        ]
+      },
+      {
+        q: 'LAST ONE.\n\nWHAT WOULD CHANGE EVERYTHING\nFOR YOUR BUSINESS RIGHT NOW?',
+        opts: [
+          { label: '[ A ]  MORE VISIBILITY. PEOPLE NEED TO KNOW WE EXIST.', resp: 'THAT\'S A PRESENCE PROBLEM. FULLY SOLVABLE.', neg: false },
+          { label: '[ B ]  BETTER SYSTEMS. WE NEED TO STOP DOING THINGS MANUALLY.', resp: 'THAT\'S AN AUTOMATION PROBLEM. FULLY SOLVABLE.', neg: false },
+          { label: '[ C ]  BOTH. WE NEED THE WHOLE THING.', resp: 'THAT\'S EXACTLY WHY AKTIVATE EXISTS.', neg: false }
+        ]
+      }
+    ];
+
+    // ── BOOT SEQUENCE ──────────────────
+    function bootSequence() {
+      hideStep();
+      typewrite('AKTIVATE OS v1.0', 'bright', function() {
+        setTimeout(function() {
+          typewrite('INITIALIZING...', 'dim', function() {
+            addGap(true);
+            animateProgress(function() {
+              addGap(true);
+              typewrite('BUSINESS DIAGNOSTIC TOOL: READY', 'bright', function() {
+                addGap();
+                addGap();
+                typewrite("LET'S PLAY A GAME.", 'white xl', function() {
+                  addGap(true);
+                  typewrite("LET'S MAKE THIS PERSONAL.", 'dim', function() {
+                    addGap();
+                    addButtons([{
+                      label: '[ PLAY ]',
+                      primary: true,
+                      id: 'start',
+                      onClick: function() {
+                        setTimeout(function() { fadeToScreen(step1); }, 400);
+                      }
+                    }]);
+                    addGap(true);
+                    var skipLink = addEl('button', 'term-scroll-link', '// SKIP TO SITE');
+                    skipLink.setAttribute('data-testid', 'term-skip');
+                    skipLink.addEventListener('click', dismissTerminal);
+                  });
+                });
+              });
+            });
+          });
+        }, 300);
+      });
+    }
+
+    // ── STEP 1: IDENTITY ───────────────
+    function step1() {
+      setStep(1, 6);
+      addLine("WHAT'S YOUR WORLD?", 'white large');
+      addGap(true);
+      addButtons([
+        {
+          label: '[ A ]  INSURANCE / LOGISTICS', id: 's1-a',
+          onClick: function() {
+            gameState.path = 'A';
+            gameState.answers = {};
+            showResponse('GOOD. THIS ONE\'S BUILT FOR YOU.', false, function() { runPathStep(0); });
+          }
+        },
+        {
+          label: '[ B ]  TECH STARTUP / SAAS', id: 's1-b',
+          onClick: function() {
+            gameState.path = 'B';
+            gameState.answers = {};
+            showResponse('LET\'S SEE WHAT\'S ACTUALLY GOING ON.', false, function() { runPathStep(0); });
+          }
+        },
+        {
+          label: '[ C ]  NEITHER OF THOSE', id: 's1-c',
+          onClick: function() {
+            gameState.path = 'B';
+            gameState.answers = {};
+            showResponse('FAIR. LET\'S FIND OUT IF WE CAN HELP.', false, function() { runPathStep(0); });
+          }
+        }
+      ]);
+    }
+
+    // ── PATH STEPS (2-6) ───────────────
+    function runPathStep(idx) {
+      var steps = gameState.path === 'A' ? pathA : pathB;
+      var stepNum = idx + 2;
+      setStep(stepNum, 6);
+      var s = steps[idx];
+
+      addLine(s.q, 'white');
+      addGap(true);
+
+      var btns = s.opts.map(function(opt, oi) {
+        return {
+          label: opt.label,
+          id: 's' + stepNum + '-' + String.fromCharCode(97 + oi),
+          onClick: function() {
+            gameState.answers['s' + stepNum] = oi;
+            showResponse(opt.resp, opt.neg, function() {
+              if (idx + 1 < steps.length) {
+                runPathStep(idx + 1);
+              } else {
+                runDiagnostic();
+              }
+            });
+          }
+        };
+      });
+      addButtons(btns);
+    }
+
+    // ── DIAGNOSTIC SCAN ────────────────
+    function runDiagnostic() {
+      hideStep();
+      addLine('RUNNING DIAGNOSTIC...', 'amber large');
+      addGap(true);
+
+      var lines = [
+        'ANALYZING: OPERATIONAL EFFICIENCY',
+        'ANALYZING: LEAD PIPELINE HEALTH',
+        'ANALYZING: MARKET VISIBILITY',
+        'ANALYZING: AUTOMATION COVERAGE'
+      ];
+      var li = 0;
+      function nextLine() {
+        if (li >= lines.length) {
+          addGap();
+          setTimeout(function() {
+            addLine('⚠  REPORT READY.', 'amber large');
+            setTimeout(function() { fadeToScreen(showResults); }, 1200);
+          }, 500);
+          return;
+        }
+        var el = addLine(lines[li], 'dim');
+        var sp = document.createElement('span');
+        sp.className = 'term-flicker';
+        sp.style.marginLeft = '12px';
+        sp.style.color = '#ffaa00';
+        sp.textContent = Math.floor(Math.random()*900+100) + 'ms';
+        el.appendChild(sp);
+        li++;
+        setTimeout(function() {
+          sp.classList.remove('term-flicker');
+          sp.textContent = ' ✓';
+          sp.style.color = '#33ff33';
+          setTimeout(nextLine, 300);
+        }, 700);
+      }
+      setTimeout(nextLine, 600);
+    }
+
+    // ── RESULTS ────────────────────────
+    function showResults() {
+      hideStep();
+      var a = gameState.answers;
+      var negCount = 0;
+      Object.keys(a).forEach(function(k) {
+        var steps = gameState.path === 'A' ? pathA : pathB;
+        var idx = parseInt(k.replace('s','')) - 2;
+        if (idx >= 0 && idx < steps.length) {
+          var opt = steps[idx].opts[a[k]];
+          if (opt && opt.neg) negCount++;
+        }
+      });
+
+      var errNum = 0;
+
+      if (gameState.path === 'A') {
+        if (a.s2 === 0 || a.s2 === 1) {
+          errNum++;
+          var b1 = addEl('div', 'term-error-block');
+          addEl('div', 'term-line red', 'ERROR_0' + errNum + ' // DOCUMENT PIPELINE', b1);
+          addEl('div', 'term-line white', 'Your team is doing work that', b1);
+          addEl('div', 'term-line white', 'software should be doing.', b1);
+          addEl('div', 'term-line bright', 'STATUS: FIXABLE', b1);
+        }
+        if (a.s4 === 1 || a.s4 === 2) {
+          errNum++;
+          var b2 = addEl('div', 'term-error-block');
+          addEl('div', 'term-line red', 'ERROR_0' + errNum + ' // MARKET VISIBILITY', b2);
+          addEl('div', 'term-line white', 'Your competitors are building trust', b2);
+          addEl('div', 'term-line white', 'online while you\'re invisible.', b2);
+          addEl('div', 'term-line bright', 'STATUS: FIXABLE', b2);
+        }
+        if (a.s5 === 1 || a.s5 === 2) {
+          errNum++;
+          var b3 = addEl('div', 'term-error-block');
+          addEl('div', 'term-line red', 'ERROR_0' + errNum + ' // CONTENT PRESENCE', b3);
+          addEl('div', 'term-line white', 'No consistent presence means', b3);
+          addEl('div', 'term-line white', 'no compounding trust.', b3);
+          addEl('div', 'term-line bright', 'STATUS: FIXABLE', b3);
+        }
+      } else {
+        if (a.s2 === 1 || a.s2 === 2) {
+          errNum++;
+          var b4 = addEl('div', 'term-error-block');
+          addEl('div', 'term-line red', 'ERROR_0' + errNum + ' // DISTRIBUTION', b4);
+          addEl('div', 'term-line white', 'You\'re not in front of the', b4);
+          addEl('div', 'term-line white', 'right people consistently.', b4);
+          addEl('div', 'term-line bright', 'STATUS: FIXABLE', b4);
+        }
+        if (a.s4 === 1 || a.s4 === 2) {
+          errNum++;
+          var b5 = addEl('div', 'term-error-block');
+          addEl('div', 'term-line red', 'ERROR_0' + errNum + ' // BRAND DIFFERENTIATION', b5);
+          addEl('div', 'term-line white', 'You look like everyone else.', b5);
+          addEl('div', 'term-line white', 'That\'s the fastest way to be forgotten.', b5);
+          addEl('div', 'term-line bright', 'STATUS: FIXABLE', b5);
+        }
+        if (a.s5 === 1 || a.s5 === 2) {
+          errNum++;
+          var b6 = addEl('div', 'term-error-block');
+          addEl('div', 'term-line red', 'ERROR_0' + errNum + ' // OPERATIONAL DRAG', b6);
+          addEl('div', 'term-line white', 'Manual work is eating founder', b6);
+          addEl('div', 'term-line white', 'time that should go to growth.', b6);
+          addEl('div', 'term-line bright', 'STATUS: FIXABLE', b6);
+        }
+      }
+
+      if (errNum === 0) {
+        errNum++;
+        var bGen = addEl('div', 'term-error-block');
+        addEl('div', 'term-line red', 'ERROR_01 // UNTAPPED POTENTIAL', bGen);
+        addEl('div', 'term-line white', 'You\'re doing well — but there\'s', bGen);
+        addEl('div', 'term-line white', 'room to compound faster.', bGen);
+        addEl('div', 'term-line bright', 'STATUS: FIXABLE', bGen);
+      }
+
+      addGap();
+      var opsScore = 30 + Math.floor(Math.random()*15) - (negCount * 8);
+      var visScore = 25 + Math.floor(Math.random()*15) - (negCount * 6);
+      var pipScore = 35 + Math.floor(Math.random()*10) - (negCount * 7);
+      opsScore = Math.max(opsScore, 8); visScore = Math.max(visScore, 8); pipScore = Math.max(pipScore, 12);
+
+      addLine('OPS SCORE:  ' + opsScore + ' / 100', opsScore < 40 ? 'red' : 'bright');
+      addLine('VISIBILITY: ' + visScore + ' / 100', visScore < 40 ? 'red' : 'bright');
+      addLine('PIPELINE:   ' + pipScore + ' / 100', pipScore < 40 ? 'red' : 'bright');
+
+      addGap();
+      addLine('ALL OF THIS IS FIXABLE.', 'white large');
+      addLine('WE\'VE DONE IT BEFORE.', 'white');
+      addGap();
+
+      addButtons([{
+        label: '[ BOOK A FREE DIAGNOSTIC CALL ]',
+        primary: true,
+        id: 'book-call',
+        onClick: function() {
+          window.location.href = 'mailto:hello@aktivate.ai?subject=Diagnostic%20Call';
+        }
+      }]);
+
+      addGap(true);
+      addDivider();
+      addGap(true);
+
+      var scrollLink = addEl('button', 'term-scroll-link', '// OR SCROLL DOWN TO SEE HOW WE WORK');
+      scrollLink.setAttribute('data-testid', 'term-scroll-down');
+      scrollLink.addEventListener('click', dismissTerminal);
+
+      addGap(true);
+      var replayLink = addEl('button', 'term-replay-link', '[ PLAY AGAIN ]');
+      replayLink.setAttribute('data-testid', 'term-replay');
+      replayLink.addEventListener('click', function() {
+        fadeToScreen(function() {
+          gameState = { path: null, answers: {} };
+          step1();
+        });
+      });
+    }
+
+    // ── DISMISS ────────────────────────
+    function dismissTerminal() {
+      termOverlay.classList.add('dismissed');
+      document.body.classList.remove('terminal-active');
+      window.scrollTo(0, 0);
+      setTimeout(function() { termOverlay.style.display = 'none'; }, 800);
+    }
+
+    // ── SCROLL TO DISMISS ──────────────
+    var termScrollStart = null;
+    termOverlay.addEventListener('wheel', function(e) {
+      var atBottom = termOverlay.scrollHeight <= termOverlay.clientHeight;
+      if (!atBottom) return;
+      var scrollLinks = termContent.querySelectorAll('.term-scroll-link');
+      if (scrollLinks.length === 0) return;
+      if (e.deltaY > 0) {
+        if (!termScrollStart) termScrollStart = Date.now();
+        if (Date.now() - termScrollStart > 600) {
+          dismissTerminal();
+          termScrollStart = null;
+        }
+      } else {
+        termScrollStart = null;
+      }
+    }, { passive: true });
+
+    setTimeout(bootSequence, 500);
+  }
+
+})();
+</script>
+</body>
+</html>

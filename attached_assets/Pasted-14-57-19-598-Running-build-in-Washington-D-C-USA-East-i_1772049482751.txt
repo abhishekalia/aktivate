@@ -1,0 +1,42 @@
+14:57:19.598 Running build in Washington, D.C., USA (East) – iad1
+14:57:19.599 Build machine configuration: 2 cores, 8 GB
+14:57:19.732 Cloning github.com/abhishekalia/aktivate (Branch: main, Commit: 1884d4b)
+14:57:23.236 Cloning completed: 3.504s
+14:57:23.313 Restored build cache from previous deployment (39uvzvKJQQTUbtqmSuoKRrNBfrQV)
+14:57:23.574 Running "vercel build"
+14:57:24.180 Vercel CLI 50.23.2
+14:57:24.733 Running "install" command: `npm install`...
+14:57:26.608 
+14:57:26.608 up to date, audited 477 packages in 2s
+14:57:26.609 
+14:57:26.609 76 packages are looking for funding
+14:57:26.610   run `npm fund` for details
+14:57:26.614 
+14:57:26.614 3 vulnerabilities (1 low, 1 moderate, 1 high)
+14:57:26.615 
+14:57:26.615 To address all issues, run:
+14:57:26.615   npm audit fix
+14:57:26.615 
+14:57:26.616 Run `npm audit` for details.
+14:57:27.248 [36mvite v7.3.0 [32mbuilding client environment for production...[36m[39m
+14:57:27.403 transforming...
+14:57:27.772 
+14:57:27.773 [1m[33mwarn[39m[22m - The `content` option in your Tailwind CSS configuration is missing or empty.
+14:57:27.773 [1m[33mwarn[39m[22m - Configure your content sources or your generated CSS will be missing styles.
+14:57:27.773 [1m[33mwarn[39m[22m - https://tailwindcss.com/docs/content-configuration
+14:57:28.012 [32m✓[39m 4 modules transformed.
+14:57:28.015 [31m✗[39m Build failed in 733ms
+14:57:28.016 [31merror during build:
+14:57:28.016 [31m[vite:css] [postcss] /vercel/path0/client/src/index.css:1:1: The `border-border` class does not exist. If `border-border` is a custom class, make sure it is defined within a `@layer` directive.[31m
+14:57:28.016 file: [36m/vercel/path0/client/src/index.css:1:0[31m
+14:57:28.016     at Input.error (/vercel/path0/node_modules/postcss/lib/input.js:135:16)
+14:57:28.016     at AtRule.error (/vercel/path0/node_modules/postcss/lib/node.js:146:32)
+14:57:28.016     at processApply (/vercel/path0/node_modules/tailwindcss/lib/lib/expandApplyAtRules.js:380:29)
+14:57:28.017     at /vercel/path0/node_modules/tailwindcss/lib/lib/expandApplyAtRules.js:551:9
+14:57:28.017     at /vercel/path0/node_modules/tailwindcss/lib/processTailwindFeatures.js:55:50
+14:57:28.017     at async plugins (/vercel/path0/node_modules/tailwindcss/lib/plugin.js:38:17)
+14:57:28.017     at async LazyResult.runAsync (/vercel/path0/node_modules/postcss/lib/lazy-result.js:293:11)
+14:57:28.017     at async runPostCSS (file:///vercel/path0/node_modules/vite/dist/node/chunks/config.js:30144:19)
+14:57:28.018     at async compilePostCSS (file:///vercel/path0/node_modules/vite/dist/node/chunks/config.js:30128:6)
+14:57:28.018     at async compileCSS (file:///vercel/path0/node_modules/vite/dist/node/chunks/config.js:30058:26)[39m
+14:57:28.057 Error: Command "cd client && npx vite build --config ../vite.vercel.config.ts --outDir ../dist/public" exited with 1
