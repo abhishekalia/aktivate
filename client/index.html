@@ -9,7 +9,7 @@
 <meta property="og:description" content="AI automation and creative studio for Insurance & Logistics operators ready to scale.">
 <meta property="og:type" content="website">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Instrument+Serif:ital@0;1&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Instrument+Serif:ital@0;1&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Press+Start+2P&display=swap" rel="stylesheet">
 
 <style>
 :root {
@@ -762,260 +762,26 @@ body:hover #cursor-glow {
   opacity:1;
 }
 
-/* ── MOBILE HERO — DESKTOP OS ──────────────────── */
+/* ── MOBILE HERO ──────────────────── */
 #mobile-hero {
   display:none;
 }
-.mh-desktop {
-  display:none;
-  min-height:100vh;
-  min-height:100dvh;
-  background:#1a1a2e;
-  background-image:
-    radial-gradient(ellipse at 30% 20%, rgba(51,255,51,0.06) 0%, transparent 60%),
-    radial-gradient(ellipse at 70% 80%, rgba(51,255,51,0.04) 0%, transparent 50%);
-  flex-direction:column;
-  position:relative;
-  overflow:hidden;
-}
-
-/* ── MENUBAR ── */
-.mh-menubar {
-  height:28px;
-  background:rgba(0,0,0,0.75);
-  backdrop-filter:blur(20px);
-  -webkit-backdrop-filter:blur(20px);
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:0 12px;
-  border-bottom:1px solid rgba(255,255,255,0.08);
-  z-index:10;
-  position:relative;
-}
-.mh-menubar-left, .mh-menubar-right {
-  display:flex;
-  align-items:center;
-  gap:14px;
-}
-.mh-apple-logo {
-  font-size:14px;
-  color:#ccc;
-  line-height:1;
-}
-.mh-menu-item {
-  font-family:'DM Mono',monospace;
-  font-size:11px;
-  color:#ccc;
-  letter-spacing:0.02em;
-}
-.mh-menu-item.bold {
-  font-weight:700;
-  color:#fff;
-}
-
-/* ── DESKTOP AREA ── */
-.mh-desktop-area {
-  flex:1;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:16px 12px;
-  min-height:0;
-}
-
-/* ── WINDOW ── */
-.mh-window {
+#mobile-hero-3d-root {
   width:100%;
-  max-width:420px;
-  border-radius:10px;
-  overflow:hidden;
-  box-shadow:
-    0 20px 60px rgba(0,0,0,0.5),
-    0 0 0 1px rgba(255,255,255,0.08),
-    0 0 40px rgba(51,255,51,0.04);
-  animation:mh-win-appear 0.6s cubic-bezier(0.16,1,0.3,1) both;
+  height:100dvh;
+  height:100vh;
 }
-@keyframes mh-win-appear {
-  from { opacity:0; transform:scale(0.92) translateY(20px); }
-  to { opacity:1; transform:scale(1) translateY(0); }
-}
-.mh-win-titlebar {
-  background:rgba(30,30,30,0.95);
-  backdrop-filter:blur(10px);
-  -webkit-backdrop-filter:blur(10px);
-  padding:11px 14px;
-  display:flex;
-  align-items:center;
-  border-bottom:1px solid rgba(255,255,255,0.06);
-}
-.mh-win-dots {
-  display:flex;
-  gap:6px;
-  margin-right:12px;
-}
-.mh-wdot {
-  width:10px; height:10px;
-  border-radius:50%;
-}
-.mh-wdot.close { background:#ff5f57; }
-.mh-wdot.minimize { background:#febc2e; }
-.mh-wdot.maximize { background:#28c840; }
-.mh-win-title {
-  font-family:'DM Mono',monospace;
-  font-size:10px;
-  color:#777;
-  letter-spacing:0.04em;
-  flex:1;
-  text-align:center;
-  margin-right:34px;
-}
-.mh-win-body {
-  background:#0a0a0a;
-  padding:28px 22px 32px;
-  position:relative;
-}
-.mh-win-body::after {
-  content:'';
-  position:absolute;
-  inset:0;
-  pointer-events:none;
-  background:repeating-linear-gradient(
-    0deg,
-    rgba(0,0,0,0.06) 0px,
-    rgba(0,0,0,0.06) 1px,
-    transparent 1px,
-    transparent 3px
-  );
-}
-
-/* ── HERO CONTENT INSIDE WINDOW ── */
-.mh-hero-label {
-  font-family:'DM Mono',monospace;
-  font-size:11px;
-  color:var(--term-green);
-  letter-spacing:0.08em;
-  margin-bottom:14px;
-  text-transform:uppercase;
-  position:relative;
-  z-index:1;
-}
-.mh-hero-headline {
-  font-family:'Space Grotesk',sans-serif;
-  font-size:30px;
-  font-weight:700;
-  line-height:1.12;
-  color:#e0e0e0;
-  margin:0 0 14px;
-  position:relative;
-  z-index:1;
-}
-.mh-hero-headline em {
-  font-style:normal;
-  color:var(--term-green);
-  text-shadow:0 0 20px rgba(51,255,51,0.3);
-}
-.mh-hero-desc {
-  font-family:'DM Mono',monospace;
-  font-size:11px;
-  line-height:1.7;
-  color:#777;
-  margin:0 0 20px;
-  position:relative;
-  z-index:1;
-}
-.mh-hero-actions {
-  display:flex;
-  align-items:center;
-  gap:14px;
-  flex-wrap:wrap;
-  margin-bottom:24px;
-  position:relative;
-  z-index:1;
-}
-.mh-hero-actions .keycap {
-  font-size:10px !important;
-  padding:8px 16px !important;
-}
-.mh-hero-actions .keycap-ico {
-  font-size:11px !important;
-}
-.mh-how-link {
-  font-family:'DM Mono',monospace;
-  font-size:10px;
-  color:var(--term-green);
-  text-decoration:underline;
-  text-underline-offset:3px;
-  letter-spacing:0.04em;
-}
-.mh-stats-row {
-  display:flex;
-  gap:24px;
-  position:relative;
-  z-index:1;
-  padding-top:16px;
-  border-top:1px solid rgba(255,255,255,0.06);
-}
-.mh-stat-n {
-  font-family:'Space Grotesk',sans-serif;
-  font-size:22px;
-  font-weight:700;
-  color:var(--term-green);
-  line-height:1.2;
-}
-.mh-stat-l {
-  font-family:'DM Mono',monospace;
-  font-size:8px;
-  color:#555;
-  letter-spacing:0.06em;
-  text-transform:uppercase;
-  margin-top:3px;
-}
-
-/* ── DOCK ── */
-.mh-dock {
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:4px;
-  padding:8px 16px;
-  margin:0 auto 12px;
-  width:fit-content;
-  background:rgba(255,255,255,0.06);
-  border:1px solid rgba(255,255,255,0.08);
-  border-radius:16px;
-  backdrop-filter:blur(20px);
-  -webkit-backdrop-filter:blur(20px);
-}
-.mh-dock-item {
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  width:44px; height:44px;
-  border-radius:11px;
-  background:rgba(255,255,255,0.05);
-  border:1px solid rgba(255,255,255,0.06);
-  text-decoration:none;
-  transition:all 0.2s cubic-bezier(0.16,1,0.3,1);
-  position:relative;
-}
-.mh-dock-item:active {
-  transform:scale(0.9);
-  background:rgba(51,255,51,0.15);
-}
-.mh-dock-icon {
-  font-size:20px;
-  color:#aaa;
-  line-height:1;
-}
-.mh-dock-item:active .mh-dock-icon {
-  color:var(--term-green);
+@keyframes glitch-flicker {
+  0% { opacity:1; transform:translateX(0); }
+  25% { opacity:0.8; transform:translateX(-2px); }
+  50% { opacity:1; transform:translateX(1px); }
+  75% { opacity:0.6; transform:translateX(-1px); }
+  100% { opacity:1; transform:translateX(0); }
 }
 
 /* ── RESPONSIVE ────────────────────── */
 @media(max-width:960px) {
   #mobile-hero { display:block; }
-  .mh-desktop { display:flex; }
   #hero-spacer { display:none !important; }
   #zoom-overlay { display:none !important; }
   nav { padding:0 16px; height:52px; }
@@ -1237,74 +1003,7 @@ body.terminal-active #mobile-hero { display:none; }
 <div id="cursor-glow"></div>
 
 <section id="mobile-hero">
-  <div class="mh-desktop" id="mh-desktop">
-    <div class="mh-menubar">
-      <div class="mh-menubar-left">
-        <span class="mh-apple-logo">&#63743;</span>
-        <span class="mh-menu-item bold">aktivate</span>
-        <span class="mh-menu-item">File</span>
-        <span class="mh-menu-item">Edit</span>
-        <span class="mh-menu-item">View</span>
-      </div>
-      <div class="mh-menubar-right">
-        <span class="mh-menu-item" id="mh-clock"></span>
-      </div>
-    </div>
-
-    <div class="mh-desktop-area">
-      <div class="mh-window" id="mh-window">
-        <div class="mh-win-titlebar">
-          <div class="mh-win-dots">
-            <span class="mh-wdot close"></span>
-            <span class="mh-wdot minimize"></span>
-            <span class="mh-wdot maximize"></span>
-          </div>
-          <span class="mh-win-title">aktivate.ai &mdash; the growth studio</span>
-        </div>
-        <div class="mh-win-body">
-          <div class="mh-hero-label">&gt; THE GROWTH STUDIO _</div>
-          <h2 class="mh-hero-headline">Build the<br>Engine.<br>Build the <em>Face.</em></h2>
-          <p class="mh-hero-desc">Automated ops. Automated presence. One studio built specifically for Insurance &amp; Logistics operators who are ready to scale.</p>
-          <div class="mh-hero-actions">
-            <a href="#cta" class="keycap keycap-lg" data-testid="button-book-call-mobile-hero"><span class="keycap-ico">&#9783;</span><span>Book a Free Call</span></a>
-            <a href="#system" class="mh-how-link" data-testid="link-how-it-works-mobile">SEE HOW IT WORKS &rarr;</a>
-          </div>
-          <div class="mh-stats-row">
-            <div>
-              <div class="mh-stat-n" data-testid="text-stat-ops-mobile">70%</div>
-              <div class="mh-stat-l">OPS TIME SAVED</div>
-            </div>
-            <div>
-              <div class="mh-stat-n" data-testid="text-stat-build-mobile">2&ndash;4wk</div>
-              <div class="mh-stat-l">BUILD TIME</div>
-            </div>
-            <div>
-              <div class="mh-stat-n" data-testid="text-stat-content-mobile">5&times;</div>
-              <div class="mh-stat-l">CONTENT OUTPUT</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="mh-dock">
-      <a href="#system" class="mh-dock-item" data-label="System" data-testid="dock-system">
-        <div class="mh-dock-icon">&#9881;</div>
-      </a>
-      <a href="#showcase" class="mh-dock-item" data-label="Showcase" data-testid="dock-showcase">
-        <div class="mh-dock-icon">&#9733;</div>
-      </a>
-      <a href="#results" class="mh-dock-item" data-label="Results" data-testid="dock-results">
-        <div class="mh-dock-icon">&#9650;</div>
-      </a>
-      <a href="#for-who" class="mh-dock-item" data-label="Who" data-testid="dock-who">
-        <div class="mh-dock-icon">&#9679;</div>
-      </a>
-      <a href="#cta" class="mh-dock-item" data-label="Contact" data-testid="dock-contact">
-        <div class="mh-dock-icon">&#9993;</div>
-      </a>
-    </div>
-  </div>
+  <div id="mobile-hero-3d-root"></div>
 </section>
 
 <div id="hero-spacer">
@@ -1821,21 +1520,6 @@ body.terminal-active #mobile-hero { display:none; }
       } catch(err) {}
     });
   });
-
-  // ── MOBILE DESKTOP CLOCK ──────────────────
-  var mhClock = document.getElementById('mh-clock');
-  if (mhClock) {
-    function updateMhClock() {
-      var now = new Date();
-      var h = now.getHours();
-      var m = now.getMinutes();
-      var ampm = h >= 12 ? 'PM' : 'AM';
-      h = h % 12 || 12;
-      mhClock.textContent = h + ':' + (m < 10 ? '0' : '') + m + ' ' + ampm;
-    }
-    updateMhClock();
-    setInterval(updateMhClock, 30000);
-  }
 
   // ── TERMINAL GAME ──────────────────────────
   var termOverlay = document.getElementById('terminal-overlay');
