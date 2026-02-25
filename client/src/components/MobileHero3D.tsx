@@ -1,6 +1,42 @@
 import { Suspense, useRef, useMemo, useState, useEffect } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { Grid } from "@react-three/drei";
+import { EffectComposer, Bloom, Noise, Vignette } from "@react-three/postprocessing";
 import * as THREE from "three";
+
+function ScrollingGrid() {
+  const groupRef = useRef<THREE.Group>(null);
+  useFrame((state) => {
+    if (groupRef.current) {
+      groupRef.current.position.z = (state.clock.elapsedTime * 2.5) % 2;
+    }
+  });
+  return (
+    <group ref={groupRef}>
+      <Grid
+        args={[100, 100]}
+        cellSize={2}
+        cellThickness={1.4}
+        cellColor="#33ff33"
+        sectionSize={8}
+        sectionThickness={2}
+        sectionColor="#44ff66"
+        fadeDistance={50}
+        fadeStrength={1.2}
+        infiniteGrid
+        position={[0, -2, 0]}
+      />
+    </group>
+  );
+}
+
+function SceneSetup() {
+  const { scene } = useThree();
+  useEffect(() => {
+    scene.fog = new THREE.FogExp2(0x0d0015, 0.018);
+  }, [scene]);
+  return null;
+}
 
 function Starfield() {
   const count = 300;
@@ -49,11 +85,21 @@ function Starfield() {
 function Scene() {
   return (
     <>
+      <color attach="background" args={["#0d0015"]} />
+      <SceneSetup />
+
       <pointLight position={[0, 8, -5]} color="#7700ff" intensity={2} distance={30} decay={1.5} />
       <pointLight position={[0, -1, 5]} color="#33ff33" intensity={0.5} distance={15} decay={2} />
       <ambientLight intensity={0.08} color="#220033" />
 
+      <ScrollingGrid />
       <Starfield />
+
+      <EffectComposer>
+        <Bloom intensity={1.2} luminanceThreshold={0.1} luminanceSmoothing={0.4} mipmapBlur />
+        <Noise opacity={0.06} />
+        <Vignette eskil={false} offset={0.05} darkness={0.65} />
+      </EffectComposer>
     </>
   );
 }
@@ -97,7 +143,7 @@ export default function MobileHero3D() {
       <Canvas
         camera={{ position: [0, 3, 8], fov: 70, near: 0.1, far: 100 }}
         dpr={[1, 1.5]}
-        gl={{ antialias: false, alpha: true }}
+        gl={{ antialias: false, alpha: false }}
         style={ui.canvas}
         onCreated={({ camera }) => {
           camera.lookAt(0, -1, -20);
@@ -169,7 +215,7 @@ const ui: Record<string, React.CSSProperties> = {
     height: "100dvh",
     position: "relative",
     overflow: "hidden",
-    background: "transparent",
+    background: "#0d0015",
   },
   canvas: {
     position: "absolute",
