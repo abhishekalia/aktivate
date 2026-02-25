@@ -1364,6 +1364,28 @@ body.terminal-active nav { opacity:0; pointer-events:none; }
     }, { passive: true });
   }
 
+  if (imacInner && sticky && window.matchMedia('(pointer: fine)').matches) {
+    sticky.addEventListener('mousemove', function(e) {
+      var r = scene.getBoundingClientRect();
+      var cx = r.left + r.width / 2;
+      var cy = r.top + r.height / 2;
+      var dist = Math.sqrt(Math.pow(e.clientX - cx, 2) + Math.pow(e.clientY - cy, 2));
+      var maxDist = Math.max(window.innerWidth, window.innerHeight) * 0.6;
+      var intensity = Math.max(1 - dist / maxDist, 0);
+      var i = intensity;
+      var r1 = Math.round(30 + i * 50);
+      var r2 = Math.round(60 + i * 80);
+      var r3 = Math.round(100 + i * 120);
+      var a1 = (0.2 + i * 0.5).toFixed(2);
+      var a2 = (0.1 + i * 0.3).toFixed(2);
+      var a3 = (0.05 + i * 0.2).toFixed(2);
+      imacInner.style.filter = 'drop-shadow(0 0 ' + r1 + 'px rgba(50,255,50,' + a1 + ')) drop-shadow(0 0 ' + r2 + 'px rgba(50,255,50,' + a2 + ')) drop-shadow(0 0 ' + r3 + 'px rgba(255,255,255,' + a3 + '))';
+    }, { passive: true });
+    sticky.addEventListener('mouseleave', function() {
+      imacInner.style.filter = '';
+    });
+  }
+
   var logo = document.querySelector('.nav-logo');
   if (logo) {
     logo.addEventListener('click', function(e) {
