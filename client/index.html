@@ -1369,39 +1369,60 @@ body.terminal-active nav { opacity:0; pointer-events:none; }
 
   if (spacer && scene && heroLeft && sticky && zoomOv) {
     window.addEventListener('scroll', function() {
-      if (!measured) { measure(); }
-      if (!measured) return;
+      var mobile = isMobileView();
+      if (!mobile) {
+        if (!measured) { measure(); }
+        if (!measured) return;
+      }
 
       var rect     = spacer.getBoundingClientRect();
       var scrolled = -rect.top;
       var total    = rect.height - window.innerHeight;
       var p        = Math.min(Math.max(scrolled / total, 0), 1);
 
-      var e1 = Math.min(Math.max(p / 0.35, 0), 1);
-      var slideEased = e1 < 0.5 ? 2*e1*e1 : 1 - Math.pow(-2*e1+2,2)/2;
+      if (mobile) {
+        var mZoom = Math.min(Math.max(p / 0.6, 0), 1);
+        var mEased = mZoom < 0.5 ? 2*mZoom*mZoom : 1 - Math.pow(-2*mZoom+2,2)/2;
 
-      var e2 = Math.min(Math.max((p - 0.15) / 0.55, 0), 1);
-      var zoomEased = e2 < 0.5 ? 2*e2*e2 : 1 - Math.pow(-2*e2+2,2)/2;
+        var mScale = 1 + mEased * 4;
+        var mTy = mEased * window.innerHeight * 0.15;
+        scene.style.transform = 'translateY(' + mTy + 'px) scale(' + mScale + ')';
+        scene.style.transformOrigin = '50% 35%';
 
-      var scale = 1 + zoomEased * 3;
-      var tx    = driftX * slideEased;
-      var ty    = driftY * slideEased;
+        var mTextFade = Math.min(p * 5, 1);
+        heroLeft.style.opacity = 1 - mTextFade;
+        heroLeft.style.pointerEvents = mTextFade > 0.1 ? 'none' : 'auto';
 
-      scene.style.transform       = 'translate(' + tx + 'px, ' + ty + 'px) scale(' + scale + ')';
-      scene.style.transformOrigin = '50% 34%';
+        var mOverlay = Math.min(Math.max((mEased - 0.75) / 0.25, 0), 1);
+        zoomOv.style.opacity = mOverlay;
+      } else {
+        var e1 = Math.min(Math.max(p / 0.35, 0), 1);
+        var slideEased = e1 < 0.5 ? 2*e1*e1 : 1 - Math.pow(-2*e1+2,2)/2;
 
-      var textFade = Math.min(p * 4, 1);
-      heroLeft.style.opacity       = 1 - textFade;
-      heroLeft.style.pointerEvents = textFade > 0.1 ? 'none' : 'auto';
+        var e2 = Math.min(Math.max((p - 0.15) / 0.55, 0), 1);
+        var zoomEased = e2 < 0.5 ? 2*e2*e2 : 1 - Math.pow(-2*e2+2,2)/2;
 
-      var overlayFade = Math.min(Math.max((zoomEased - 0.8) / 0.2, 0), 1);
-      zoomOv.style.opacity = overlayFade;
+        var scale = 1 + zoomEased * 3;
+        var tx    = driftX * slideEased;
+        var ty    = driftY * slideEased;
 
+        scene.style.transform       = 'translate(' + tx + 'px, ' + ty + 'px) scale(' + scale + ')';
+        scene.style.transformOrigin = '50% 34%';
+
+        var textFade = Math.min(p * 4, 1);
+        heroLeft.style.opacity       = 1 - textFade;
+        heroLeft.style.pointerEvents = textFade > 0.1 ? 'none' : 'auto';
+
+        var overlayFade = Math.min(Math.max((zoomEased - 0.8) / 0.2, 0), 1);
+        zoomOv.style.opacity = overlayFade;
+      }
+
+      var zE = mobile ? (Math.min(Math.max(p / 0.6, 0), 1)) : (function() { var e = Math.min(Math.max((p-0.15)/0.55,0),1); return e<0.5?2*e*e:1-Math.pow(-2*e+2,2)/2; })();
       if (imacInner) {
-        var g = zoomEased;
-        var ga = Math.round(0.4 + g * 0.5, 2);
-        var gb = Math.round(0.2 + g * 0.4, 2);
-        var gc = Math.round(0.12 + g * 0.3, 2);
+        var g = zE;
+        var ga = (0.4 + g * 0.5).toFixed(2);
+        var gb = (0.2 + g * 0.4).toFixed(2);
+        var gc = (0.12 + g * 0.3).toFixed(2);
         var r1 = Math.round(40 + g * 30);
         var r2 = Math.round(90 + g * 60);
         var r3 = Math.round(150 + g * 80);
