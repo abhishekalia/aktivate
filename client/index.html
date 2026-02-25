@@ -113,28 +113,45 @@ nav {
 }
 .nav-links a:hover { color:var(--term-green); }
 .keycap {
-  font-family:'DM Mono',monospace; font-weight:500;
+  font-family:'DM Mono',monospace; font-weight:700;
   letter-spacing:0.1em; text-transform:uppercase;
-  color:#000;
+  color:#0a0a0a;
   cursor:pointer; text-decoration:none;
   display:inline-flex; align-items:center; gap:10px;
   position:relative;
-  border-radius:0;
-  background:#33ff33;
-  border:1px solid #33ff33;
-  box-shadow:0 0 20px rgba(51,255,51,0.3), 0 0 40px rgba(51,255,51,0.1);
+  border-radius:8px;
+  background:linear-gradient(180deg, #44ff44 0%, #33ff33 40%, #22cc22 100%);
+  border-style:solid;
+  border-top:3px solid #66ff66;
+  border-left:4px solid #44ff44;
+  border-right:4px solid #1a8c1a;
+  border-bottom:6px solid #117711;
+  box-shadow:
+    0 4px 12px rgba(51,255,51,0.4),
+    0 2px 4px rgba(0,0,0,0.3),
+    inset 0 1px 0 rgba(255,255,255,0.2),
+    0 0 20px rgba(51,255,51,0.15);
   transform:translateY(0);
-  transition:all 0.15s ease;
+  transition:all 80ms ease;
 }
 .keycap:hover {
-  background:#66ff66;
-  box-shadow:0 0 30px rgba(51,255,51,0.5), 0 0 60px rgba(51,255,51,0.2);
-  transform:translateY(-1px);
+  background:linear-gradient(180deg, #55ff55 0%, #44ff44 40%, #33cc33 100%);
+  border-bottom-width:4px;
+  transform:translateY(2px);
+  box-shadow:
+    0 2px 8px rgba(51,255,51,0.5),
+    0 1px 3px rgba(0,0,0,0.25),
+    inset 0 1px 0 rgba(255,255,255,0.15),
+    0 0 30px rgba(51,255,51,0.25);
 }
 .keycap:active {
-  background:#1a8c1a;
-  transform:translateY(1px);
-  box-shadow:0 0 10px rgba(51,255,51,0.3);
+  background:linear-gradient(180deg, #22cc22 0%, #1a8c1a 40%, #117711 100%);
+  border-top-width:4px;
+  border-bottom-width:2px;
+  transform:translateY(4px);
+  box-shadow:
+    0 1px 4px rgba(51,255,51,0.3),
+    inset 0 1px 0 rgba(255,255,255,0.1);
 }
 .keycap-sm { font-size:11px; padding:8px 20px; }
 .keycap-lg { font-size:12px; padding:14px 38px; }
