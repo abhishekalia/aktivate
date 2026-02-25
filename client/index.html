@@ -1917,7 +1917,14 @@ body.terminal-active nav { opacity:0; pointer-events:none; }
       termOverlay.classList.add('dismissed');
       document.body.classList.remove('terminal-active');
       window.scrollTo(0, 0);
-      setTimeout(function() { termOverlay.style.display = 'none'; }, 800);
+      setTimeout(function() {
+        termOverlay.style.display = 'none';
+        window.scrollTo(0, 0);
+        window.dispatchEvent(new Event('resize'));
+        requestAnimationFrame(function() {
+          window.dispatchEvent(new Event('scroll'));
+        });
+      }, 800);
     }
 
     // ── SCROLL TO DISMISS ──────────────
