@@ -766,57 +766,87 @@ body:hover #cursor-glow {
 #mobile-hero {
   display:none;
 }
-#mobile-hero .mh-inner {
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  text-align:center;
-  padding:100px 24px 60px;
+#mobile-hero .mh-terminal {
   background:#000;
   min-height:100vh;
   min-height:100dvh;
-  justify-content:center;
-  gap:16px;
+  display:flex;
+  flex-direction:column;
+  padding:80px 16px 40px;
 }
-#mobile-hero .mh-imac {
-  width:55vw;
-  max-width:260px;
-  height:auto;
-  filter:drop-shadow(0 0 24px rgba(50,255,50,0.25)) drop-shadow(0 0 60px rgba(50,255,50,0.1));
-  margin-bottom:8px;
-}
-#mobile-hero .mh-label {
-  font-family:'DM Mono',monospace;
-  font-size:10px; font-weight:400;
-  letter-spacing:0.2em; text-transform:uppercase;
-  color:var(--term-green);
+#mobile-hero .mh-titlebar {
   display:flex; align-items:center; gap:6px;
+  padding:10px 14px;
+  background:#1a1a1a;
+  border:1px solid #333;
+  border-bottom:none;
+  border-radius:10px 10px 0 0;
 }
-#mobile-hero .mh-label::before {
-  content:'>'; font-size:12px;
-}
-#mobile-hero .mh-headline {
-  font-family:'Space Grotesk',sans-serif;
-  font-size:28px; font-weight:700;
-  line-height:1.15;
-  color:#e0e0e0;
-  margin:0;
-}
-#mobile-hero .mh-headline em {
-  font-style:normal;
-  color:var(--term-green);
-  text-shadow:0 0 20px rgba(51,255,51,0.4);
-}
-#mobile-hero .mh-desc {
+#mobile-hero .mh-dot { width:9px; height:9px; border-radius:50%; }
+#mobile-hero .mh-dot.red { background:#ff5f57; }
+#mobile-hero .mh-dot.yellow { background:#febc2e; }
+#mobile-hero .mh-dot.green { background:#28c840; }
+#mobile-hero .mh-titlebar-text {
+  flex:1; text-align:center;
   font-family:'DM Mono',monospace;
-  font-size:12px;
-  line-height:1.6;
-  color:#888;
-  max-width:340px;
-  margin:4px 0 8px;
+  font-size:10px; color:#666;
+  letter-spacing:0.05em;
+  margin-right:40px;
 }
-#mobile-hero .mh-cta {
-  margin-top:8px;
+#mobile-hero .mh-screen {
+  flex:1;
+  background:#0a0a0a;
+  border:1px solid #333;
+  border-top:none;
+  border-radius:0 0 10px 10px;
+  padding:28px 20px 32px;
+  font-family:'DM Mono',monospace;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+}
+#mobile-hero .mh-screen::after {
+  content:''; position:absolute; inset:0; pointer-events:none;
+  background:repeating-linear-gradient(0deg, rgba(0,0,0,0.08) 0px, rgba(0,0,0,0.08) 1px, transparent 1px, transparent 3px);
+  border-radius:0 0 10px 10px;
+}
+#mobile-hero .mh-line {
+  font-size:13px; line-height:1.7;
+  white-space:pre-wrap; word-break:break-word;
+}
+#mobile-hero .mh-line.dim { color:#1a8c1a; }
+#mobile-hero .mh-line.bright { color:#e0e0e0; font-weight:600; }
+#mobile-hero .mh-line.white { color:#999; font-size:12px; }
+#mobile-hero .mh-line.large { font-size:22px; font-weight:700; letter-spacing:0.04em; line-height:1.3; }
+#mobile-hero .mh-line.green-glow {
+  color:var(--term-green);
+  text-shadow:0 0 16px rgba(51,255,51,0.4);
+  font-weight:700;
+}
+#mobile-hero .mh-gap { height:20px; }
+#mobile-hero .mh-gap-sm { height:10px; }
+#mobile-hero .mh-term-btn {
+  display:block;
+  font-family:'DM Mono',monospace;
+  font-size:13px; font-weight:500;
+  color:#000; background:#33ff33;
+  border:none; padding:14px 24px;
+  text-align:center; text-decoration:none;
+  text-transform:uppercase; letter-spacing:0.06em;
+  transition:all 0.15s ease;
+}
+#mobile-hero .mh-term-btn:active {
+  background:#66ff66;
+  box-shadow:0 0 20px rgba(51,255,51,0.4);
+}
+#mobile-hero .mh-scroll-link {
+  display:block;
+  font-family:'DM Mono',monospace;
+  font-size:11px; color:#1a8c1a;
+  text-decoration:none;
+  letter-spacing:0.06em;
+  text-align:center;
+  padding:8px 0;
 }
 
 /* ── RESPONSIVE ────────────────────── */
@@ -1028,12 +1058,31 @@ body.terminal-active #mobile-hero { display:none; }
 <div id="cursor-glow"></div>
 
 <section id="mobile-hero">
-  <div class="mh-inner">
-    <img class="mh-imac" src="/imac-front.png" alt="iMac G3">
-    <div class="mh-label">The Growth Studio</div>
-    <h1 class="mh-headline">Build the Engine.<br>Build the <em>Face.</em></h1>
-    <p class="mh-desc">Automated ops. Automated presence. One studio for Insurance &amp; Logistics operators ready to scale.</p>
-    <a href="#cta" class="keycap keycap-lg mh-cta" data-testid="button-book-call-mobile"><span class="keycap-ico">&#9783;</span><span>Book a Free Call</span></a>
+  <div class="mh-terminal">
+    <div class="mh-titlebar">
+      <span class="mh-dot red"></span>
+      <span class="mh-dot yellow"></span>
+      <span class="mh-dot green"></span>
+      <span class="mh-titlebar-text">aktivate.ai</span>
+    </div>
+    <div class="mh-screen">
+      <div class="mh-line dim">AKTIVATE OS v1.0</div>
+      <div class="mh-line dim">SYSTEM READY</div>
+      <div class="mh-line dim">────────────────────────</div>
+      <div class="mh-gap"></div>
+      <div class="mh-line bright large">BUILD THE ENGINE.</div>
+      <div class="mh-line green-glow large">BUILD THE FACE.</div>
+      <div class="mh-gap"></div>
+      <div class="mh-line dim">// the growth studio</div>
+      <div class="mh-gap-sm"></div>
+      <div class="mh-line white">Automated ops. Automated presence.</div>
+      <div class="mh-line white">One studio for Insurance &amp; Logistics</div>
+      <div class="mh-line white">operators ready to scale.</div>
+      <div class="mh-gap"></div>
+      <a href="#cta" class="mh-term-btn" data-testid="button-book-call-mobile">[ BOOK A FREE CALL ]</a>
+      <div class="mh-gap-sm"></div>
+      <a href="#problem" class="mh-scroll-link">// scroll down</a>
+    </div>
   </div>
 </section>
 
