@@ -1688,9 +1688,6 @@ body.terminal-active nav { opacity:0; pointer-events:none; }
     // ── STEP 1: IDENTITY ───────────────
     function step1() {
       setStep(1, 6);
-      addLine('STEP 1 OF 6', 'dim');
-      addDivider();
-      addGap();
       addLine("WHAT'S YOUR WORLD?", 'white large');
       addGap(true);
       addButtons([
@@ -1728,9 +1725,6 @@ body.terminal-active nav { opacity:0; pointer-events:none; }
       setStep(stepNum, 6);
       var s = steps[idx];
 
-      addLine('STEP ' + stepNum + ' OF 6', 'dim');
-      addDivider();
-      addGap();
       addLine(s.q, 'white');
       addGap(true);
 
