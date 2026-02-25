@@ -1,6 +1,6 @@
 import { Suspense, useRef, useMemo, useState, useEffect, useCallback } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { useTexture } from "@react-three/drei";
+import { RoundedBox } from "@react-three/drei";
 import { EffectComposer, Noise, Vignette } from "@react-three/postprocessing";
 import { useSpring, animated } from "@react-spring/three";
 import * as THREE from "three";
@@ -60,28 +60,90 @@ function SynthwaveGrid() {
   );
 }
 
-function IMacBillboard({ springProps }: { springProps: any }) {
-  const texture = useTexture("/imac-front.png");
+function ScreenGlow() {
+  const matRef = useRef<THREE.ShaderMaterial>(null);
+  const shader = useMemo(() => ({
+    uniforms: {
+      uTime: { value: 0 },
+    },
+    vertexShader: `
+      varying vec2 vUv;
+      void main() {
+        vUv = uv;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }
+    `,
+    fragmentShader: `
+      uniform float uTime;
+      varying vec2 vUv;
+      void main() {
+        vec2 center = vUv - 0.5;
+        float vignette = 1.0 - dot(center, center) * 1.8;
+        float scanline = 0.95 + 0.05 * sin(vUv.y * 120.0 + uTime * 2.0);
+        float flicker = 0.97 + 0.03 * sin(uTime * 8.0);
+        float g = 0.12 * vignette * scanline * flicker;
+        gl_FragColor = vec4(0.1, 1.0, 0.3, g);
+      }
+    `,
+  }), []);
 
-  const aspect = useMemo(() => {
-    if (texture.image) {
-      return texture.image.width / texture.image.height;
-    }
-    return 1;
-  }, [texture]);
-
-  const height = 2.6;
-  const width = height * aspect;
+  useFrame((state) => {
+    if (matRef.current) matRef.current.uniforms.uTime.value = state.clock.elapsedTime;
+  });
 
   return (
-    <animated.mesh
-      position={[0, -0.2, 0]}
+    <shaderMaterial ref={matRef} args={[shader]} transparent depthWrite={false} />
+  );
+}
+
+function IMac3D({ springProps }: { springProps: any }) {
+  const groupRef = useRef<THREE.Group>(null);
+
+  return (
+    <animated.group
+      ref={groupRef}
+      position={[0, -0.1, 0]}
       rotation-x={springProps.rotX}
       rotation-y={springProps.rotY}
     >
-      <planeGeometry args={[width, height]} />
-      <meshBasicMaterial map={texture} transparent alphaTest={0.01} />
-    </animated.mesh>
+      <RoundedBox args={[2.4, 2.0, 0.9]} radius={0.18} smoothness={4} position={[0, 0.15, 0]}>
+        <meshStandardMaterial color="#b8d8e8" roughness={0.35} metalness={0.1} />
+      </RoundedBox>
+
+      <RoundedBox args={[2.0, 1.4, 0.05]} radius={0.04} smoothness={2} position={[0, 0.35, 0.44]}>
+        <meshStandardMaterial color="#1a1a1a" roughness={0.9} />
+      </RoundedBox>
+
+      <mesh position={[0, 0.35, 0.47]}>
+        <planeGeometry args={[1.85, 1.25]} />
+        <ScreenGlow />
+      </mesh>
+
+      <mesh position={[0, 0.35, 0.465]}>
+        <planeGeometry args={[1.85, 1.25]} />
+        <meshBasicMaterial color="#0a1a0a" transparent opacity={0.85} />
+      </mesh>
+
+      <RoundedBox args={[2.4, 0.5, 0.9]} radius={0.12} smoothness={3} position={[0, -0.95, 0]}>
+        <meshStandardMaterial color="#88ccdd" roughness={0.3} metalness={0.05} transparent opacity={0.7} />
+      </RoundedBox>
+
+      <mesh position={[-0.65, -0.95, 0.46]}>
+        <cylinderGeometry args={[0.12, 0.12, 0.04, 16]} />
+        <meshStandardMaterial color="#555" roughness={0.5} metalness={0.3} />
+      </mesh>
+      <mesh position={[0.65, -0.95, 0.46]}>
+        <cylinderGeometry args={[0.12, 0.12, 0.04, 16]} />
+        <meshStandardMaterial color="#555" roughness={0.5} metalness={0.3} />
+      </mesh>
+
+      <mesh position={[0, -0.62, 0.46]}>
+        <boxGeometry args={[0.6, 0.03, 0.02]} />
+        <meshStandardMaterial color="#aaa" roughness={0.4} metalness={0.2} />
+      </mesh>
+
+      <pointLight position={[0, 0.35, 1.5]} color="#33ff33" intensity={0.6} distance={4} decay={2} />
+    </animated.group>
   );
 }
 
@@ -165,7 +227,7 @@ function Scene() {
       <ambientLight intensity={0.5} />
       <SynthwaveGrid />
       <Suspense fallback={null}>
-        <IMacBillboard springProps={springProps} />
+        <IMac3D springProps={springProps} />
       </Suspense>
       <FloatingParticles />
       <EffectComposer>
