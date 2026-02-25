@@ -1,36 +1,7 @@
 import { Suspense, useRef, useMemo, useState, useEffect } from "react";
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { Grid } from "@react-three/drei";
-import { EffectComposer, Bloom, Noise, Vignette } from "@react-three/postprocessing";
+import { Canvas, useFrame } from "@react-three/fiber";
+import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import * as THREE from "three";
-
-function ScrollingGrid() {
-  const groupRef = useRef<THREE.Group>(null);
-
-  useFrame((state) => {
-    if (groupRef.current) {
-      groupRef.current.position.z = (state.clock.elapsedTime * 2.5) % 2;
-    }
-  });
-
-  return (
-    <group ref={groupRef}>
-      <Grid
-        args={[100, 100]}
-        cellSize={2}
-        cellThickness={1.4}
-        cellColor="#33ff33"
-        sectionSize={8}
-        sectionThickness={2}
-        sectionColor="#44ff66"
-        fadeDistance={50}
-        fadeStrength={1.2}
-        infiniteGrid
-        position={[0, -2, 0]}
-      />
-    </group>
-  );
-}
 
 function Starfield() {
   const count = 300;
@@ -76,35 +47,22 @@ function Starfield() {
   );
 }
 
-function SceneSetup() {
-  const { scene } = useThree();
-  useEffect(() => {
-    scene.fog = new THREE.FogExp2(0x000000, 0.015);
-  }, [scene]);
-  return null;
-}
-
 function Scene() {
   return (
     <>
-      <SceneSetup />
-
       <pointLight position={[0, 8, -5]} color="#7700ff" intensity={2} distance={30} decay={1.5} />
       <pointLight position={[0, -1, 5]} color="#33ff33" intensity={0.5} distance={15} decay={2} />
       <ambientLight intensity={0.08} color="#220033" />
 
-      <ScrollingGrid />
       <Starfield />
 
       <EffectComposer>
         <Bloom
-          intensity={1.2}
-          luminanceThreshold={0.1}
+          intensity={1.5}
+          luminanceThreshold={0.05}
           luminanceSmoothing={0.4}
           mipmapBlur
         />
-        <Noise opacity={0.06} />
-        <Vignette eskil={false} offset={0.05} darkness={0.65} />
       </EffectComposer>
     </>
   );
