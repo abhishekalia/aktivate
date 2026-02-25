@@ -60,28 +60,35 @@ function RetroMonitor({ springProps }: { springProps: any }) {
       scale={1.1}
     >
       <RoundedBox args={[2.8, 2.1, 0.7]} radius={0.12} smoothness={4} position={[0, 0, 0]}>
-        <meshStandardMaterial color="#111111" roughness={0.7} metalness={0.15} />
+        <meshStandardMaterial color="#2a2a2a" roughness={0.5} metalness={0.25} />
       </RoundedBox>
 
-      <RoundedBox args={[2.5, 1.75, 0.02]} radius={0.04} smoothness={2} position={[0, 0.02, 0.36]}>
-        <meshStandardMaterial color="#050505" roughness={0.95} />
-      </RoundedBox>
+      <mesh position={[0, 0, 0.351]}>
+        <planeGeometry args={[2.5, 1.75]} />
+        <meshBasicMaterial color="#050a05" />
+      </mesh>
 
-      <mesh position={[1.05, -0.78, 0.36]}>
-        <circleGeometry args={[0.03, 12]} />
+      <mesh position={[0, 0, 0.355]}>
+        <planeGeometry args={[2.5, 1.75]} />
+        <meshBasicMaterial color="#33ff33" transparent opacity={0.03} />
+      </mesh>
+
+      <mesh position={[1.1, -0.82, 0.36]}>
+        <circleGeometry args={[0.035, 12]} />
         <meshBasicMaterial color="#33ff33" />
       </mesh>
 
       <mesh position={[0, -1.15, 0]}>
         <boxGeometry args={[0.25, 0.25, 0.25]} />
-        <meshStandardMaterial color="#111" roughness={0.7} metalness={0.15} />
+        <meshStandardMaterial color="#2a2a2a" roughness={0.5} metalness={0.25} />
       </mesh>
       <mesh position={[0, -1.29, 0.02]}>
         <boxGeometry args={[0.8, 0.04, 0.45]} />
-        <meshStandardMaterial color="#181818" roughness={0.6} metalness={0.1} />
+        <meshStandardMaterial color="#333" roughness={0.4} metalness={0.2} />
       </mesh>
 
-      <pointLight position={[0, 0, 2.5]} color="#33ff33" intensity={0.5} distance={6} decay={2} />
+      <pointLight position={[0, 0, 2]} color="#33ff33" intensity={1.2} distance={5} decay={2} />
+      <pointLight position={[0, 0.5, 3]} color="#33ff33" intensity={0.3} distance={6} decay={2} />
     </animated.group>
   );
 }
@@ -161,9 +168,10 @@ function Scene() {
 
   return (
     <>
-      <color attach="background" args={["#030305"]} />
-      <ambientLight intensity={0.3} />
-      <directionalLight position={[2, 3, 4]} intensity={0.2} color="#ffffff" />
+      <color attach="background" args={["#050508"]} />
+      <ambientLight intensity={0.5} />
+      <directionalLight position={[2, 3, 5]} intensity={0.4} color="#ffffff" />
+      <directionalLight position={[-1, 1, 3]} intensity={0.15} color="#33ff33" />
       <SynthwaveGrid />
       <Suspense fallback={null}>
         <RetroMonitor springProps={springProps} />
