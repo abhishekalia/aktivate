@@ -69,40 +69,35 @@ body::after {
   overflow:hidden;
   background:#0d0015;
 }
-#synthwave-bg .sw-sky {
-  position:absolute;
-  top:0; left:0; right:0; height:50%;
-  background:linear-gradient(180deg, #0d0015 0%, #0a0020 40%, #110025 70%, #1a003a 100%);
-}
 #synthwave-bg .sw-floor {
   position:absolute;
-  bottom:0; left:0; right:0; height:55%;
-  perspective:300px;
-  perspective-origin:50% 0%;
+  inset:0;
+  perspective:200px;
+  perspective-origin:50% 35%;
   overflow:hidden;
 }
 #synthwave-bg .sw-grid {
   position:absolute;
-  top:0; left:-50%; right:-50%;
-  width:200%; height:300%;
-  transform:rotateX(45deg);
+  top:10%; left:-50%;
+  width:200%; height:200%;
+  transform:rotateX(55deg);
   transform-origin:50% 0%;
   background-image:
-    repeating-linear-gradient(90deg, transparent, transparent calc(50% - 1px), rgba(51,255,51,0.25) calc(50% - 1px), rgba(51,255,51,0.25) calc(50% + 1px), transparent calc(50% + 1px)),
-    repeating-linear-gradient(0deg, transparent, transparent 59px, rgba(51,255,51,0.2) 59px, rgba(51,255,51,0.2) 61px, transparent 61px);
+    repeating-linear-gradient(90deg, transparent, transparent calc(50% - 1px), rgba(51,255,51,0.2) calc(50% - 1px), rgba(51,255,51,0.2) calc(50% + 1px), transparent calc(50% + 1px)),
+    repeating-linear-gradient(0deg, transparent, transparent 59px, rgba(51,255,51,0.18) 59px, rgba(51,255,51,0.18) 61px, transparent 61px);
   background-size:80px 60px;
   animation:sw-scroll 2s linear infinite;
 }
 #synthwave-bg .sw-glow {
   position:absolute;
-  bottom:44%; left:0; right:0; height:30px;
-  background:radial-gradient(ellipse 80% 100% at 50% 100%, rgba(51,255,51,0.15) 0%, transparent 70%);
-  filter:blur(10px);
+  top:33%; left:0; right:0; height:40px;
+  background:radial-gradient(ellipse 90% 100% at 50% 50%, rgba(51,255,51,0.12) 0%, transparent 70%);
+  filter:blur(12px);
 }
 #synthwave-bg .sw-vignette {
   position:absolute;
   inset:0;
-  background:radial-gradient(ellipse 70% 60% at 50% 50%, transparent 0%, rgba(13,0,21,0.7) 100%);
+  background:radial-gradient(ellipse 80% 70% at 50% 50%, transparent 0%, rgba(13,0,21,0.6) 100%);
 }
 @keyframes sw-scroll {
   0% { background-position:0 0; }
@@ -1043,7 +1038,6 @@ body.terminal-active #mobile-hero { display:none; }
 <body class="terminal-active">
 
 <div id="synthwave-bg">
-  <div class="sw-sky"></div>
   <div class="sw-floor">
     <div class="sw-grid"></div>
   </div>
