@@ -771,7 +771,7 @@ body:hover #cursor-glow {
     padding:80px 20px 40px;
     gap:30px;
   }
-  #hero-spacer { height:100vh; }
+  #hero-spacer { height:300vh; }
   #hero-left { text-align:center; max-width:100%; }
   #imac-scene { max-width:300px; }
   .hero-label, .hero-btns, .hero-stats { justify-content:center; }
@@ -1352,7 +1352,7 @@ body.terminal-active nav { opacity:0; pointer-events:none; }
 
   window.addEventListener('resize', measure);
 
-  if (!isMobile && spacer && scene && heroLeft && sticky && zoomOv) {
+  if (spacer && scene && heroLeft && sticky && zoomOv) {
     window.addEventListener('scroll', function() {
       if (!measured) return;
 
