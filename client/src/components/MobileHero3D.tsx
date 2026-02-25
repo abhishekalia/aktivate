@@ -16,17 +16,17 @@ function ScrollingGrid() {
   return (
     <group ref={groupRef}>
       <Grid
-        args={[80, 80]}
+        args={[100, 100]}
         cellSize={2}
-        cellThickness={1.2}
+        cellThickness={1.4}
         cellColor="#33ff33"
-        sectionSize={6}
-        sectionThickness={1.8}
+        sectionSize={8}
+        sectionThickness={2}
         sectionColor="#44ff66"
-        fadeDistance={40}
-        fadeStrength={1.5}
+        fadeDistance={50}
+        fadeStrength={1.2}
         infiniteGrid
-        position={[0, 0, 0]}
+        position={[0, -2, 0]}
       />
     </group>
   );
@@ -79,7 +79,7 @@ function Starfield() {
 function SceneSetup() {
   const { scene } = useThree();
   useEffect(() => {
-    scene.fog = new THREE.FogExp2(0x0d0015, 0.025);
+    scene.fog = new THREE.FogExp2(0x0d0015, 0.018);
   }, [scene]);
   return null;
 }
@@ -148,12 +148,12 @@ export default function MobileHero3D() {
   return (
     <div style={ui.container} data-testid="mobile-hero-3d">
       <Canvas
-        camera={{ position: [0, 1.8, 6], fov: 65, near: 0.1, far: 100, rotation: [-0.15, 0, 0] }}
+        camera={{ position: [0, 3, 8], fov: 70, near: 0.1, far: 100 }}
         dpr={[1, 1.5]}
         gl={{ antialias: false, alpha: false }}
         style={ui.canvas}
         onCreated={({ camera }) => {
-          camera.lookAt(0, 0.5, -10);
+          camera.lookAt(0, -1, -20);
         }}
       >
         <Scene />
@@ -270,7 +270,7 @@ const ui: Record<string, React.CSSProperties> = {
   },
   content: {
     position: "absolute",
-    bottom: 20,
+    top: 60,
     left: 20, right: 20,
     zIndex: 10,
   },
