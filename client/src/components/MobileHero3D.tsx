@@ -24,15 +24,17 @@ function SynthwaveGrid() {
       uniform vec3 uColor;
       varying vec3 vPos;
       void main() {
+        float scrollZ = vPos.z + uTime * 1.5;
         float gridX = abs(fract(vPos.x * 2.0) - 0.5);
-        float gridZ = abs(fract(vPos.z * 2.0) - 0.5);
-        float lineX = smoothstep(0.02, 0.0, gridX);
-        float lineZ = smoothstep(0.02, 0.0, gridZ);
+        float gridZ = abs(fract(scrollZ * 2.0) - 0.5);
+        float lineX = smoothstep(0.03, 0.0, gridX);
+        float lineZ = smoothstep(0.03, 0.0, gridZ);
         float grid = max(lineX, lineZ);
-        float fade = smoothstep(8.0, 1.0, length(vPos.xz));
-        float pulse = 0.6 + 0.4 * sin(uTime * 0.5 + vPos.z * 0.5);
-        float alpha = grid * fade * pulse * 0.35;
-        gl_FragColor = vec4(uColor, alpha);
+        float fade = smoothstep(10.0, 0.5, length(vec2(vPos.x, scrollZ)));
+        float glow = grid * fade * 0.5;
+        float horizon = smoothstep(-0.5, 2.0, vPos.z);
+        glow *= horizon;
+        gl_FragColor = vec4(uColor, glow);
       }
     `,
   }), []);
@@ -54,7 +56,7 @@ function SynthwaveGrid() {
 function RetroMonitor({ springProps }: { springProps: any }) {
   return (
     <animated.group
-      position={[0, 0, 0]}
+      position={[0, 0.4, 0]}
       rotation-x={springProps.rotX}
       rotation-y={springProps.rotY}
       scale={1.1}
@@ -239,10 +241,10 @@ function CRTScreen() {
 const crt: Record<string, React.CSSProperties> = {
   wrapper: {
     position: "absolute",
-    top: "8%",
-    left: "8%",
-    right: "8%",
-    bottom: "30%",
+    top: "5%",
+    left: "10%",
+    right: "10%",
+    bottom: "34%",
     zIndex: 5,
     overflow: "hidden",
     borderRadius: 4,
@@ -441,7 +443,7 @@ const styles: Record<string, React.CSSProperties> = {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "flex-end",
-    padding: "0 20px 18px",
+    padding: "0 20px 24px",
   },
   gameNav: {
     display: "flex",
