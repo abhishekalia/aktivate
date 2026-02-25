@@ -762,30 +762,69 @@ body:hover #cursor-glow {
   opacity:1;
 }
 
+/* ── MOBILE HERO ──────────────────── */
+#mobile-hero {
+  display:none;
+}
+#mobile-hero .mh-inner {
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  text-align:center;
+  padding:100px 24px 60px;
+  background:#000;
+  min-height:100vh;
+  min-height:100dvh;
+  justify-content:center;
+  gap:16px;
+}
+#mobile-hero .mh-imac {
+  width:55vw;
+  max-width:260px;
+  height:auto;
+  filter:drop-shadow(0 0 24px rgba(50,255,50,0.25)) drop-shadow(0 0 60px rgba(50,255,50,0.1));
+  margin-bottom:8px;
+}
+#mobile-hero .mh-label {
+  font-family:'DM Mono',monospace;
+  font-size:10px; font-weight:400;
+  letter-spacing:0.2em; text-transform:uppercase;
+  color:var(--term-green);
+  display:flex; align-items:center; gap:6px;
+}
+#mobile-hero .mh-label::before {
+  content:'>'; font-size:12px;
+}
+#mobile-hero .mh-headline {
+  font-family:'Space Grotesk',sans-serif;
+  font-size:28px; font-weight:700;
+  line-height:1.15;
+  color:#e0e0e0;
+  margin:0;
+}
+#mobile-hero .mh-headline em {
+  font-style:normal;
+  color:var(--term-green);
+  text-shadow:0 0 20px rgba(51,255,51,0.4);
+}
+#mobile-hero .mh-desc {
+  font-family:'DM Mono',monospace;
+  font-size:12px;
+  line-height:1.6;
+  color:#888;
+  max-width:340px;
+  margin:4px 0 8px;
+}
+#mobile-hero .mh-cta {
+  margin-top:8px;
+}
+
 /* ── RESPONSIVE ────────────────────── */
 @media(max-width:960px) {
+  #mobile-hero { display:block; }
+  #hero-spacer { display:none !important; }
+  #zoom-overlay { display:none !important; }
   nav { padding:0 20px; }
-  .nav-links { display:none; }
-  #hero-spacer { height:300vh; }
-  #hero-sticky {
-    grid-template-columns:1fr;
-    padding:80px 20px 40px;
-    gap:20px;
-    justify-items:center;
-  }
-  #hero-left {
-    text-align:center; max-width:100%;
-    order:2;
-  }
-  #hero-left .hero-desc { display:none; }
-  #hero-left .hero-stats { display:none; }
-  #hero-left .hero-btns { display:none; }
-  .hero-label { font-size:10px; margin-bottom:4px; }
-  .hero-headline { font-size:26px; line-height:1.2; text-align:center; margin-bottom:0; }
-  #imac-scene {
-    max-width:60vw;
-    order:1;
-  }
   .s-wrap, .sc-hdr { padding:0 20px; }
   .sc-rail { padding-left:20px; }
   .prob-grid, .pillars, .proc-steps, .res-grid,
@@ -800,6 +839,7 @@ body:hover #cursor-glow {
 /* ── TERMINAL GAME ────────────────── */
 body.terminal-active { overflow:hidden; }
 body.terminal-active nav { opacity:0; pointer-events:none; }
+body.terminal-active #mobile-hero { display:none; }
 
 #terminal-overlay {
   position:fixed; inset:0; z-index:9999;
@@ -986,6 +1026,16 @@ body.terminal-active nav { opacity:0; pointer-events:none; }
 <script type="module" src="/src/main.tsx"></script>
 
 <div id="cursor-glow"></div>
+
+<section id="mobile-hero">
+  <div class="mh-inner">
+    <img class="mh-imac" src="/imac-front.png" alt="iMac G3">
+    <div class="mh-label">The Growth Studio</div>
+    <h1 class="mh-headline">Build the Engine.<br>Build the <em>Face.</em></h1>
+    <p class="mh-desc">Automated ops. Automated presence. One studio for Insurance &amp; Logistics operators ready to scale.</p>
+    <a href="#cta" class="keycap keycap-lg mh-cta" data-testid="button-book-call-mobile"><span class="keycap-ico">&#9783;</span><span>Book a Free Call</span></a>
+  </div>
+</section>
 
 <div id="hero-spacer">
   <div id="hero-sticky">
@@ -1369,57 +1419,37 @@ body.terminal-active nav { opacity:0; pointer-events:none; }
 
   if (spacer && scene && heroLeft && sticky && zoomOv) {
     window.addEventListener('scroll', function() {
-      var mobile = isMobileView();
-      if (!mobile) {
-        if (!measured) { measure(); }
-        if (!measured) return;
-      }
+      if (isMobileView()) return;
+      if (!measured) { measure(); }
+      if (!measured) return;
 
       var rect     = spacer.getBoundingClientRect();
       var scrolled = -rect.top;
       var total    = rect.height - window.innerHeight;
       var p        = Math.min(Math.max(scrolled / total, 0), 1);
 
-      if (mobile) {
-        var mZoom = Math.min(Math.max(p / 0.6, 0), 1);
-        var mEased = mZoom < 0.5 ? 2*mZoom*mZoom : 1 - Math.pow(-2*mZoom+2,2)/2;
+      var e1 = Math.min(Math.max(p / 0.35, 0), 1);
+      var slideEased = e1 < 0.5 ? 2*e1*e1 : 1 - Math.pow(-2*e1+2,2)/2;
 
-        var mScale = 1 + mEased * 4;
-        var mTy = mEased * window.innerHeight * 0.15;
-        scene.style.transform = 'translateY(' + mTy + 'px) scale(' + mScale + ')';
-        scene.style.transformOrigin = '50% 35%';
+      var e2 = Math.min(Math.max((p - 0.15) / 0.55, 0), 1);
+      var zoomEased = e2 < 0.5 ? 2*e2*e2 : 1 - Math.pow(-2*e2+2,2)/2;
 
-        var mTextFade = Math.min(p * 5, 1);
-        heroLeft.style.opacity = 1 - mTextFade;
-        heroLeft.style.pointerEvents = mTextFade > 0.1 ? 'none' : 'auto';
+      var scale = 1 + zoomEased * 3;
+      var tx    = driftX * slideEased;
+      var ty    = driftY * slideEased;
 
-        var mOverlay = Math.min(Math.max((mEased - 0.75) / 0.25, 0), 1);
-        zoomOv.style.opacity = mOverlay;
-      } else {
-        var e1 = Math.min(Math.max(p / 0.35, 0), 1);
-        var slideEased = e1 < 0.5 ? 2*e1*e1 : 1 - Math.pow(-2*e1+2,2)/2;
+      scene.style.transform       = 'translate(' + tx + 'px, ' + ty + 'px) scale(' + scale + ')';
+      scene.style.transformOrigin = '50% 34%';
 
-        var e2 = Math.min(Math.max((p - 0.15) / 0.55, 0), 1);
-        var zoomEased = e2 < 0.5 ? 2*e2*e2 : 1 - Math.pow(-2*e2+2,2)/2;
+      var textFade = Math.min(p * 4, 1);
+      heroLeft.style.opacity       = 1 - textFade;
+      heroLeft.style.pointerEvents = textFade > 0.1 ? 'none' : 'auto';
 
-        var scale = 1 + zoomEased * 3;
-        var tx    = driftX * slideEased;
-        var ty    = driftY * slideEased;
+      var overlayFade = Math.min(Math.max((zoomEased - 0.8) / 0.2, 0), 1);
+      zoomOv.style.opacity = overlayFade;
 
-        scene.style.transform       = 'translate(' + tx + 'px, ' + ty + 'px) scale(' + scale + ')';
-        scene.style.transformOrigin = '50% 34%';
-
-        var textFade = Math.min(p * 4, 1);
-        heroLeft.style.opacity       = 1 - textFade;
-        heroLeft.style.pointerEvents = textFade > 0.1 ? 'none' : 'auto';
-
-        var overlayFade = Math.min(Math.max((zoomEased - 0.8) / 0.2, 0), 1);
-        zoomOv.style.opacity = overlayFade;
-      }
-
-      var zE = mobile ? (Math.min(Math.max(p / 0.6, 0), 1)) : (function() { var e = Math.min(Math.max((p-0.15)/0.55,0),1); return e<0.5?2*e*e:1-Math.pow(-2*e+2,2)/2; })();
       if (imacInner) {
-        var g = zE;
+        var g = zoomEased;
         var ga = (0.4 + g * 0.5).toFixed(2);
         var gb = (0.2 + g * 0.4).toFixed(2);
         var gc = (0.12 + g * 0.3).toFixed(2);
