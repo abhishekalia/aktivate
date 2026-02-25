@@ -9,7 +9,7 @@
 <meta property="og:description" content="AI automation and creative studio for Insurance & Logistics operators ready to scale.">
 <meta property="og:type" content="website">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Instrument+Serif:ital@0;1&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Instrument+Serif:ital@0;1&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
 
 <style>
 :root {
@@ -807,9 +807,149 @@ body:hover #cursor-glow {
   .about-grid { gap:40px; }
   .about-frame { margin:0 auto; }
 }
+
+/* ── TERMINAL GAME ────────────────── */
+body.terminal-active { overflow:hidden; }
+body.terminal-active nav { opacity:0; pointer-events:none; }
+
+#terminal-overlay {
+  position:fixed; inset:0; z-index:9999;
+  background:#000; color:#33ff33;
+  font-family:'DM Mono', monospace; font-size:14px; font-weight:400;
+  overflow-y:auto; padding:48px;
+  display:flex; align-items:flex-start; justify-content:center;
+  transition:transform 0.7s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s ease;
+}
+#terminal-overlay.dismissed {
+  transform:translateY(-100%);
+  opacity:0;
+  pointer-events:none;
+}
+#terminal-overlay::after {
+  content:''; position:fixed; inset:0; z-index:1; pointer-events:none;
+  background:repeating-linear-gradient(
+    0deg,
+    rgba(0,0,0,0.15) 0px,
+    rgba(0,0,0,0.15) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+}
+#terminal-content {
+  position:relative; z-index:2;
+  max-width:640px; width:100%;
+  padding-bottom:80px;
+}
+.term-line {
+  margin-bottom:4px;
+  line-height:1.6;
+  white-space:pre-wrap;
+  word-break:break-word;
+}
+.term-line.dim { color:#1a8c1a; }
+.term-line.bright { color:#66ff66; font-weight:500; }
+.term-line.white { color:#e0e0e0; }
+.term-line.red { color:#ff4444; }
+.term-line.amber { color:#ffaa00; }
+.term-line.large {
+  font-size:22px; font-weight:500; letter-spacing:0.05em;
+}
+.term-line.xl {
+  font-size:28px; font-weight:500; letter-spacing:0.08em;
+  margin-top:8px; margin-bottom:8px;
+}
+.term-gap { height:20px; }
+.term-gap-sm { height:10px; }
+
+@keyframes blink-cursor {
+  0%, 100% { opacity:1; }
+  50% { opacity:0; }
+}
+.term-cursor::after {
+  content:'█'; animation:blink-cursor 0.8s step-end infinite;
+}
+
+.term-progress-bar {
+  display:inline-block;
+  color:#33ff33;
+  font-family:'DM Mono', monospace;
+}
+
+.term-btn-row {
+  display:flex; gap:12px; flex-wrap:wrap;
+  margin-top:12px; margin-bottom:8px;
+}
+.term-btn {
+  font-family:'DM Mono', monospace; font-size:13px; font-weight:500;
+  color:#33ff33; background:transparent;
+  border:1px solid #33ff33; padding:10px 24px;
+  cursor:pointer; text-transform:uppercase;
+  letter-spacing:0.1em;
+  transition:all 0.15s ease;
+}
+.term-btn:hover {
+  background:#33ff33; color:#000;
+  box-shadow:0 0 12px rgba(51,255,51,0.3);
+}
+.term-btn.primary {
+  background:#33ff33; color:#000; font-weight:500;
+}
+.term-btn.primary:hover {
+  background:#66ff66;
+  box-shadow:0 0 20px rgba(51,255,51,0.4);
+}
+
+.term-divider {
+  color:#1a8c1a; margin:4px 0;
+}
+
+.term-error-block {
+  border-left:2px solid #ff4444;
+  padding:8px 0 8px 16px;
+  margin:12px 0;
+}
+.term-error-block .term-line { margin-bottom:2px; }
+
+.term-score-row {
+  display:flex; gap:8px; align-items:center;
+  margin-bottom:2px;
+}
+.term-score-label { min-width:120px; color:#33ff33; }
+.term-score-val { color:#ff4444; font-weight:500; }
+.term-score-val.ok { color:#33ff33; }
+
+.term-scroll-link {
+  color:#1a8c1a; cursor:pointer;
+  font-size:12px; margin-top:16px;
+  display:inline-block;
+  transition:color 0.2s;
+  border:none; background:none;
+  font-family:'DM Mono', monospace;
+  letter-spacing:0.05em;
+}
+.term-scroll-link:hover { color:#33ff33; }
+
+@keyframes flicker {
+  0%, 100% { opacity:1; }
+  50% { opacity:0.3; }
+}
+.term-flicker {
+  animation:flicker 0.1s ease infinite;
+}
+
+@media (max-width:600px) {
+  #terminal-overlay { padding:24px 16px; font-size:12px; }
+  .term-line.large { font-size:18px; }
+  .term-line.xl { font-size:22px; }
+  .term-btn { padding:8px 16px; font-size:11px; }
+}
 </style>
 </head>
-<body>
+<body class="terminal-active">
+
+<div id="terminal-overlay">
+  <div id="terminal-content"></div>
+</div>
 
 <nav>
   <a class="nav-logo" href="#"><div class="logo-dot"></div>aktivate</a>
@@ -1299,6 +1439,413 @@ body:hover #cursor-glow {
       } catch(err) {}
     });
   });
+
+  // ── TERMINAL GAME ──────────────────────────
+  var termOverlay = document.getElementById('terminal-overlay');
+  var termContent = document.getElementById('terminal-content');
+  if (termOverlay && termContent) {
+    var gameState = { identity: null, q2: null, q3: null, q4: null, q5: null };
+    var typeSpeed = 25;
+
+    function scrollTerminal() {
+      termOverlay.scrollTop = termOverlay.scrollHeight;
+    }
+
+    function addLine(text, classes, skipScroll) {
+      var el = document.createElement('div');
+      el.className = 'term-line' + (classes ? ' ' + classes : '');
+      el.textContent = text || '';
+      termContent.appendChild(el);
+      if (!skipScroll) scrollTerminal();
+      return el;
+    }
+
+    function addGap(small) {
+      var el = document.createElement('div');
+      el.className = small ? 'term-gap-sm' : 'term-gap';
+      termContent.appendChild(el);
+      return el;
+    }
+
+    function addDivider() {
+      var el = addLine('─────────────────────────', 'dim');
+      return el;
+    }
+
+    function typewriteLine(text, classes, cb) {
+      var el = document.createElement('div');
+      el.className = 'term-line' + (classes ? ' ' + classes : '');
+      el.textContent = '';
+      termContent.appendChild(el);
+      var i = 0;
+      var interval = setInterval(function() {
+        if (i < text.length) {
+          el.textContent += text[i];
+          i++;
+          scrollTerminal();
+        } else {
+          clearInterval(interval);
+          if (cb) cb(el);
+        }
+      }, typeSpeed);
+    }
+
+    function addButtons(btns) {
+      var row = document.createElement('div');
+      row.className = 'term-btn-row';
+      btns.forEach(function(b) {
+        var btn = document.createElement('button');
+        btn.className = 'term-btn' + (b.primary ? ' primary' : '');
+        btn.textContent = b.label;
+        btn.setAttribute('data-testid', 'term-btn-' + (b.id || b.label.toLowerCase().replace(/\s+/g, '-')));
+        btn.addEventListener('click', function() {
+          row.querySelectorAll('.term-btn').forEach(function(bb) {
+            bb.disabled = true;
+            bb.style.opacity = '0.3';
+            bb.style.pointerEvents = 'none';
+          });
+          btn.style.opacity = '1';
+          btn.style.background = '#33ff33';
+          btn.style.color = '#000';
+          if (b.onClick) b.onClick();
+        });
+        row.appendChild(btn);
+      });
+      termContent.appendChild(row);
+      scrollTerminal();
+    }
+
+    function animateProgressBar(cb) {
+      var el = document.createElement('div');
+      el.className = 'term-line';
+      termContent.appendChild(el);
+      var chars = 20;
+      var filled = 0;
+      var interval = setInterval(function() {
+        filled++;
+        var bar = '';
+        for (var j = 0; j < chars; j++) {
+          bar += j < filled ? '█' : '░';
+        }
+        var pct = Math.round((filled / chars) * 100);
+        el.textContent = '[ ' + bar + ' ] ' + pct + '%';
+        scrollTerminal();
+        if (filled >= chars) {
+          clearInterval(interval);
+          if (cb) setTimeout(cb, 300);
+        }
+      }, 80);
+    }
+
+    function runPhase1() {
+      typewriteLine('AKTIVATE OS v1.0', 'bright', function() {
+        setTimeout(function() {
+          typewriteLine('INITIALIZING...', 'dim', function() {
+            addGap(true);
+            setTimeout(function() {
+              animateProgressBar(function() {
+                addGap(true);
+                typewriteLine('SCANNING ENVIRONMENT...', 'dim', function() {
+                  setTimeout(function() {
+                    typewriteLine('LOADING MODULES: AUTOMATION · CREATIVE · STRATEGY', 'dim', function() {
+                      setTimeout(function() {
+                        typewriteLine('BUSINESS DIAGNOSTIC TOOL: READY', 'bright', function() {
+                          addGap();
+                          typewriteLine('WELCOME.', 'white large', function() {
+                            addGap();
+                            setTimeout(function() {
+                              typewriteLine('BEFORE WE BEGIN —', 'dim', function() {
+                                addGap(true);
+                                typewriteLine("LET'S PLAY A GAME.", 'bright xl', function() {
+                                  addGap();
+                                  addButtons([{
+                                    label: '[ START DIAGNOSTIC ]',
+                                    primary: true,
+                                    id: 'start',
+                                    onClick: function() { setTimeout(runPhase2, 400); }
+                                  }]);
+                                });
+                              });
+                            }, 600);
+                          });
+                        });
+                      }, 400);
+                    });
+                  }, 300);
+                });
+              });
+            }, 200);
+          });
+        }, 300);
+      });
+    }
+
+    function runPhase2() {
+      addGap();
+      addDivider();
+      addGap(true);
+      addLine('STEP 1 OF 5', 'dim');
+      addDivider();
+      addGap(true);
+      typewriteLine('WHAT ARE YOU RUNNING?', 'white large', function() {
+        addGap(true);
+        addButtons([
+          {
+            label: '[ A ]  INSURANCE BROKERAGE',
+            id: 'identity-a',
+            onClick: function() {
+              gameState.identity = 'insurance';
+              addGap(true);
+              addLine('> INSURANCE BROKERAGE DETECTED', 'bright');
+              setTimeout(runQuestion2, 600);
+            }
+          },
+          {
+            label: '[ B ]  LOGISTICS / FLEET',
+            id: 'identity-b',
+            onClick: function() {
+              gameState.identity = 'logistics';
+              addGap(true);
+              addLine('> LOGISTICS OPERATION DETECTED', 'bright');
+              setTimeout(runQuestion2, 600);
+            }
+          },
+          {
+            label: '[ C ]  SOMETHING ELSE',
+            id: 'identity-c',
+            onClick: function() {
+              gameState.identity = 'other';
+              addGap(true);
+              addLine('> ACKNOWLEDGED', 'bright');
+              setTimeout(runQuestion2, 600);
+            }
+          }
+        ]);
+      });
+    }
+
+    function runQuestion(stepNum, questionText, stateKey, yesResponse, noResponse, nextFn) {
+      addGap();
+      addDivider();
+      addGap(true);
+      addLine('STEP ' + stepNum + ' OF 5', 'dim');
+      addDivider();
+      addGap(true);
+      typewriteLine(questionText, 'white', function() {
+        addGap(true);
+        addButtons([
+          {
+            label: '[ YES ]',
+            id: 'q' + stepNum + '-yes',
+            onClick: function() {
+              gameState[stateKey] = true;
+              addGap(true);
+              addLine('> ' + yesResponse, 'red');
+              setTimeout(nextFn, 600);
+            }
+          },
+          {
+            label: '[ NO ]',
+            id: 'q' + stepNum + '-no',
+            onClick: function() {
+              gameState[stateKey] = false;
+              addGap(true);
+              addLine('> ' + noResponse, 'bright');
+              setTimeout(nextFn, 600);
+            }
+          }
+        ]);
+      });
+    }
+
+    function runQuestion2() {
+      runQuestion(2,
+        'DO YOU CHASE COIS OR DOCUMENTS\nBY EMAIL?',
+        'q2',
+        'THAT\'S COSTING YOU MORE THAN YOU THINK.',
+        'GOOD. ONE LESS BOTTLENECK.',
+        runQuestion3
+      );
+    }
+
+    function runQuestion3() {
+      runQuestion(3,
+        'DO YOU COPY-PASTE DATA BETWEEN\nPLATFORMS EVERY DAY?',
+        'q3',
+        'MANUAL DATA ENTRY IS A SCALING TRAP.',
+        'SMART. AUTOMATION MATTERS.',
+        runQuestion4
+      );
+    }
+
+    function runQuestion4() {
+      runQuestion(4,
+        'HAS A LEAD EVER GONE COLD\nBECAUSE NOBODY FOLLOWED UP\nIN TIME?',
+        'q4',
+        'REVENUE LEAKED. THAT\'S RECOVERABLE.',
+        'YOU\'RE AHEAD OF MOST.',
+        runQuestion5
+      );
+    }
+
+    function runQuestion5() {
+      runQuestion(5,
+        'DO YOU HAVE A CONSISTENT\nCONTENT PRESENCE ONLINE?',
+        'q5',
+        'NOTED.',
+        'YOUR COMPETITORS DO. THAT\'S A PROBLEM.',
+        runPhase4
+      );
+    }
+
+    function runPhase4() {
+      addGap();
+      addDivider();
+      addGap();
+      typewriteLine('RUNNING DIAGNOSTIC...', 'amber large', function() {
+        addGap(true);
+        var analyses = [
+          'ANALYZING: OPERATIONAL EFFICIENCY',
+          'ANALYZING: LEAD PIPELINE HEALTH',
+          'ANALYZING: MARKET VISIBILITY',
+          'ANALYZING: AUTOMATION COVERAGE'
+        ];
+        var idx = 0;
+        function nextAnalysis() {
+          if (idx >= analyses.length) {
+            addGap();
+            setTimeout(function() {
+              addLine('⚠  3 CRITICAL INEFFICIENCIES DETECTED', 'amber large');
+              addGap();
+              setTimeout(runPhase5, 800);
+            }, 500);
+            return;
+          }
+          var line = addLine(analyses[idx], 'dim');
+          var flickerEl = document.createElement('span');
+          flickerEl.className = 'term-flicker';
+          flickerEl.style.marginLeft = '12px';
+          flickerEl.style.color = '#ffaa00';
+          var randNum = Math.floor(Math.random() * 900 + 100);
+          flickerEl.textContent = randNum + 'ms';
+          line.appendChild(flickerEl);
+          idx++;
+          setTimeout(function() {
+            flickerEl.classList.remove('term-flicker');
+            flickerEl.textContent = '✓';
+            flickerEl.style.color = '#33ff33';
+            setTimeout(nextAnalysis, 300);
+          }, 700);
+        }
+        nextAnalysis();
+      });
+    }
+
+    function runPhase5() {
+      addDivider();
+      addGap(true);
+
+      var errorCount = 0;
+
+      if (gameState.q2 === true) {
+        errorCount++;
+        var block1 = document.createElement('div');
+        block1.className = 'term-error-block';
+        block1.innerHTML =
+          '<div class="term-line red">ERROR_01 // DOCUMENT PIPELINE</div>' +
+          '<div class="term-line white">Your team is doing work that</div>' +
+          '<div class="term-line white">software should be doing.</div>' +
+          '<div class="term-line dim">ESTIMATED WEEKLY COST: ~12hrs of ops time</div>' +
+          '<div class="term-line bright">STATUS: FIXABLE</div>';
+        termContent.appendChild(block1);
+      }
+
+      if (gameState.q5 === false) {
+        errorCount++;
+        var block2 = document.createElement('div');
+        block2.className = 'term-error-block';
+        block2.innerHTML =
+          '<div class="term-line red">ERROR_02 // MARKET VISIBILITY</div>' +
+          '<div class="term-line white">Your competitors are building</div>' +
+          '<div class="term-line white">trust online while you\'re</div>' +
+          '<div class="term-line white">invisible.</div>' +
+          '<div class="term-line bright">STATUS: FIXABLE</div>';
+        termContent.appendChild(block2);
+      }
+
+      var block3 = document.createElement('div');
+      block3.className = 'term-error-block';
+      block3.innerHTML =
+        '<div class="term-line red">ERROR_0' + (errorCount + 1) + ' // LEAD CAPTURE</div>' +
+        '<div class="term-line white">Revenue is leaking from your</div>' +
+        '<div class="term-line white">pipeline every week.</div>' +
+        '<div class="term-line bright">STATUS: FIXABLE</div>';
+      termContent.appendChild(block3);
+
+      addGap();
+      addLine('DIAGNOSIS COMPLETE.', 'bright large');
+      addDivider();
+      addGap(true);
+
+      var opsScore = gameState.q2 ? 22 : 58;
+      var visScore = gameState.q5 ? 61 : 12;
+      var pipScore = gameState.q4 ? 28 : 55;
+
+      if (gameState.q3) opsScore = Math.max(opsScore - 14, 10);
+
+      addLine('OPS SCORE:  ' + opsScore + ' / 100', opsScore < 40 ? 'red' : 'bright');
+      addLine('VISIBILITY: ' + visScore + ' / 100', visScore < 40 ? 'red' : 'bright');
+      addLine('PIPELINE:   ' + pipScore + ' / 100', pipScore < 40 ? 'red' : 'bright');
+
+      addGap();
+      addLine('ALL ERRORS HAVE A KNOWN FIX.', 'white large');
+      addGap();
+
+      scrollTerminal();
+      setTimeout(runPhase6, 1000);
+    }
+
+    function runPhase6() {
+      addDivider();
+      addGap();
+      typewriteLine('WANT TO SEE THE FIX?', 'bright xl', function() {
+        addGap(true);
+        addLine('ONE CALL. 30 MINUTES.', 'white');
+        addLine('NO PITCH DECK.', 'white');
+        addGap();
+        addButtons([{
+          label: '[ BOOK THE DIAGNOSTIC CALL ]',
+          primary: true,
+          id: 'book-call',
+          onClick: function() {
+            window.location.href = 'mailto:hello@aktivate.ai?subject=Diagnostic%20Call';
+          }
+        }]);
+        addGap();
+        addDivider();
+        addGap(true);
+        var scrollLink = document.createElement('button');
+        scrollLink.className = 'term-scroll-link';
+        scrollLink.textContent = '// OR SCROLL DOWN TO SEE HOW IT WORKS';
+        scrollLink.setAttribute('data-testid', 'term-scroll-down');
+        scrollLink.addEventListener('click', dismissTerminal);
+        termContent.appendChild(scrollLink);
+        scrollTerminal();
+      });
+    }
+
+    function dismissTerminal() {
+      termOverlay.classList.add('dismissed');
+      document.body.classList.remove('terminal-active');
+      window.scrollTo(0, 0);
+      setTimeout(function() {
+        termOverlay.style.display = 'none';
+      }, 800);
+    }
+
+    setTimeout(runPhase1, 500);
+  }
+
 })();
 </script>
 </body>
