@@ -806,6 +806,7 @@ body:hover #cursor-glow {
   justify-content:center;
   position:relative;
   overflow:hidden;
+  transition:opacity 0.25s ease;
 }
 #mobile-hero .mh-screen::after {
   content:''; position:absolute; inset:0; pointer-events:none;
@@ -828,19 +829,25 @@ body:hover #cursor-glow {
 #mobile-hero .mh-gap { height:20px; }
 #mobile-hero .mh-gap-sm { height:10px; }
 #mobile-hero .mh-term-btn {
-  display:block;
+  display:block; width:100%;
   font-family:'DM Mono',monospace;
-  font-size:13px; font-weight:500;
-  color:#000; background:#33ff33;
-  border:none; padding:14px 24px;
-  text-align:center; text-decoration:none;
+  font-size:13px; font-weight:400;
+  color:#33ff33; background:transparent;
+  border:1px solid #33ff33;
+  padding:14px 24px;
+  text-align:left; text-decoration:none;
   text-transform:uppercase; letter-spacing:0.06em;
+  cursor:pointer;
   transition:all 0.15s ease;
+  box-sizing:border-box;
 }
-#mobile-hero .mh-term-btn:active {
-  background:#66ff66;
-  box-shadow:0 0 20px rgba(51,255,51,0.4);
+#mobile-hero .mh-term-btn:active,
+#mobile-hero .mh-term-btn:hover {
+  background:#33ff33; color:#000;
+  box-shadow:0 0 12px rgba(51,255,51,0.3);
 }
+#mobile-hero .mh-line.red { color:#ff4444; }
+#mobile-hero .mh-line.amber { color:#ffaa00; }
 #mobile-hero .mh-scroll-link {
   display:block;
   font-family:'DM Mono',monospace;
@@ -1619,33 +1626,46 @@ body.terminal-active #mobile-hero { display:none; }
   var mhScreen = document.getElementById('mh-screen');
   if (mhScreen && window.innerWidth <= 960) {
     (function() {
-      var delay = 0;
-      function mhAdd(cls, text, d) {
-        delay += (d || 80);
+      var mhState = { identity: null, q1: null, q2: null };
+
+      function mhClear() {
+        mhScreen.style.opacity = '0';
         setTimeout(function() {
-          var el = document.createElement('div');
-          el.className = cls;
-          if (text) el.textContent = text;
-          mhScreen.appendChild(el);
-        }, delay);
-      }
-      function mhBtn(text, href, cls, d) {
-        delay += (d || 80);
-        setTimeout(function() {
-          var a = document.createElement('a');
-          a.className = 'mh-term-btn' + (cls ? ' ' + cls : '');
-          a.href = href;
-          a.textContent = text;
-          a.setAttribute('data-testid', 'button-book-call-mobile');
-          mhScreen.appendChild(a);
-        }, delay);
+          mhScreen.innerHTML = '';
+          mhScreen.style.opacity = '1';
+        }, 250);
       }
 
-      mhAdd('mh-line dim', 'AKTIVATE OS v1.0', 300);
-      mhAdd('mh-line dim', 'INITIALIZING...', 200);
+      function mhLine(cls, text) {
+        var el = document.createElement('div');
+        el.className = cls;
+        if (text) el.textContent = text;
+        mhScreen.appendChild(el);
+        return el;
+      }
 
-      delay += 400;
-      setTimeout(function() {
+      function mhButton(text, onClick) {
+        var btn = document.createElement('button');
+        btn.className = 'mh-term-btn';
+        btn.textContent = text;
+        btn.addEventListener('click', onClick);
+        mhScreen.appendChild(btn);
+        return btn;
+      }
+
+      function mhLink(text, href) {
+        var a = document.createElement('a');
+        a.className = 'mh-scroll-link';
+        a.href = href || '#problem';
+        a.textContent = text;
+        mhScreen.appendChild(a);
+        return a;
+      }
+
+      // ── PHASE 1: BOOT ──
+      function boot() {
+        mhLine('mh-line dim', 'AKTIVATE OS v1.0');
+        mhLine('mh-line dim', 'INITIALIZING...');
         var bar = document.createElement('div');
         bar.className = 'mh-progress';
         bar.innerHTML = '<div class="mh-progress-fill"></div>';
@@ -1653,36 +1673,134 @@ body.terminal-active #mobile-hero { display:none; }
         var fill = bar.querySelector('.mh-progress-fill');
         var w = 0;
         var iv = setInterval(function() {
-          w += Math.random() * 15 + 5;
-          if (w >= 100) { w = 100; clearInterval(iv); }
+          w += Math.random() * 18 + 6;
+          if (w >= 100) { w = 100; clearInterval(iv); afterBoot(); }
+          fill.style.width = w + '%';
+        }, 50);
+      }
+
+      function afterBoot() {
+        mhLine('mh-line dim', 'SYSTEM READY');
+        mhLine('mh-line dim', '──────────────────────');
+        mhLine('mh-gap', '');
+        mhLine('mh-line bright large', "LET'S PLAY A GAME.");
+        mhLine('mh-gap-sm', '');
+        mhLine('mh-line dim', "LET'S MAKE THIS PERSONAL.");
+        mhLine('mh-gap', '');
+        mhButton('[ PLAY ]', function() { mhClear(); setTimeout(step1, 300); });
+        mhLine('mh-gap-sm', '');
+        mhLink('// skip to site', '#problem');
+      }
+
+      // ── PHASE 2: IDENTITY ──
+      function step1() {
+        mhLine('mh-line dim', 'STEP 1 OF 3');
+        mhLine('mh-line dim', '──────────────────────');
+        mhLine('mh-gap', '');
+        mhLine('mh-line bright', "WHAT'S YOUR WORLD?");
+        mhLine('mh-gap', '');
+        mhButton('[ A ]  INSURANCE / LOGISTICS', function() {
+          mhState.identity = 'A'; mhClear(); setTimeout(step2, 300);
+        });
+        mhLine('mh-gap-sm', '');
+        mhButton('[ B ]  TECH / SAAS / OTHER', function() {
+          mhState.identity = 'B'; mhClear(); setTimeout(step2, 300);
+        });
+      }
+
+      // ── PHASE 3: KEY QUESTION ──
+      function step2() {
+        mhLine('mh-line dim', 'STEP 2 OF 3');
+        mhLine('mh-line dim', '──────────────────────');
+        mhLine('mh-gap', '');
+        var q = mhState.identity === 'A'
+          ? 'DO YOU STILL CHASE DOCUMENTS BY EMAIL?'
+          : 'DO YOUR LEADS GO COLD BECAUSE NOBODY FOLLOWS UP?';
+        mhLine('mh-line bright', q);
+        mhLine('mh-gap', '');
+        mhButton('[ YES ]', function() {
+          mhState.q1 = 'yes'; mhClear(); setTimeout(step3, 300);
+        });
+        mhLine('mh-gap-sm', '');
+        mhButton('[ NO ]', function() {
+          mhState.q1 = 'no'; mhClear(); setTimeout(step3, 300);
+        });
+      }
+
+      // ── PHASE 4: SECOND QUESTION ──
+      function step3() {
+        mhLine('mh-line dim', 'STEP 3 OF 3');
+        mhLine('mh-line dim', '──────────────────────');
+        mhLine('mh-gap', '');
+        mhLine('mh-line bright', 'DO YOU HAVE A CONSISTENT CONTENT PRESENCE ONLINE?');
+        mhLine('mh-gap', '');
+        mhButton('[ YES ]', function() {
+          mhState.q2 = 'yes'; mhClear(); setTimeout(results, 300);
+        });
+        mhLine('mh-gap-sm', '');
+        mhButton('[ NO ]', function() {
+          mhState.q2 = 'no'; mhClear(); setTimeout(results, 300);
+        });
+      }
+
+      // ── PHASE 5: RESULTS ──
+      function results() {
+        mhLine('mh-line dim', 'RUNNING DIAGNOSTIC...');
+        var bar = document.createElement('div');
+        bar.className = 'mh-progress';
+        bar.innerHTML = '<div class="mh-progress-fill"></div>';
+        mhScreen.appendChild(bar);
+        var fill = bar.querySelector('.mh-progress-fill');
+        var w = 0;
+        var iv = setInterval(function() {
+          w += Math.random() * 12 + 4;
+          if (w >= 100) { w = 100; clearInterval(iv); showResults(); }
           fill.style.width = w + '%';
         }, 60);
-      }, delay);
+      }
 
-      mhAdd('mh-line dim', 'LOADING MODULES: AUTOMATION · CREATIVE · STRATEGY', 900);
-      mhAdd('mh-line dim', 'SYSTEM READY', 300);
-      mhAdd('mh-line dim', '────────────────────────────', 200);
-      mhAdd('mh-gap', '', 300);
-      mhAdd('mh-line bright large', 'BUILD THE ENGINE.', 200);
-      mhAdd('mh-line green-glow large', 'BUILD THE FACE.', 150);
-      mhAdd('mh-gap', '', 100);
-      mhAdd('mh-line dim', '// the growth studio', 200);
-      mhAdd('mh-gap-sm', '', 50);
-      mhAdd('mh-line white', 'Automated ops. Automated presence.', 100);
-      mhAdd('mh-line white', 'One studio for Insurance & Logistics', 80);
-      mhAdd('mh-line white', 'operators ready to scale.', 80);
-      mhAdd('mh-gap', '', 100);
-      mhBtn('[ BOOK A FREE CALL ]', '#cta', '', 200);
-      mhAdd('mh-gap-sm', '', 50);
+      function showResults() {
+        mhLine('mh-gap', '');
+        var issues = 0;
+        if (mhState.q1 === 'yes') {
+          issues++;
+          mhLine('mh-line red', '⚠ ERROR_01 // ' + (mhState.identity === 'A' ? 'DOCUMENT PIPELINE' : 'LEAD PIPELINE'));
+          mhLine('mh-line white', mhState.identity === 'A'
+            ? 'Manual document chasing costs 10+ hrs/week.'
+            : 'Cold leads = lost revenue. Automation fixes this.');
+          mhLine('mh-gap-sm', '');
+        }
+        if (mhState.q2 === 'no') {
+          issues++;
+          mhLine('mh-line amber', '⚠ ERROR_02 // MARKET VISIBILITY');
+          mhLine('mh-line white', 'No content = invisible. Your competitors are posting daily.');
+          mhLine('mh-gap-sm', '');
+        }
+        issues++;
+        mhLine('mh-line red', '⚠ ERROR_0' + (issues) + ' // GROWTH CEILING');
+        mhLine('mh-line white', 'Without systems, growth stalls at the operator level.');
+        mhLine('mh-gap', '');
 
-      delay += 100;
-      setTimeout(function() {
-        var link = document.createElement('a');
-        link.className = 'mh-scroll-link';
-        link.href = '#problem';
-        link.textContent = '// scroll down';
-        mhScreen.appendChild(link);
-      }, delay);
+        mhLine('mh-line dim', issues + ' ISSUES DETECTED. ALL HAVE A KNOWN FIX.');
+        mhLine('mh-gap', '');
+        mhLine('mh-line bright large', 'WANT TO SEE THE FIX?');
+        mhLine('mh-line dim', 'ONE CALL. 30 MINUTES. NO PITCH DECK.');
+        mhLine('mh-gap', '');
+
+        var ctaBtn = document.createElement('a');
+        ctaBtn.className = 'mh-term-btn';
+        ctaBtn.href = '#cta';
+        ctaBtn.textContent = '[ BOOK THE DIAGNOSTIC CALL ]';
+        ctaBtn.setAttribute('data-testid', 'button-book-call-mobile');
+        mhScreen.appendChild(ctaBtn);
+
+        mhLine('mh-gap-sm', '');
+        mhLink('// or scroll down to see how it works', '#problem');
+        mhLine('mh-gap-sm', '');
+        mhButton('[ PLAY AGAIN ]', function() { mhClear(); setTimeout(boot, 300); });
+      }
+
+      setTimeout(boot, 400);
     })();
   }
 
