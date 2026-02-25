@@ -346,7 +346,8 @@ nav {
 }
 .pain-code {
   font-size:9px; color:var(--red); letter-spacing:0.15em;
-  margin-bottom:8px; opacity:0.8;
+  margin-bottom:8px; opacity:0;
+  font-family:'DM Mono',monospace;
 }
 .pain-title {
   font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:14px;
@@ -777,6 +778,28 @@ body:hover #cursor-glow {
   50% { opacity:1; transform:translateX(1px); }
   75% { opacity:0.6; transform:translateX(-1px); }
   100% { opacity:1; transform:translateX(0); }
+}
+@keyframes err-flicker-in {
+  0% { opacity:0; transform:translateX(-4px); }
+  20% { opacity:0.7; transform:translateX(2px); }
+  40% { opacity:0.3; transform:translateX(-1px); }
+  60% { opacity:0.9; transform:translateX(1px); }
+  80% { opacity:0.5; transform:translateX(0); }
+  100% { opacity:0.8; transform:translateX(0); }
+}
+.pain-code.flicker-active {
+  animation:err-flicker-in 0.6s steps(3) forwards;
+}
+.reveal-section {
+  opacity:0;
+  transform:translateY(30px);
+  filter:blur(4px);
+  transition:opacity 0.8s ease, transform 0.8s ease, filter 0.8s ease;
+}
+.reveal-section.visible {
+  opacity:1;
+  transform:translateY(0);
+  filter:blur(0);
 }
 
 /* ── RESPONSIVE ────────────────────── */
@@ -1978,6 +2001,42 @@ body.terminal-active #mobile-hero { display:none; }
 
     setTimeout(bootSequence, 500);
   }
+
+  // ── SCROLL REVEAL + ERR FLICKER ──────────────
+  var revealSections = document.querySelectorAll('.reveal, .prob-grid > div, .pillars, .proc-steps, .res-grid, .fw-grid, .about-grid, .cta-inner');
+  revealSections.forEach(function(el) {
+    el.classList.add('reveal-section');
+  });
+
+  var revealObserver = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.reveal-section').forEach(function(el) {
+    revealObserver.observe(el);
+  });
+
+  var errObserver = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        var codes = entry.target.querySelectorAll('.pain-code');
+        codes.forEach(function(code, i) {
+          setTimeout(function() {
+            code.classList.add('flicker-active');
+          }, i * 400 + 200);
+        });
+        errObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.3 });
+
+  var painStack = document.querySelector('.pain-stack');
+  if (painStack) errObserver.observe(painStack);
 
 })();
 </script>
