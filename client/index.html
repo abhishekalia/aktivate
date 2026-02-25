@@ -857,6 +857,104 @@ body:hover #cursor-glow {
   text-align:center;
   padding:8px 0;
 }
+.mh-monitor-section {
+  display:none;
+  background:#000;
+  padding:40px 16px 60px;
+}
+.mh-imac-wrap {
+  position:relative;
+  width:100%;
+  max-width:380px;
+  margin:0 auto 32px;
+}
+.mh-imac-img {
+  width:100%;
+  height:auto;
+  display:block;
+  filter:drop-shadow(0 0 40px rgba(51,255,51,0.15));
+}
+.mh-imac-content {
+  position:absolute;
+  top:7%;
+  left:12%;
+  right:12%;
+  bottom:28%;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  padding:12px 14px;
+  overflow:hidden;
+}
+.mh-label {
+  font-family:'DM Mono',monospace;
+  font-size:9px;
+  color:var(--term-green);
+  letter-spacing:0.08em;
+  margin-bottom:6px;
+  text-transform:uppercase;
+}
+.mh-headline {
+  font-family:'Space Grotesk',sans-serif;
+  font-size:22px;
+  font-weight:700;
+  line-height:1.15;
+  color:#fff;
+  margin:0 0 8px;
+}
+.mh-headline em {
+  font-style:normal;
+  color:var(--term-green);
+}
+.mh-desc {
+  font-family:'DM Mono',monospace;
+  font-size:8px;
+  line-height:1.5;
+  color:#999;
+  margin:0 0 10px;
+}
+.mh-hero-btns {
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+.mh-hero-btns .keycap {
+  font-size:8px !important;
+  padding:6px 12px !important;
+}
+.mh-hero-btns .keycap-ico {
+  font-size:9px !important;
+}
+.mh-how-link {
+  font-family:'DM Mono',monospace;
+  font-size:9px;
+  color:var(--term-green);
+  text-decoration:underline;
+  text-underline-offset:3px;
+  letter-spacing:0.04em;
+}
+.mh-stats-row {
+  display:flex;
+  justify-content:center;
+  gap:28px;
+  padding:0 20px;
+}
+.mh-stat-n {
+  font-family:'Space Grotesk',sans-serif;
+  font-size:24px;
+  font-weight:700;
+  color:var(--term-green);
+  line-height:1.2;
+}
+.mh-stat-l {
+  font-family:'DM Mono',monospace;
+  font-size:8px;
+  color:#666;
+  letter-spacing:0.06em;
+  text-transform:uppercase;
+  margin-top:2px;
+}
+
 #mobile-hero .mh-progress {
   height:6px;
   background:#111;
@@ -875,6 +973,7 @@ body:hover #cursor-glow {
 /* ── RESPONSIVE ────────────────────── */
 @media(max-width:960px) {
   #mobile-hero { display:block; }
+  .mh-monitor-section { display:block; }
   #hero-spacer { display:none !important; }
   #zoom-overlay { display:none !important; }
   nav { padding:0 16px; height:52px; }
@@ -1104,6 +1203,35 @@ body.terminal-active #mobile-hero { display:none; }
       <span class="mh-titlebar-text">aktivate.ai</span>
     </div>
     <div class="mh-screen" id="mh-screen"></div>
+  </div>
+
+  <div class="mh-monitor-section" id="mh-monitor-section">
+    <div class="mh-imac-wrap">
+      <img src="/imac-front.png" alt="iMac G3" class="mh-imac-img">
+      <div class="mh-imac-content">
+        <div class="mh-label">&gt; THE GROWTH STUDIO _</div>
+        <h2 class="mh-headline">Build the<br>Engine.<br>Build the <em>Face.</em></h2>
+        <p class="mh-desc">Automated ops. Automated presence. One studio built specifically for Insurance &amp; Logistics operators who are ready to scale.</p>
+        <div class="mh-hero-btns">
+          <a href="#cta" class="keycap keycap-lg" data-testid="button-book-call-mobile-hero"><span class="keycap-ico">&#9783;</span><span>Book a Free Call</span></a>
+          <a href="#system" class="mh-how-link" data-testid="link-how-it-works-mobile">SEE HOW IT WORKS &rarr;</a>
+        </div>
+      </div>
+    </div>
+    <div class="mh-stats-row">
+      <div>
+        <div class="mh-stat-n" data-testid="text-stat-ops-mobile">70%</div>
+        <div class="mh-stat-l">OPS TIME SAVED</div>
+      </div>
+      <div>
+        <div class="mh-stat-n" data-testid="text-stat-build-mobile">2&ndash;4wk</div>
+        <div class="mh-stat-l">BUILD TIME</div>
+      </div>
+      <div>
+        <div class="mh-stat-n" data-testid="text-stat-content-mobile">5&times;</div>
+        <div class="mh-stat-l">CONTENT OUTPUT</div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -1689,7 +1817,7 @@ body.terminal-active #mobile-hero { display:none; }
         mhLine('mh-gap', '');
         mhButton('[ PLAY ]', function() { mhClear(); setTimeout(step1, 300); });
         mhLine('mh-gap-sm', '');
-        mhLink('// skip to site', '#problem');
+        mhLink('// skip to site', '#mh-monitor-section');
       }
 
       // ── PHASE 2: IDENTITY ──
@@ -1795,7 +1923,7 @@ body.terminal-active #mobile-hero { display:none; }
         mhScreen.appendChild(ctaBtn);
 
         mhLine('mh-gap-sm', '');
-        mhLink('// or scroll down to see how it works', '#problem');
+        mhLink('// or scroll down to see how it works', '#mh-monitor-section');
         mhLine('mh-gap-sm', '');
         mhButton('[ PLAY AGAIN ]', function() { mhClear(); setTimeout(boot, 300); });
       }
