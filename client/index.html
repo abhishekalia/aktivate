@@ -816,138 +816,95 @@ body.terminal-active nav { opacity:0; pointer-events:none; }
   position:fixed; inset:0; z-index:9999;
   background:#000; color:#33ff33;
   font-family:'DM Mono', monospace; font-size:14px; font-weight:400;
-  overflow-y:auto; padding:48px;
-  display:flex; align-items:flex-start; justify-content:center;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
   transition:transform 0.7s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s ease;
 }
 #terminal-overlay.dismissed {
-  transform:translateY(-100%);
-  opacity:0;
-  pointer-events:none;
+  transform:translateY(-100%); opacity:0; pointer-events:none;
 }
 #terminal-overlay::after {
   content:''; position:fixed; inset:0; z-index:1; pointer-events:none;
-  background:repeating-linear-gradient(
-    0deg,
-    rgba(0,0,0,0.15) 0px,
-    rgba(0,0,0,0.15) 1px,
-    transparent 1px,
-    transparent 3px
-  );
+  background:repeating-linear-gradient(0deg, rgba(0,0,0,0.15) 0px, rgba(0,0,0,0.15) 1px, transparent 1px, transparent 3px);
 }
+#term-step-counter {
+  position:fixed; top:24px; left:0; right:0; z-index:3;
+  text-align:center; font-size:11px; color:#1a8c1a;
+  letter-spacing:0.2em; text-transform:uppercase;
+  opacity:0; transition:opacity 0.4s ease;
+}
+#term-step-counter.visible { opacity:1; }
 #terminal-content {
   position:relative; z-index:2;
-  max-width:640px; width:100%;
-  padding-bottom:80px;
+  max-width:600px; width:100%; padding:0 24px;
+  opacity:1; transition:opacity 0.35s ease;
 }
+#terminal-content.fade-out { opacity:0; }
 .term-line {
-  margin-bottom:4px;
-  line-height:1.6;
-  white-space:pre-wrap;
-  word-break:break-word;
+  margin-bottom:4px; line-height:1.6;
+  white-space:pre-wrap; word-break:break-word;
 }
 .term-line.dim { color:#1a8c1a; }
 .term-line.bright { color:#66ff66; font-weight:500; }
 .term-line.white { color:#e0e0e0; }
 .term-line.red { color:#ff4444; }
 .term-line.amber { color:#ffaa00; }
-.term-line.large {
-  font-size:22px; font-weight:500; letter-spacing:0.05em;
-}
-.term-line.xl {
-  font-size:28px; font-weight:500; letter-spacing:0.08em;
-  margin-top:8px; margin-bottom:8px;
-}
+.term-line.large { font-size:20px; font-weight:500; letter-spacing:0.04em; }
+.term-line.xl { font-size:26px; font-weight:500; letter-spacing:0.06em; margin-top:8px; margin-bottom:8px; }
 .term-gap { height:20px; }
 .term-gap-sm { height:10px; }
 
-@keyframes blink-cursor {
-  0%, 100% { opacity:1; }
-  50% { opacity:0; }
-}
-.term-cursor::after {
-  content:'█'; animation:blink-cursor 0.8s step-end infinite;
-}
+@keyframes blink-cursor { 0%,100%{opacity:1} 50%{opacity:0} }
+.term-cursor::after { content:'█'; animation:blink-cursor 0.8s step-end infinite; }
 
-.term-progress-bar {
-  display:inline-block;
-  color:#33ff33;
-  font-family:'DM Mono', monospace;
-}
-
-.term-btn-row {
-  display:flex; gap:12px; flex-wrap:wrap;
-  margin-top:12px; margin-bottom:8px;
-}
+.term-btn-row { display:flex; flex-direction:column; gap:8px; margin-top:16px; }
 .term-btn {
-  font-family:'DM Mono', monospace; font-size:13px; font-weight:500;
+  font-family:'DM Mono', monospace; font-size:13px; font-weight:400;
   color:#33ff33; background:transparent;
-  border:1px solid #33ff33; padding:10px 24px;
-  cursor:pointer; text-transform:uppercase;
-  letter-spacing:0.1em;
-  transition:all 0.15s ease;
+  border:1px solid #33ff33; padding:12px 24px;
+  cursor:pointer; text-transform:uppercase; letter-spacing:0.06em;
+  text-align:left; transition:all 0.15s ease;
 }
-.term-btn:hover {
-  background:#33ff33; color:#000;
-  box-shadow:0 0 12px rgba(51,255,51,0.3);
-}
-.term-btn.primary {
-  background:#33ff33; color:#000; font-weight:500;
-}
-.term-btn.primary:hover {
-  background:#66ff66;
-  box-shadow:0 0 20px rgba(51,255,51,0.4);
-}
+.term-btn:hover { background:#33ff33; color:#000; box-shadow:0 0 12px rgba(51,255,51,0.3); }
+.term-btn.primary { background:#33ff33; color:#000; font-weight:500; text-align:center; }
+.term-btn.primary:hover { background:#66ff66; box-shadow:0 0 20px rgba(51,255,51,0.4); }
 
-.term-divider {
-  color:#1a8c1a; margin:4px 0;
-}
+.term-divider { color:#1a8c1a; margin:4px 0; }
 
 .term-error-block {
-  border-left:2px solid #ff4444;
-  padding:8px 0 8px 16px;
-  margin:12px 0;
+  border-left:2px solid #ff4444; padding:8px 0 8px 16px; margin:12px 0;
 }
 .term-error-block .term-line { margin-bottom:2px; }
 
-.term-score-row {
-  display:flex; gap:8px; align-items:center;
-  margin-bottom:2px;
-}
-.term-score-label { min-width:120px; color:#33ff33; }
-.term-score-val { color:#ff4444; font-weight:500; }
-.term-score-val.ok { color:#33ff33; }
-
 .term-scroll-link {
-  color:#1a8c1a; cursor:pointer;
-  font-size:12px; margin-top:16px;
-  display:inline-block;
-  transition:color 0.2s;
-  border:none; background:none;
-  font-family:'DM Mono', monospace;
-  letter-spacing:0.05em;
+  color:#1a8c1a; cursor:pointer; font-size:12px; margin-top:16px;
+  display:inline-block; transition:color 0.2s;
+  border:none; background:none; font-family:'DM Mono', monospace; letter-spacing:0.05em;
 }
 .term-scroll-link:hover { color:#33ff33; }
 
-@keyframes flicker {
-  0%, 100% { opacity:1; }
-  50% { opacity:0.3; }
+.term-replay-link {
+  color:#1a8c1a; cursor:pointer; font-size:11px; margin-top:12px;
+  display:inline-block; transition:color 0.2s;
+  border:none; background:none; font-family:'DM Mono', monospace; letter-spacing:0.05em;
 }
-.term-flicker {
-  animation:flicker 0.1s ease infinite;
-}
+.term-replay-link:hover { color:#33ff33; }
+
+@keyframes flicker { 0%,100%{opacity:1} 50%{opacity:0.3} }
+.term-flicker { animation:flicker 0.1s ease infinite; }
 
 @media (max-width:600px) {
-  #terminal-overlay { padding:24px 16px; font-size:12px; }
-  .term-line.large { font-size:18px; }
-  .term-line.xl { font-size:22px; }
-  .term-btn { padding:8px 16px; font-size:11px; }
+  #terminal-overlay { font-size:12px; }
+  #terminal-content { padding:0 16px; }
+  .term-line.large { font-size:16px; }
+  .term-line.xl { font-size:20px; }
+  .term-btn { padding:10px 16px; font-size:11px; }
 }
 </style>
 </head>
 <body class="terminal-active">
 
 <div id="terminal-overlay">
+  <div id="term-step-counter"></div>
   <div id="terminal-content"></div>
 </div>
 
@@ -1443,407 +1400,454 @@ body.terminal-active nav { opacity:0; pointer-events:none; }
   // ── TERMINAL GAME ──────────────────────────
   var termOverlay = document.getElementById('terminal-overlay');
   var termContent = document.getElementById('terminal-content');
+  var termCounter = document.getElementById('term-step-counter');
   if (termOverlay && termContent) {
-    var gameState = { identity: null, q2: null, q3: null, q4: null, q5: null };
-    var typeSpeed = 25;
+    var gameState = { path: null, answers: {} };
+    var typeSpeed = 22;
 
-    function scrollTerminal() {
-      termOverlay.scrollTop = termOverlay.scrollHeight;
-    }
-
-    function addLine(text, classes, skipScroll) {
-      var el = document.createElement('div');
-      el.className = 'term-line' + (classes ? ' ' + classes : '');
-      el.textContent = text || '';
-      termContent.appendChild(el);
-      if (!skipScroll) scrollTerminal();
+    function addEl(tag, cls, text, parent) {
+      var el = document.createElement(tag || 'div');
+      if (cls) el.className = cls;
+      if (text) el.textContent = text;
+      (parent || termContent).appendChild(el);
       return el;
     }
+    function addLine(t, cls) { return addEl('div', 'term-line' + (cls ? ' ' + cls : ''), t); }
+    function addGap(s) { return addEl('div', s ? 'term-gap-sm' : 'term-gap'); }
+    function addDivider() { return addLine('─────────────────────────', 'dim'); }
 
-    function addGap(small) {
-      var el = document.createElement('div');
-      el.className = small ? 'term-gap-sm' : 'term-gap';
-      termContent.appendChild(el);
-      return el;
-    }
-
-    function addDivider() {
-      var el = addLine('─────────────────────────', 'dim');
-      return el;
-    }
-
-    function typewriteLine(text, classes, cb) {
-      var el = document.createElement('div');
-      el.className = 'term-line' + (classes ? ' ' + classes : '');
-      el.textContent = '';
-      termContent.appendChild(el);
+    function typewrite(text, cls, cb) {
+      var el = addLine('', cls);
       var i = 0;
-      var interval = setInterval(function() {
-        if (i < text.length) {
-          el.textContent += text[i];
-          i++;
-          scrollTerminal();
-        } else {
-          clearInterval(interval);
-          if (cb) cb(el);
-        }
+      var iv = setInterval(function() {
+        if (i < text.length) { el.textContent += text[i]; i++; }
+        else { clearInterval(iv); if (cb) cb(el); }
       }, typeSpeed);
     }
 
+    function setStep(n, total) {
+      termCounter.textContent = 'STEP ' + n + ' OF ' + total;
+      termCounter.classList.add('visible');
+    }
+    function hideStep() { termCounter.classList.remove('visible'); }
+
+    function fadeToScreen(buildFn) {
+      termContent.classList.add('fade-out');
+      setTimeout(function() {
+        termContent.innerHTML = '';
+        buildFn();
+        termContent.classList.remove('fade-out');
+      }, 400);
+    }
+
     function addButtons(btns) {
-      var row = document.createElement('div');
-      row.className = 'term-btn-row';
+      var row = addEl('div', 'term-btn-row');
       btns.forEach(function(b) {
-        var btn = document.createElement('button');
-        btn.className = 'term-btn' + (b.primary ? ' primary' : '');
-        btn.textContent = b.label;
-        btn.setAttribute('data-testid', 'term-btn-' + (b.id || b.label.toLowerCase().replace(/\s+/g, '-')));
+        var btn = addEl('button', 'term-btn' + (b.primary ? ' primary' : ''), b.label, row);
+        btn.setAttribute('data-testid', 'term-btn-' + (b.id || ''));
         btn.addEventListener('click', function() {
           row.querySelectorAll('.term-btn').forEach(function(bb) {
-            bb.disabled = true;
-            bb.style.opacity = '0.3';
-            bb.style.pointerEvents = 'none';
+            bb.disabled = true; bb.style.opacity = '0.3'; bb.style.pointerEvents = 'none';
           });
-          btn.style.opacity = '1';
-          btn.style.background = '#33ff33';
-          btn.style.color = '#000';
+          btn.style.opacity = '1'; btn.style.background = '#33ff33'; btn.style.color = '#000';
           if (b.onClick) b.onClick();
         });
-        row.appendChild(btn);
       });
-      termContent.appendChild(row);
-      scrollTerminal();
     }
 
-    function animateProgressBar(cb) {
-      var el = document.createElement('div');
-      el.className = 'term-line';
-      termContent.appendChild(el);
-      var chars = 20;
-      var filled = 0;
-      var interval = setInterval(function() {
-        filled++;
+    function showResponse(text, isNeg, nextFn) {
+      addGap(true);
+      addLine('> ' + text, isNeg ? 'red' : 'bright');
+      setTimeout(function() { fadeToScreen(nextFn); }, 1200);
+    }
+
+    function animateProgress(cb) {
+      var el = addLine('');
+      var n = 0, total = 20;
+      var iv = setInterval(function() {
+        n++;
         var bar = '';
-        for (var j = 0; j < chars; j++) {
-          bar += j < filled ? '█' : '░';
-        }
-        var pct = Math.round((filled / chars) * 100);
-        el.textContent = '[ ' + bar + ' ] ' + pct + '%';
-        scrollTerminal();
-        if (filled >= chars) {
-          clearInterval(interval);
-          if (cb) setTimeout(cb, 300);
-        }
-      }, 80);
+        for (var j = 0; j < total; j++) bar += j < n ? '█' : '░';
+        el.textContent = '[ ' + bar + ' ] ' + Math.round(n/total*100) + '%';
+        if (n >= total) { clearInterval(iv); setTimeout(cb, 300); }
+      }, 70);
     }
 
-    function runPhase1() {
-      typewriteLine('AKTIVATE OS v1.0', 'bright', function() {
+    // ── PATH DEFINITIONS ──────────────
+    var pathA = [
+      {
+        q: 'YOUR TEAM PROCESSES DOCUMENTS\nEVERY DAY — COIS, DRIVER FILES,\nCARRIER SUBMISSIONS.\n\nHOW DOES THAT ACTUALLY WORK?',
+        opts: [
+          { label: '[ A ]  MANUALLY. EMAIL, SPREADSHEETS, COPY-PASTE.', resp: 'THAT\'S THE #1 OPS DRAIN IN THIS INDUSTRY. NOTED.', neg: true },
+          { label: '[ B ]  MIXED. SOME TOOLS BUT STILL A LOT OF MANUAL.', resp: 'THE GAPS IN "MIXED" SYSTEMS COST MORE THAN YOU THINK.', neg: true },
+          { label: '[ C ]  MOSTLY AUTOMATED. SYSTEMS ARE IN PLACE.', resp: 'SOLID. LET\'S SEE WHERE ELSE THERE\'S ROOM.', neg: false }
+        ]
+      },
+      {
+        q: 'WHEN A NEW LEAD OR CLIENT\nCOMES IN — WHAT HAPPENS NEXT?',
+        opts: [
+          { label: '[ A ]  WE FOLLOW UP FAST. EVERY SINGLE TIME.', resp: 'PIPELINE DISCIPLINE IS RARE IN THIS SPACE. RESPECT.', neg: false },
+          { label: '[ B ]  WE TRY TO. BUT THINGS SLIP THROUGH.', resp: 'EVERY MISSED TOUCHPOINT IS REVENUE WALKING OUT THE DOOR.', neg: true },
+          { label: '[ C ]  HONESTLY DEPENDS ON HOW BUSY WE ARE.', resp: 'INCONSISTENCY IS A LEAK. IT COMPOUNDS OVER TIME.', neg: true }
+        ]
+      },
+      {
+        q: 'IF A PROSPECT SEARCHED YOUR\nNICHE RIGHT NOW —\n\nWOULD THEY FIND YOU BEFORE\nTHEY FIND YOUR COMPETITOR?',
+        opts: [
+          { label: '[ A ]  YES. WE HAVE STRONG VISIBILITY.', resp: 'GOOD. IS THAT PRESENCE WORKING AS HARD AS IT COULD?', neg: false },
+          { label: '[ B ]  PROBABLY NOT. WE\'RE NOT VERY VISIBLE.', resp: 'IN A TRUST-BASED INDUSTRY, INVISIBILITY IS EXPENSIVE.', neg: true },
+          { label: '[ C ]  WE RUN ON REFERRALS. ALWAYS HAVE.', resp: 'REFERRALS ARE GREAT UNTIL THEY\'RE NOT. THEN WHAT?', neg: true }
+        ]
+      },
+      {
+        q: 'DOES YOUR BUSINESS HAVE ANY\nKIND OF CONTENT PRESENCE —\nSOCIAL, VIDEO, THOUGHT LEADERSHIP?',
+        opts: [
+          { label: '[ A ]  YES. WE POST CONSISTENTLY.', resp: 'GOOD. BUT IS IT ACTUALLY CONVERTING OR JUST EXISTING?', neg: false },
+          { label: '[ B ]  OCCASIONALLY. NOTHING SYSTEMATIC.', resp: 'OCCASIONAL IS INVISIBLE. CONSISTENCY IS WHAT COMPOUNDS.', neg: true },
+          { label: '[ C ]  NO. WE\'VE NEVER PRIORITIZED IT.', resp: 'YOUR COMPETITORS ARE BUILDING TRUST WHILE YOU\'RE QUIET.', neg: true }
+        ]
+      },
+      {
+        q: 'ONE LAST ONE.\n\nIF YOU COULD ELIMINATE ONE\nTHING FROM YOUR WEEK —\nWHAT WOULD IT BE?',
+        opts: [
+          { label: '[ A ]  CHASING DOCUMENTS AND FOLLOWING UP.', resp: 'THAT\'S AN AUTOMATION PROBLEM. FULLY SOLVABLE.', neg: false },
+          { label: '[ B ]  CREATING CONTENT AND MARKETING.', resp: 'THAT\'S A SYSTEMS PROBLEM. FULLY SOLVABLE.', neg: false },
+          { label: '[ C ]  BOTH. HONESTLY BOTH.', resp: 'THAT\'S EXACTLY WHY AKTIVATE EXISTS.', neg: false }
+        ]
+      }
+    ];
+
+    var pathB = [
+      {
+        q: 'YOU\'RE BUILDING SOMETHING.\n\nHOW ARE YOU CURRENTLY\nGETTING IN FRONT OF\nTHE RIGHT PEOPLE?',
+        opts: [
+          { label: '[ A ]  CONTENT, ADS, SOCIAL — WE\'RE ACTIVE.', resp: 'ACTIVE IS GOOD. BUT ACTIVE AND EFFECTIVE ARE DIFFERENT THINGS.', neg: false },
+          { label: '[ B ]  MOSTLY WORD OF MOUTH AND OUTBOUND.', resp: 'WORD OF MOUTH HAS A CEILING. WHAT HAPPENS AFTER THAT?', neg: true },
+          { label: '[ C ]  HONESTLY WE\'RE FIGURING THAT OUT.', resp: 'MOST FOUNDERS ARE. THAT\'S NOT A WEAKNESS — YET.', neg: true }
+        ]
+      },
+      {
+        q: 'HOW MUCH CONTENT IS YOUR\nBRAND ACTUALLY PRODUCING\nRIGHT NOW?',
+        opts: [
+          { label: '[ A ]  A LOT. WE HAVE A REAL SYSTEM.', resp: 'A SYSTEM IS GOOD. IS IT PRODUCING RESULTS OR JUST VOLUME?', neg: false },
+          { label: '[ B ]  SOME. BUT IT\'S INCONSISTENT.', resp: 'INCONSISTENCY MEANS YOUR AUDIENCE FORGETS YOU EXIST.', neg: true },
+          { label: '[ C ]  BARELY ANY. NO TIME, NO PROCESS.', resp: 'IN A CROWDED MARKET, SILENCE IS INVISIBLE.', neg: true }
+        ]
+      },
+      {
+        q: 'BE HONEST.\n\nDOES YOUR BRAND LOOK DIFFERENT\nFROM EVERYONE ELSE IN YOUR SPACE?',
+        opts: [
+          { label: '[ A ]  YES. WE HAVE A CLEAR POINT OF VIEW.', resp: 'GOOD. LET\'S MAKE SURE IT\'S ACTUALLY LANDING.', neg: false },
+          { label: '[ B ]  SORT OF. WE\'RE WORKING ON IT.', resp: '"SORT OF" IS THE MOST DANGEROUS PLACE TO BE.', neg: true },
+          { label: '[ C ]  NOT REALLY. WE LOOK LIKE THE OTHERS.', resp: 'THAT\'S THE MOST COMMON PROBLEM IN B2B. AND THE MOST FIXABLE.', neg: true }
+        ]
+      },
+      {
+        q: 'YOUR INTERNAL OPS —\nOUTREACH, FOLLOW-UPS,\nCONTENT SCHEDULING, REPORTING.\n\nHOW MUCH OF THAT IS MANUAL?',
+        opts: [
+          { label: '[ A ]  MOST OF IT IS AUTOMATED.', resp: 'CLEAN. LET\'S SEE IF THERE\'S STILL ROOM TO TIGHTEN.', neg: false },
+          { label: '[ B ]  SOME TOOLS BUT STILL A LOT OF MANUAL WORK.', resp: 'THE GAPS IN PARTIAL AUTOMATION ADD UP FAST.', neg: true },
+          { label: '[ C ]  ALMOST ALL OF IT IS MANUAL.', resp: 'YOU\'RE SPENDING FOUNDER TIME ON THINGS THAT SHOULDN\'T NEED YOU.', neg: true }
+        ]
+      },
+      {
+        q: 'LAST ONE.\n\nWHAT WOULD CHANGE EVERYTHING\nFOR YOUR BUSINESS RIGHT NOW?',
+        opts: [
+          { label: '[ A ]  MORE VISIBILITY. PEOPLE NEED TO KNOW WE EXIST.', resp: 'THAT\'S A PRESENCE PROBLEM. FULLY SOLVABLE.', neg: false },
+          { label: '[ B ]  BETTER SYSTEMS. WE NEED TO STOP DOING THINGS MANUALLY.', resp: 'THAT\'S AN AUTOMATION PROBLEM. FULLY SOLVABLE.', neg: false },
+          { label: '[ C ]  BOTH. WE NEED THE WHOLE THING.', resp: 'THAT\'S EXACTLY WHY AKTIVATE EXISTS.', neg: false }
+        ]
+      }
+    ];
+
+    // ── BOOT SEQUENCE ──────────────────
+    function bootSequence() {
+      hideStep();
+      typewrite('AKTIVATE OS v1.0', 'bright', function() {
         setTimeout(function() {
-          typewriteLine('INITIALIZING...', 'dim', function() {
+          typewrite('INITIALIZING...', 'dim', function() {
             addGap(true);
-            setTimeout(function() {
-              animateProgressBar(function() {
-                addGap(true);
-                typewriteLine('SCANNING ENVIRONMENT...', 'dim', function() {
-                  setTimeout(function() {
-                    typewriteLine('LOADING MODULES: AUTOMATION · CREATIVE · STRATEGY', 'dim', function() {
-                      setTimeout(function() {
-                        typewriteLine('BUSINESS DIAGNOSTIC TOOL: READY', 'bright', function() {
-                          addGap();
-                          typewriteLine('WELCOME.', 'white large', function() {
-                            addGap();
-                            setTimeout(function() {
-                              typewriteLine('BEFORE WE BEGIN —', 'dim', function() {
-                                addGap(true);
-                                typewriteLine("LET'S PLAY A GAME.", 'bright xl', function() {
-                                  addGap();
-                                  addButtons([{
-                                    label: '[ START DIAGNOSTIC ]',
-                                    primary: true,
-                                    id: 'start',
-                                    onClick: function() { setTimeout(runPhase2, 400); }
-                                  }]);
-                                });
-                              });
-                            }, 600);
-                          });
-                        });
-                      }, 400);
-                    });
-                  }, 300);
+            animateProgress(function() {
+              addGap(true);
+              typewrite('BUSINESS DIAGNOSTIC TOOL: READY', 'bright', function() {
+                addGap();
+                addGap();
+                typewrite("LET'S PLAY A GAME.", 'white xl', function() {
+                  addGap(true);
+                  typewrite("LET'S MAKE THIS PERSONAL.", 'dim', function() {
+                    addGap();
+                    addButtons([{
+                      label: '[ PLAY ]',
+                      primary: true,
+                      id: 'start',
+                      onClick: function() {
+                        setTimeout(function() { fadeToScreen(step1); }, 400);
+                      }
+                    }]);
+                  });
                 });
               });
-            }, 200);
+            });
           });
         }, 300);
       });
     }
 
-    function runPhase2() {
+    // ── STEP 1: IDENTITY ───────────────
+    function step1() {
+      setStep(1, 6);
+      addLine('STEP 1 OF 6', 'dim');
+      addDivider();
       addGap();
-      addDivider();
+      addLine("WHAT'S YOUR WORLD?", 'white large');
       addGap(true);
-      addLine('STEP 1 OF 5', 'dim');
-      addDivider();
-      addGap(true);
-      typewriteLine('WHAT ARE YOU RUNNING?', 'white large', function() {
-        addGap(true);
-        addButtons([
-          {
-            label: '[ A ]  INSURANCE BROKERAGE',
-            id: 'identity-a',
-            onClick: function() {
-              gameState.identity = 'insurance';
-              addGap(true);
-              addLine('> INSURANCE BROKERAGE DETECTED', 'bright');
-              setTimeout(runQuestion2, 600);
-            }
-          },
-          {
-            label: '[ B ]  LOGISTICS / FLEET',
-            id: 'identity-b',
-            onClick: function() {
-              gameState.identity = 'logistics';
-              addGap(true);
-              addLine('> LOGISTICS OPERATION DETECTED', 'bright');
-              setTimeout(runQuestion2, 600);
-            }
-          },
-          {
-            label: '[ C ]  SOMETHING ELSE',
-            id: 'identity-c',
-            onClick: function() {
-              gameState.identity = 'other';
-              addGap(true);
-              addLine('> ACKNOWLEDGED', 'bright');
-              setTimeout(runQuestion2, 600);
-            }
+      addButtons([
+        {
+          label: '[ A ]  INSURANCE / LOGISTICS', id: 's1-a',
+          onClick: function() {
+            gameState.path = 'A';
+            gameState.answers = {};
+            showResponse('GOOD. THIS ONE\'S BUILT FOR YOU.', false, function() { runPathStep(0); });
           }
-        ]);
-      });
-    }
-
-    function runQuestion(stepNum, questionText, stateKey, yesResponse, noResponse, nextFn) {
-      addGap();
-      addDivider();
-      addGap(true);
-      addLine('STEP ' + stepNum + ' OF 5', 'dim');
-      addDivider();
-      addGap(true);
-      typewriteLine(questionText, 'white', function() {
-        addGap(true);
-        addButtons([
-          {
-            label: '[ YES ]',
-            id: 'q' + stepNum + '-yes',
-            onClick: function() {
-              gameState[stateKey] = true;
-              addGap(true);
-              addLine('> ' + yesResponse, 'red');
-              setTimeout(nextFn, 600);
-            }
-          },
-          {
-            label: '[ NO ]',
-            id: 'q' + stepNum + '-no',
-            onClick: function() {
-              gameState[stateKey] = false;
-              addGap(true);
-              addLine('> ' + noResponse, 'bright');
-              setTimeout(nextFn, 600);
-            }
+        },
+        {
+          label: '[ B ]  TECH STARTUP / SAAS', id: 's1-b',
+          onClick: function() {
+            gameState.path = 'B';
+            gameState.answers = {};
+            showResponse('LET\'S SEE WHAT\'S ACTUALLY GOING ON.', false, function() { runPathStep(0); });
           }
-        ]);
-      });
-    }
-
-    function runQuestion2() {
-      runQuestion(2,
-        'DO YOU CHASE COIS OR DOCUMENTS\nBY EMAIL?',
-        'q2',
-        'THAT\'S COSTING YOU MORE THAN YOU THINK.',
-        'GOOD. ONE LESS BOTTLENECK.',
-        runQuestion3
-      );
-    }
-
-    function runQuestion3() {
-      runQuestion(3,
-        'DO YOU COPY-PASTE DATA BETWEEN\nPLATFORMS EVERY DAY?',
-        'q3',
-        'MANUAL DATA ENTRY IS A SCALING TRAP.',
-        'SMART. AUTOMATION MATTERS.',
-        runQuestion4
-      );
-    }
-
-    function runQuestion4() {
-      runQuestion(4,
-        'HAS A LEAD EVER GONE COLD\nBECAUSE NOBODY FOLLOWED UP\nIN TIME?',
-        'q4',
-        'REVENUE LEAKED. THAT\'S RECOVERABLE.',
-        'YOU\'RE AHEAD OF MOST.',
-        runQuestion5
-      );
-    }
-
-    function runQuestion5() {
-      runQuestion(5,
-        'DO YOU HAVE A CONSISTENT\nCONTENT PRESENCE ONLINE?',
-        'q5',
-        'NOTED.',
-        'YOUR COMPETITORS DO. THAT\'S A PROBLEM.',
-        runPhase4
-      );
-    }
-
-    function runPhase4() {
-      addGap();
-      addDivider();
-      addGap();
-      typewriteLine('RUNNING DIAGNOSTIC...', 'amber large', function() {
-        addGap(true);
-        var analyses = [
-          'ANALYZING: OPERATIONAL EFFICIENCY',
-          'ANALYZING: LEAD PIPELINE HEALTH',
-          'ANALYZING: MARKET VISIBILITY',
-          'ANALYZING: AUTOMATION COVERAGE'
-        ];
-        var idx = 0;
-        function nextAnalysis() {
-          if (idx >= analyses.length) {
-            addGap();
-            setTimeout(function() {
-              addLine('⚠  3 CRITICAL INEFFICIENCIES DETECTED', 'amber large');
-              addGap();
-              setTimeout(runPhase5, 800);
-            }, 500);
-            return;
+        },
+        {
+          label: '[ C ]  NEITHER OF THOSE', id: 's1-c',
+          onClick: function() {
+            gameState.path = 'B';
+            gameState.answers = {};
+            showResponse('FAIR. LET\'S FIND OUT IF WE CAN HELP.', false, function() { runPathStep(0); });
           }
-          var line = addLine(analyses[idx], 'dim');
-          var flickerEl = document.createElement('span');
-          flickerEl.className = 'term-flicker';
-          flickerEl.style.marginLeft = '12px';
-          flickerEl.style.color = '#ffaa00';
-          var randNum = Math.floor(Math.random() * 900 + 100);
-          flickerEl.textContent = randNum + 'ms';
-          line.appendChild(flickerEl);
-          idx++;
-          setTimeout(function() {
-            flickerEl.classList.remove('term-flicker');
-            flickerEl.textContent = '✓';
-            flickerEl.style.color = '#33ff33';
-            setTimeout(nextAnalysis, 300);
-          }, 700);
         }
-        nextAnalysis();
-      });
+      ]);
     }
 
-    function runPhase5() {
+    // ── PATH STEPS (2-6) ───────────────
+    function runPathStep(idx) {
+      var steps = gameState.path === 'A' ? pathA : pathB;
+      var stepNum = idx + 2;
+      setStep(stepNum, 6);
+      var s = steps[idx];
+
+      addLine('STEP ' + stepNum + ' OF 6', 'dim');
       addDivider();
+      addGap();
+      addLine(s.q, 'white');
       addGap(true);
 
-      var errorCount = 0;
+      var btns = s.opts.map(function(opt, oi) {
+        return {
+          label: opt.label,
+          id: 's' + stepNum + '-' + String.fromCharCode(97 + oi),
+          onClick: function() {
+            gameState.answers['s' + stepNum] = oi;
+            showResponse(opt.resp, opt.neg, function() {
+              if (idx + 1 < steps.length) {
+                runPathStep(idx + 1);
+              } else {
+                runDiagnostic();
+              }
+            });
+          }
+        };
+      });
+      addButtons(btns);
+    }
 
-      if (gameState.q2 === true) {
-        errorCount++;
-        var block1 = document.createElement('div');
-        block1.className = 'term-error-block';
-        block1.innerHTML =
-          '<div class="term-line red">ERROR_01 // DOCUMENT PIPELINE</div>' +
-          '<div class="term-line white">Your team is doing work that</div>' +
-          '<div class="term-line white">software should be doing.</div>' +
-          '<div class="term-line dim">ESTIMATED WEEKLY COST: ~12hrs of ops time</div>' +
-          '<div class="term-line bright">STATUS: FIXABLE</div>';
-        termContent.appendChild(block1);
+    // ── DIAGNOSTIC SCAN ────────────────
+    function runDiagnostic() {
+      hideStep();
+      addLine('RUNNING DIAGNOSTIC...', 'amber large');
+      addGap(true);
+
+      var lines = [
+        'ANALYZING: OPERATIONAL EFFICIENCY',
+        'ANALYZING: LEAD PIPELINE HEALTH',
+        'ANALYZING: MARKET VISIBILITY',
+        'ANALYZING: AUTOMATION COVERAGE'
+      ];
+      var li = 0;
+      function nextLine() {
+        if (li >= lines.length) {
+          addGap();
+          setTimeout(function() {
+            addLine('⚠  REPORT READY.', 'amber large');
+            setTimeout(function() { fadeToScreen(showResults); }, 1200);
+          }, 500);
+          return;
+        }
+        var el = addLine(lines[li], 'dim');
+        var sp = document.createElement('span');
+        sp.className = 'term-flicker';
+        sp.style.marginLeft = '12px';
+        sp.style.color = '#ffaa00';
+        sp.textContent = Math.floor(Math.random()*900+100) + 'ms';
+        el.appendChild(sp);
+        li++;
+        setTimeout(function() {
+          sp.classList.remove('term-flicker');
+          sp.textContent = ' ✓';
+          sp.style.color = '#33ff33';
+          setTimeout(nextLine, 300);
+        }, 700);
+      }
+      setTimeout(nextLine, 600);
+    }
+
+    // ── RESULTS ────────────────────────
+    function showResults() {
+      hideStep();
+      var a = gameState.answers;
+      var negCount = 0;
+      Object.keys(a).forEach(function(k) {
+        var steps = gameState.path === 'A' ? pathA : pathB;
+        var idx = parseInt(k.replace('s','')) - 2;
+        if (idx >= 0 && idx < steps.length) {
+          var opt = steps[idx].opts[a[k]];
+          if (opt && opt.neg) negCount++;
+        }
+      });
+
+      var errNum = 0;
+
+      if (gameState.path === 'A') {
+        if (a.s2 === 0 || a.s2 === 1) {
+          errNum++;
+          var b1 = addEl('div', 'term-error-block');
+          addEl('div', 'term-line red', 'ERROR_0' + errNum + ' // DOCUMENT PIPELINE', b1);
+          addEl('div', 'term-line white', 'Your team is doing work that', b1);
+          addEl('div', 'term-line white', 'software should be doing.', b1);
+          addEl('div', 'term-line bright', 'STATUS: FIXABLE', b1);
+        }
+        if (a.s4 === 1 || a.s4 === 2) {
+          errNum++;
+          var b2 = addEl('div', 'term-error-block');
+          addEl('div', 'term-line red', 'ERROR_0' + errNum + ' // MARKET VISIBILITY', b2);
+          addEl('div', 'term-line white', 'Your competitors are building trust', b2);
+          addEl('div', 'term-line white', 'online while you\'re invisible.', b2);
+          addEl('div', 'term-line bright', 'STATUS: FIXABLE', b2);
+        }
+        if (a.s5 === 1 || a.s5 === 2) {
+          errNum++;
+          var b3 = addEl('div', 'term-error-block');
+          addEl('div', 'term-line red', 'ERROR_0' + errNum + ' // CONTENT PRESENCE', b3);
+          addEl('div', 'term-line white', 'No consistent presence means', b3);
+          addEl('div', 'term-line white', 'no compounding trust.', b3);
+          addEl('div', 'term-line bright', 'STATUS: FIXABLE', b3);
+        }
+      } else {
+        if (a.s2 === 1 || a.s2 === 2) {
+          errNum++;
+          var b4 = addEl('div', 'term-error-block');
+          addEl('div', 'term-line red', 'ERROR_0' + errNum + ' // DISTRIBUTION', b4);
+          addEl('div', 'term-line white', 'You\'re not in front of the', b4);
+          addEl('div', 'term-line white', 'right people consistently.', b4);
+          addEl('div', 'term-line bright', 'STATUS: FIXABLE', b4);
+        }
+        if (a.s4 === 1 || a.s4 === 2) {
+          errNum++;
+          var b5 = addEl('div', 'term-error-block');
+          addEl('div', 'term-line red', 'ERROR_0' + errNum + ' // BRAND DIFFERENTIATION', b5);
+          addEl('div', 'term-line white', 'You look like everyone else.', b5);
+          addEl('div', 'term-line white', 'That\'s the fastest way to be forgotten.', b5);
+          addEl('div', 'term-line bright', 'STATUS: FIXABLE', b5);
+        }
+        if (a.s5 === 1 || a.s5 === 2) {
+          errNum++;
+          var b6 = addEl('div', 'term-error-block');
+          addEl('div', 'term-line red', 'ERROR_0' + errNum + ' // OPERATIONAL DRAG', b6);
+          addEl('div', 'term-line white', 'Manual work is eating founder', b6);
+          addEl('div', 'term-line white', 'time that should go to growth.', b6);
+          addEl('div', 'term-line bright', 'STATUS: FIXABLE', b6);
+        }
       }
 
-      if (gameState.q5 === false) {
-        errorCount++;
-        var block2 = document.createElement('div');
-        block2.className = 'term-error-block';
-        block2.innerHTML =
-          '<div class="term-line red">ERROR_02 // MARKET VISIBILITY</div>' +
-          '<div class="term-line white">Your competitors are building</div>' +
-          '<div class="term-line white">trust online while you\'re</div>' +
-          '<div class="term-line white">invisible.</div>' +
-          '<div class="term-line bright">STATUS: FIXABLE</div>';
-        termContent.appendChild(block2);
+      if (errNum === 0) {
+        errNum++;
+        var bGen = addEl('div', 'term-error-block');
+        addEl('div', 'term-line red', 'ERROR_01 // UNTAPPED POTENTIAL', bGen);
+        addEl('div', 'term-line white', 'You\'re doing well — but there\'s', bGen);
+        addEl('div', 'term-line white', 'room to compound faster.', bGen);
+        addEl('div', 'term-line bright', 'STATUS: FIXABLE', bGen);
       }
-
-      var block3 = document.createElement('div');
-      block3.className = 'term-error-block';
-      block3.innerHTML =
-        '<div class="term-line red">ERROR_0' + (errorCount + 1) + ' // LEAD CAPTURE</div>' +
-        '<div class="term-line white">Revenue is leaking from your</div>' +
-        '<div class="term-line white">pipeline every week.</div>' +
-        '<div class="term-line bright">STATUS: FIXABLE</div>';
-      termContent.appendChild(block3);
 
       addGap();
-      addLine('DIAGNOSIS COMPLETE.', 'bright large');
-      addDivider();
-      addGap(true);
-
-      var opsScore = gameState.q2 ? 22 : 58;
-      var visScore = gameState.q5 ? 61 : 12;
-      var pipScore = gameState.q4 ? 28 : 55;
-
-      if (gameState.q3) opsScore = Math.max(opsScore - 14, 10);
+      var opsScore = 30 + Math.floor(Math.random()*15) - (negCount * 8);
+      var visScore = 25 + Math.floor(Math.random()*15) - (negCount * 6);
+      var pipScore = 35 + Math.floor(Math.random()*10) - (negCount * 7);
+      opsScore = Math.max(opsScore, 8); visScore = Math.max(visScore, 8); pipScore = Math.max(pipScore, 12);
 
       addLine('OPS SCORE:  ' + opsScore + ' / 100', opsScore < 40 ? 'red' : 'bright');
       addLine('VISIBILITY: ' + visScore + ' / 100', visScore < 40 ? 'red' : 'bright');
       addLine('PIPELINE:   ' + pipScore + ' / 100', pipScore < 40 ? 'red' : 'bright');
 
       addGap();
-      addLine('ALL ERRORS HAVE A KNOWN FIX.', 'white large');
+      addLine('ALL OF THIS IS FIXABLE.', 'white large');
+      addLine('WE\'VE DONE IT BEFORE.', 'white');
       addGap();
 
-      scrollTerminal();
-      setTimeout(runPhase6, 1000);
-    }
+      addButtons([{
+        label: '[ BOOK A FREE DIAGNOSTIC CALL ]',
+        primary: true,
+        id: 'book-call',
+        onClick: function() {
+          window.location.href = 'mailto:hello@aktivate.ai?subject=Diagnostic%20Call';
+        }
+      }]);
 
-    function runPhase6() {
+      addGap(true);
       addDivider();
-      addGap();
-      typewriteLine('WANT TO SEE THE FIX?', 'bright xl', function() {
-        addGap(true);
-        addLine('ONE CALL. 30 MINUTES.', 'white');
-        addLine('NO PITCH DECK.', 'white');
-        addGap();
-        addButtons([{
-          label: '[ BOOK THE DIAGNOSTIC CALL ]',
-          primary: true,
-          id: 'book-call',
-          onClick: function() {
-            window.location.href = 'mailto:hello@aktivate.ai?subject=Diagnostic%20Call';
-          }
-        }]);
-        addGap();
-        addDivider();
-        addGap(true);
-        var scrollLink = document.createElement('button');
-        scrollLink.className = 'term-scroll-link';
-        scrollLink.textContent = '// OR SCROLL DOWN TO SEE HOW IT WORKS';
-        scrollLink.setAttribute('data-testid', 'term-scroll-down');
-        scrollLink.addEventListener('click', dismissTerminal);
-        termContent.appendChild(scrollLink);
-        scrollTerminal();
+      addGap(true);
+
+      var scrollLink = addEl('button', 'term-scroll-link', '// OR SCROLL DOWN TO SEE HOW WE WORK');
+      scrollLink.setAttribute('data-testid', 'term-scroll-down');
+      scrollLink.addEventListener('click', dismissTerminal);
+
+      addGap(true);
+      var replayLink = addEl('button', 'term-replay-link', '[ PLAY AGAIN ]');
+      replayLink.setAttribute('data-testid', 'term-replay');
+      replayLink.addEventListener('click', function() {
+        fadeToScreen(function() {
+          gameState = { path: null, answers: {} };
+          step1();
+        });
       });
     }
 
+    // ── DISMISS ────────────────────────
     function dismissTerminal() {
       termOverlay.classList.add('dismissed');
       document.body.classList.remove('terminal-active');
       window.scrollTo(0, 0);
-      setTimeout(function() {
-        termOverlay.style.display = 'none';
-      }, 800);
+      setTimeout(function() { termOverlay.style.display = 'none'; }, 800);
     }
 
-    setTimeout(runPhase1, 500);
+    // ── SCROLL TO DISMISS ──────────────
+    var termScrollStart = null;
+    termOverlay.addEventListener('wheel', function(e) {
+      var atBottom = termOverlay.scrollHeight <= termOverlay.clientHeight;
+      if (!atBottom) return;
+      var scrollLinks = termContent.querySelectorAll('.term-scroll-link');
+      if (scrollLinks.length === 0) return;
+      if (e.deltaY > 0) {
+        if (!termScrollStart) termScrollStart = Date.now();
+        if (Date.now() - termScrollStart > 600) {
+          dismissTerminal();
+          termScrollStart = null;
+        }
+      } else {
+        termScrollStart = null;
+      }
+    }, { passive: true });
+
+    setTimeout(bootSequence, 500);
   }
 
 })();
