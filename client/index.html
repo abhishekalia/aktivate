@@ -816,6 +816,7 @@ body:hover #cursor-glow {
   display:none;
   position:relative;
   z-index:1;
+  transition:opacity 0.5s ease, visibility 0.5s ease;
 }
 #mobile-hero-3d-root {
   width:100%;
@@ -890,7 +891,7 @@ body:hover #cursor-glow {
 /* ── TERMINAL GAME ────────────────── */
 body.terminal-active { overflow:hidden; }
 body.terminal-active nav { opacity:0; pointer-events:none; }
-body.terminal-active #mobile-hero { display:none; }
+body.terminal-active #mobile-hero { visibility:hidden; opacity:0; pointer-events:none; }
 
 #terminal-overlay {
   position:fixed; inset:0; z-index:9999;
@@ -2022,6 +2023,9 @@ document.addEventListener('click', function(e) {
       termOverlay.classList.add('dismissed');
       document.body.classList.remove('terminal-active');
       window.scrollTo(0, 0);
+      requestAnimationFrame(function() {
+        window.dispatchEvent(new Event('resize'));
+      });
       setTimeout(function() {
         termOverlay.style.display = 'none';
         window.scrollTo(0, 0);
