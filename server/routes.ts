@@ -6,11 +6,19 @@ export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
-  // put application routes here
-  // prefix all routes with /api
-
-  // use storage to perform CRUD operations on the storage interface
-  // e.g. storage.insertUser(user) or storage.getUserByUsername(username)
+  app.post("/api/contact", async (req, res) => {
+    try {
+      const { name, email, company, message } = req.body;
+      if (!name || !email) {
+        return res.status(400).json({ error: "Name and email are required" });
+      }
+      await storage.saveContact({ name, email, company: company || "", message: message || "" });
+      res.json({ success: true });
+    } catch (err) {
+      console.error("Contact form error:", err);
+      res.status(500).json({ error: "Failed to save contact" });
+    }
+  });
 
   return httpServer;
 }

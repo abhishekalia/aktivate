@@ -1,13 +1,18 @@
 import { type User, type InsertUser } from "@shared/schema";
 import { randomUUID } from "crypto";
 
-// modify the interface with any CRUD methods
-// you might need
+export interface ContactSubmission {
+  name: string;
+  email: string;
+  company: string;
+  message: string;
+}
 
 export interface IStorage {
   getUser(id: string): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
+  saveContact(contact: ContactSubmission): Promise<void>;
 }
 
 export class MemStorage implements IStorage {
@@ -32,6 +37,17 @@ export class MemStorage implements IStorage {
     const user: User = { ...insertUser, id };
     this.users.set(id, user);
     return user;
+  }
+
+  async saveContact(contact: ContactSubmission): Promise<void> {
+    const { name, email, company, message } = contact;
+    const timestamp = new Date().toISOString();
+    console.log(`[CONTACT FORM] ${timestamp}`);
+    console.log(`  Name: ${name}`);
+    console.log(`  Email: ${email}`);
+    console.log(`  Company: ${company}`);
+    console.log(`  Message: ${message}`);
+    console.log(`  → Forward to: abhishekwork.ak@gmail.com`);
   }
 }
 
