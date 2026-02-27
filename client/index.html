@@ -963,6 +963,12 @@ body.terminal-active #mobile-hero { visibility:hidden; opacity:0; pointer-events
   border:none; background:none; font-family:'DM Mono', monospace; letter-spacing:0.05em;
 }
 .term-scroll-link:hover { color:#33ff33; }
+.term-early-skip {
+  position:fixed; top:20px; right:24px; z-index:10001;
+  margin-top:0; font-size:11px; opacity:0.5;
+  transition:opacity 0.3s ease, color 0.2s;
+}
+.term-early-skip:hover { opacity:1; }
 
 .term-replay-link {
   color:#1a8c1a; cursor:pointer; font-size:11px; margin-top:12px;
@@ -1768,6 +1774,9 @@ document.addEventListener('click', function(e) {
     // ── PHASE 1: BOOT SEQUENCE ──────────────────
     function bootSequence() {
       hideStep();
+      var earlySkip = addEl('button', 'term-scroll-link term-early-skip', '// SKIP TO SITE');
+      earlySkip.setAttribute('data-testid', 'term-skip-early');
+      earlySkip.addEventListener('click', dismissTerminal);
       typewriteSequence([
         { text: 'AKTIVATE OS v1.0', cls: 'bright', delay: 300 },
         { text: 'INITIALIZING...', cls: 'dim', delay: 100 }
