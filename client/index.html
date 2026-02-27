@@ -964,8 +964,7 @@ body.terminal-active #mobile-hero { visibility:hidden; opacity:0; pointer-events
 }
 .term-scroll-link:hover { color:#33ff33; }
 .term-early-skip {
-  position:fixed; top:20px; right:24px; z-index:10001;
-  margin-top:0; font-size:12px; color:#33ff33;
+  margin-top:16px; font-size:12px; color:#33ff33;
   padding:0; border:none; background:none;
   transition:text-shadow 0.2s;
 }
@@ -1775,13 +1774,13 @@ document.addEventListener('click', function(e) {
     // ── PHASE 1: BOOT SEQUENCE ──────────────────
     function bootSequence() {
       hideStep();
-      var earlySkip = addEl('button', 'term-scroll-link term-early-skip', '// SKIP TO SITE');
-      earlySkip.setAttribute('data-testid', 'term-skip-early');
-      earlySkip.addEventListener('click', dismissTerminal);
       typewriteSequence([
         { text: 'AKTIVATE OS v1.0', cls: 'bright', delay: 300 },
         { text: 'INITIALIZING...', cls: 'dim', delay: 100 }
       ], function() {
+        var earlySkip = addEl('button', 'term-scroll-link term-early-skip', '// SKIP TO SITE');
+        earlySkip.setAttribute('data-testid', 'term-skip-early');
+        earlySkip.addEventListener('click', dismissTerminal);
         addGap(true);
         animateProgress(function() {
           addGap(true);
