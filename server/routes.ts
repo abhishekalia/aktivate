@@ -17,16 +17,21 @@ export async function registerRoutes(
       }
       await storage.saveContact({ name, email, company: company || "", message: message || "" });
 
-      await resend.emails.send({
-        from: "Aktivate Contact <onboarding@resend.dev>",
-        to: "abhishekwork.ak@gmail.com",
-        subject: `New Contact: ${name}`,
-        html: `<h2>New Contact Form Submission</h2>
+      try {
+        const emailResult = await resend.emails.send({
+          from: "Aktivate Contact <onboarding@resend.dev>",
+          to: "ak@myspark.cc",
+          subject: `New Contact: ${name}`,
+          html: `<h2>New Contact Form Submission</h2>
 <p><strong>Name:</strong> ${name}</p>
 <p><strong>Email:</strong> ${email}</p>
 <p><strong>Company:</strong> ${company || "N/A"}</p>
 <p><strong>Message:</strong> ${message || "N/A"}</p>`,
-      });
+        });
+        console.log("Resend result:", JSON.stringify(emailResult));
+      } catch (emailErr) {
+        console.error("Resend email error (contact still saved):", emailErr);
+      }
 
       res.json({ success: true });
     } catch (err) {
