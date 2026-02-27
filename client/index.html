@@ -1778,9 +1778,6 @@ document.addEventListener('click', function(e) {
         { text: 'AKTIVATE OS v1.0', cls: 'bright', delay: 300 },
         { text: 'INITIALIZING...', cls: 'dim', delay: 100 }
       ], function() {
-        var earlySkip = addEl('button', 'term-scroll-link term-early-skip', '// SKIP TO SITE');
-        earlySkip.setAttribute('data-testid', 'term-skip-early');
-        earlySkip.addEventListener('click', dismissTerminal);
         addGap(true);
         animateProgress(function() {
           addGap(true);
